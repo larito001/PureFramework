@@ -14,6 +14,7 @@ public abstract class UIPageBase : MonoBehaviour
     public UIEnum uiType;
     public bool isEnable = false;
     public CanvasGroup canvasGroup;
+    public UIEnum uiType;
     public abstract void OnLoad();
     public abstract void OnShow();
     public abstract void OnHide();

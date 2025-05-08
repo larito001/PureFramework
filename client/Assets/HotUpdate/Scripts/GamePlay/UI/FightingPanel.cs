@@ -22,7 +22,6 @@ public class FightingPanel : UIPageBase
     {
         settingUI.onClick.AddListener(() =>
         {
-            YOTOFramework.uIMgr.Show(UIEnum.FightingEndPanel);
         });
     }
 
