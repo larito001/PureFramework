@@ -14,17 +14,17 @@ public class StartPanel : UIPageBase
         startBtn.onClick.AddListener(() =>
         {
            
-      
-            YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
-            YOTOFramework.timeMgr.DelayCall(() =>
-            {
-                YOTOFramework.sceneMgr.LoadScene(Scenes.Normal); 
-                YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
-            },1);
-            YOTOFramework.timeMgr.DelayCall(() =>
-            {
-                YOTOFramework.uIMgr.Hide(UIEnum.StartLoadingPanel);
-            },8);
+            YOTOFramework.uIMgr.Show(UIEnum.GameMap);
+            // YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
+            // YOTOFramework.timeMgr.DelayCall(() =>
+            // {
+            //     YOTOFramework.sceneMgr.LoadScene(Scenes.Normal); 
+            //     YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+            // },1);
+            // YOTOFramework.timeMgr.DelayCall(() =>
+            // {
+            //     YOTOFramework.uIMgr.Hide(UIEnum.StartLoadingPanel);
+            // },8);
             CloseSelf();
         });
         treeBtn.onClick.AddListener(() =>

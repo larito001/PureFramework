@@ -65,6 +65,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - all
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f50688ea8bc4b84b9e4a9837efc79d2
+    m_Address: Assets/HotUpdate/prefabs/UI/GameMap.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - all
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f50e5ef80b9c7f7419c4baa4ee07d65b
     m_Address: Assets/HotUpdate/prefabs/UI/FightingPanel.prefab
     m_ReadOnly: 0
