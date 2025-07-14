@@ -12,7 +12,7 @@ public class StartScene : VirtualSceneBase
   
     }
 
-    public override void Onload()
+    public override void Onload(SceneParam param)
     {
 
     }

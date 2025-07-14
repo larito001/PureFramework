@@ -16,7 +16,7 @@ public class GameRoot : SingletonMono<GameRoot>
         // Application.targetFrameRate = 60;
         FlyTextMgr.Instance.Init();
         // TouchSimulation.Enable();
-        YOTOFramework.sceneMgr.LoadScene(Scenes.Start);
+        YOTOFramework.sceneMgr.LoadScene<StartScene>();
         Debug.Log("GameRoot 加载完成");
     }
 

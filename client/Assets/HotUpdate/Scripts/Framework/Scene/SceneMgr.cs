@@ -1,47 +1,37 @@
+    using System;
     using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace YOTO
 {
-    public enum Scenes
-    {
-        Start,
-        Normal,
-       
+    public abstract class SceneParam{
+    
     }
     public class SceneMgr
     {
 
        public CameraCtrl cameraCtrl;
-
-        Dictionary<Scenes, VirtualSceneBase> scenesMap = new Dictionary<Scenes, VirtualSceneBase>() {
-            { Scenes.Normal, new NormalScene()},
-            { Scenes.Start, new StartScene()}
-        };
+       
         private VirtualSceneBase currentScene=null;
         public void Init()
         {
             cameraCtrl = new CameraCtrl();
         }
-        public void LoadScene(Scenes scene)
+        public void LoadScene<T>(SceneParam param=null)where T :VirtualSceneBase, new()
         {
             if (currentScene!=null)
             {
                 currentScene.UnLoad();
             }
-            if (!scenesMap.ContainsKey(scene))
-            {
-                Debug.Log("YTLOG:�������ó���");
-                return;
-            }
 
 
-            currentScene = scenesMap[scene];
+
+            currentScene = new T();
             // YOTOFramework.uIMgr.ClearUI();
-            scenesMap[scene].Onload();
-            scenesMap[scene].OnAdd();
-            scenesMap[scene].OnInit();
+            currentScene.Onload(param);
+            currentScene.OnAdd();
+            currentScene.OnInit();
          
 
         }
@@ -57,10 +47,7 @@ namespace YOTO
                 cameraCtrl.Update(UnityEngine.Time.deltaTime);
             }
 
-            foreach (var virtualSceneBase in scenesMap)
-            {
-                virtualSceneBase.Value.Update(dt);
-            }
+            currentScene.Update(dt);
         }
     }
 }

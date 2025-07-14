@@ -7,17 +7,21 @@ using EventType = YOTO.EventType;
 
 public class NormalScene : VirtualSceneBase
 {
-  
-
+    
+    public class NormalSceneParam:SceneParam
+    {
+        public int level = 0;
+    }
     //注册事件
     public override void OnAdd()
     {
     }
 
     //
-    public override void Onload()
+    public override void Onload(SceneParam param)
     {
-        Debug.Log("YTLOG;加载了场景");
+        var p = param as NormalSceneParam;
+        Debug.Log("YTLOG;加载了场景"+p.level);
     }
 
 
