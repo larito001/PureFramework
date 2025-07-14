@@ -67,8 +67,8 @@ public class MeleeEntity : BaseEntity
 
     public override void Free()
     {
-        base.Free();
         GameObject.Destroy(melee);
+        base.Free();
     }
 
     // 子弹生成接口（你来实现）

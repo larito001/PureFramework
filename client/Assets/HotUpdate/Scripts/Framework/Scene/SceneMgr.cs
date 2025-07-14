@@ -24,9 +24,7 @@ namespace YOTO
             {
                 currentScene.UnLoad();
             }
-
-
-
+            
             currentScene = new T();
             // YOTOFramework.uIMgr.ClearUI();
             currentScene.Onload(param);

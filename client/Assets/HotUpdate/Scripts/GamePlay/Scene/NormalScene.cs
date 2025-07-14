@@ -7,7 +7,7 @@ using EventType = YOTO.EventType;
 
 public class NormalScene : VirtualSceneBase
 {
-    
+    private GameObject _sceneObj;
     public class NormalSceneParam:SceneParam
     {
         public int level = 0;
@@ -22,12 +22,20 @@ public class NormalScene : VirtualSceneBase
     {
         var p = param as NormalSceneParam;
         Debug.Log("YTLOG;加载了场景"+p.level);
+        string path;
+        path = "Assets/HotUpdate/prefabs/Level/Level_"+p.level+".prefab";
+        YOTOFramework.resMgr.LoadGameObject(path, (obj) =>
+        {
+            _sceneObj=   GameObject.Instantiate(obj);
+        });
     }
 
 
     //加载常用系统
     public override void OnInit()
     {
+        YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
+        YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         var org = GameObject.Find("PlayerOrgPos");
         WeatherManager.Instance.Init();
         //加载紧急事件系统
@@ -42,6 +50,7 @@ public class NormalScene : VirtualSceneBase
 
     public override void UnLoad()
     {
+        GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();
         YOTOFramework.uIMgr.ClearUI();
         EnemyManager.Instance.Unload();

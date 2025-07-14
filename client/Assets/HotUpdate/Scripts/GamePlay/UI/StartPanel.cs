@@ -10,12 +10,10 @@ public class StartPanel : UIPageBase
     public Button treeBtn;
     public override void OnLoad()
     {
-        YOTOFramework.sceneMgr.cameraCtrl.UseStartCamera();
+       
         startBtn.onClick.AddListener(() =>
         {
-           
             YOTOFramework.uIMgr.Show(UIEnum.GameMap);
-            CloseSelf();
         });
         treeBtn.onClick.AddListener(() =>
         {

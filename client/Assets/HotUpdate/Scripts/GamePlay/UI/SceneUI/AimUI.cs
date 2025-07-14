@@ -9,6 +9,7 @@ public class AimUI : UIPageBase
     {
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.Touch, Touch);
         Cursor.visible = false;
+
     }
 
     private void Touch(Vector2 pos)
@@ -18,7 +19,7 @@ public class AimUI : UIPageBase
 
     public override void OnShow()
     {
-        
+        this.canvasGroup.blocksRaycasts = false;
     }
 
     public override void OnHide()

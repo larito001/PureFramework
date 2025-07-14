@@ -193,9 +193,10 @@ public class PlayerEntity : CharacterBase
 
     public override void Free()
     {
+        gun?.Free();
+        melee?.Free();
+        GameObject.Destroy(character);
         base.Free();
-        gun.Free();
-        melee.Free();
     }
 
     public override void Init(Vector3 pos)

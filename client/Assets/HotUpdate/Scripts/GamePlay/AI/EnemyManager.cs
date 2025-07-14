@@ -1,10 +1,12 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ProjectDawn.Navigation.Hybrid;
 using UnityEngine;
 using YOTO;
+using Random = UnityEngine.Random;
 
 public class EnemyManager : SingletonMono<EnemyManager>
 {
@@ -13,12 +15,29 @@ public class EnemyManager : SingletonMono<EnemyManager>
     private Dictionary<int ,List<ZombieEntity>> zombieAreaList= new Dictionary<int , List<ZombieEntity>>();//地区id，地区内的僵尸列表
     private Dictionary<int ,int> zombieAreaDic= new Dictionary<int ,int>();//僵尸id，地区id
     private int num = 0;
-    private List<EnemyRangeTrigger> triggers; 
+    private List<EnemyRangeTrigger> triggers;
+    private bool isInit = false;
     public void Init()
     {
         zombieEntities.Clear();
         var poss = GameObject.Find("EnemyOrgPos");
         triggers = poss.GetComponentsInChildren<EnemyRangeTrigger>().ToList();
+        // 设置每个触发器的位置在poss的30米半径内随机分布
+        foreach (var trigger in triggers)
+        {
+            // 生成随机方向并缩放到30米半径内的随机距离
+            Vector3 randomOffset = Random.insideUnitSphere * 30f;
+            // 保持y轴不变（如果需要）
+            randomOffset.y = 0; // 如果不需要垂直方向的随机分布，可以去掉这行
+    
+            // 设置触发器的位置为原始位置加上随机偏移
+            trigger.transform.position = poss.transform.position + randomOffset;
+    
+            // 如果需要触发器始终朝向中心点
+            // trigger.transform.LookAt(poss.transform);
+        }
+        
+        
         for (var i = 0; i < triggers.Count; i++)
         {
             triggers[i].Init(i);
@@ -27,7 +46,7 @@ public class EnemyManager : SingletonMono<EnemyManager>
             zombieAreaList.Add(i,list);
             
             var pos = triggers[i].transform.position;
-            for (int j = 0; j < 40; j++)
+            for (int j = 0; j < 4; j++)
             {
                 ZombieEntity zombieEntity=  ZombieEntity.pool.GetItem(Vector3.zero);
                 zombieEntity.InstanceGObj();
@@ -40,11 +59,26 @@ public class EnemyManager : SingletonMono<EnemyManager>
                 zombieAreaDic.Add(zombieEntity._entityID,i);
             }
         }
-        
+
+        isInit = true;
+    }
+
+    private void FixedUpdate()
+    {
+        if (isInit)
+        {
+            if (zombieEntities.Count <= 0)
+            {
+                isInit = false;
+                YOTOFramework.uIMgr.Show(UIEnum.FightingEndPanel);
+            }
+            
+        }
     }
 
     public override void Unload()
     {
+        isInit=false;
         foreach (var e in zombieEntities)
         {
             e.Value.Free();

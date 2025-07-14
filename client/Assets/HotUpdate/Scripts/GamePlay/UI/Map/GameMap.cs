@@ -9,13 +9,17 @@ using YOTO;
 public class GameMap : UIPageBase
 {
     public List<MapButton> btnList = new List<MapButton>();
+    public Button closeBtn;
     public override void OnLoad()
     {
         for (var i = 0; i < btnList.Count; i++)
         {
             btnList[i].SetCallBack(EnterLevel);
         }
+        closeBtn.onClick.AddListener(CloseSelf);
     }
+
+
 
     private void EnterLevel(int level)
     {
@@ -26,7 +30,6 @@ public class GameMap : UIPageBase
             {
                 level = level
             }); 
-            YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         },1);
         YOTOFramework.timeMgr.DelayCall(() =>
         {

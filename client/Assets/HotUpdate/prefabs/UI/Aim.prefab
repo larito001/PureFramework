@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8547787672724638363}
   - component: {fileID: 8357857464281132196}
   - component: {fileID: 8176794302082084990}
+  - component: {fileID: 7550751404388747568}
   m_Layer: 5
   m_Name: Aim
   m_TagString: Untagged
@@ -91,3 +92,15 @@ MonoBehaviour:
   uiType: 0
   isEnable: 0
   canvasGroup: {fileID: 0}
+--- !u!225 &7550751404388747568
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4747424092747793780}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

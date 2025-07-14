@@ -110,7 +110,7 @@ public class TowerBaseEntity : ObjectBase, PoolItem<Vector3>
     public override void Free()
     {
         base.Free();
-        tower.Free();
+        tower?.Free();
         RecoverObject();
         pool.RecoverItem(this);
     }

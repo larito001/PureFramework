@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum SceneResType
 {
-    Wood,
+    Wood=0,
     Iron,
 }
 public class SceneResManager : Singleton<SceneResManager>
@@ -14,11 +14,19 @@ public class SceneResManager : Singleton<SceneResManager>
 
     public void Init()
     {
-        var org = GameObject.Find("PlayerOrgPos");
+        var org = GameObject.Find("SceneResPos");
         for (int i = 0; i < 5; i++)
         {
-            GenerateResAt(SceneResType.Wood, org.transform.position + new Vector3(0, -4, 5) + new Vector3(5, 0, 0) * i);
-            GenerateResAt(SceneResType.Iron, org.transform.position+new Vector3(0,-4,10) + new Vector3(5, 0, 0) * i);
+            // 在 50 米半径内随机生成位置
+            Vector3 randomOffset = Random.insideUnitSphere * 50f;
+            randomOffset.y = 0; // 如果不需要 Y 轴变化（保持在地面）
+    
+            Vector3 spawnPos = org.transform.position + randomOffset;
+    
+            // 随机选择资源类型（Wood 或 Iron）
+            SceneResType randomResType = Random.Range(0, 2) == 0 ? SceneResType.Wood : SceneResType.Iron;
+    
+            GenerateResAt(randomResType, spawnPos);
         }
     }
     public void GenerateResAt(SceneResType resType,Vector3 pos)
