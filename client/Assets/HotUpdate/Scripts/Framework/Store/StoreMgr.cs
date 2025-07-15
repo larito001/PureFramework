@@ -1,114 +1,209 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace YOTO
 {
+    #region 示例
+
     [System.Serializable]
-    public class ItemPosData
+    public class TestPlayerData
     {
-        public string name;
-        public Vector3 pos;
-        public Quaternion rot;
+        public string playerName;
+        public int coins;
     }
-    [System.Serializable]
-    public class ItemDataList
+
+    public class TestPlayerDataContaner : DataContaner<TestPlayerData>
     {
-       public List<ItemPosData> itemPosDatas = new List<ItemPosData>();
+        public static TestPlayerDataContaner Instance;
+
+        public TestPlayerDataContaner()
+        {
+            Instance = this;
+        }
+
+        private TestPlayerData _data = new();
+        public override string SaveKey => "player_save";
+
+        public override TestPlayerData GetData() => _data;
+        public override void __SetData(TestPlayerData data) => _data = data;
     }
+
+    public class ExampleUsage : MonoBehaviour
+    {
+        void Start()
+        {
+            var save = new TestPlayerDataContaner();
+            save.GetData().coins = 999;
+            save.GetData().playerName = "YOTO";
+            save.Save(() =>
+            {
+                save.Load(() => { Debug.Log($"读取成功：{save.GetData().playerName} - {save.GetData().coins}"); });
+            });
+        }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 数据类的操作接口
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class DataContaner<T> : IDataContainerBase where T : class, new()
+    {
+        public abstract string SaveKey { get; }
+        public abstract T GetData();
+        public abstract void __SetData(T data);
+
+        public void Save(Action onComplete = null)
+        {
+            YOTOFramework.storeMgr.Save(this, onComplete);
+        }
+
+        public void Load(Action onComplete = null)
+        {
+            YOTOFramework.storeMgr.Load(this, onComplete);
+        }
+    }
+
+    public interface IDataContainerBase
+    {
+        string SaveKey { get; }
+        void Save(Action onComplete = null);
+        void Load(Action onComplete = null); // 可以拓展为带 callback 的泛型接口，但这里简化处理
+    }
+
+    /// <summary>
+    /// 保存策略，默认使用json
+    /// </summary>
+    public interface ISaveStrategy
+    {
+        string Serialize<T>(T data);
+        T Deserialize<T>(string json);
+    }
+
+    /// <summary>
+    /// 驱动策略，默认使用文件
+    /// </summary>
+    public interface IStorageDriver
+    {
+        IEnumerator WriteCoroutine(string key, string content, Action onComplete = null);
+        IEnumerator ReadCoroutine<T>(string key, ISaveStrategy strategy, Action<T> onComplete) where T : class;
+        void Delete(string key);
+    }
+
+    /// <summary>
+    /// 默认驱动
+    /// </summary>
+    public class FileStorageDriver : IStorageDriver
+    {
+        private string GetPath(string key)
+        {
+            Debug.Log(Application.persistentDataPath);
+            return Path.Combine(Application.persistentDataPath, $"{key}.json");
+        }
+
+        public IEnumerator WriteCoroutine(string key, string content, Action onComplete = null)
+        {
+            string path = GetPath(key);
+
+            yield return null;
+
+            try
+            {
+                File.WriteAllText(path, content, Encoding.UTF8);
+                onComplete?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Save Error] {e.Message}");
+            }
+        }
+
+        public IEnumerator ReadCoroutine<T>(string key, ISaveStrategy strategy, Action<T> onComplete) where T : class
+        {
+            string path = GetPath(key);
+
+            yield return null;
+
+            if (!File.Exists(path))
+            {
+                onComplete?.Invoke(null);
+                yield break;
+            }
+
+            try
+            {
+                string json = File.ReadAllText(path, Encoding.UTF8);
+                T data = strategy.Deserialize<T>(json);
+                onComplete?.Invoke(data);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Load Error] {e.Message}");
+                onComplete?.Invoke(null);
+            }
+        }
+
+        public void Delete(string key)
+        {
+            string path = GetPath(key);
+            if (File.Exists(path)) File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// 默认策略
+    /// </summary>
+    public class JsonSaveStrategy : ISaveStrategy
+    {
+        public string Serialize<T>(T data)
+        {
+            return JsonUtility.ToJson(data, true);
+        }
+
+        public T Deserialize<T>(string json)
+        {
+            return JsonUtility.FromJson<T>(json);
+        }
+    }
+
     public class StoreMgr
     {
-        //�����޸����޸ı��ӿ�
-        //��д
+        private ISaveStrategy _strategy;
+        private IStorageDriver _storage;
+
         public void Init()
         {
-
-        }
-        public void SetFloat(string key, float value)
-        {
-            PlayerPrefs.SetFloat(key, value);
+            //默认json和文件读写方式存储（后续可以改为联网存储到云端）
+            _strategy = new JsonSaveStrategy();
+            _storage = new FileStorageDriver();
         }
 
-        public void SetInt(string key, int value)
+        public void Save<T>(DataContaner<T> dataContaner, Action onComplete = null) where T : class, new()
         {
-            PlayerPrefs.SetInt(key, value);
+            string json = _strategy.Serialize(dataContaner.GetData());
+            YOTOFramework.Instance.StartCoroutine(_storage.WriteCoroutine(dataContaner.SaveKey, json, onComplete));
         }
 
-        public void SetString(string key, string value)
+        public void Load<T>(DataContaner<T> dataContaner, Action onComplete) where T : class, new()
         {
-            PlayerPrefs.SetString(key, value);
-        }
-
-        public float GetFloat(string key, float def)
-        {
-            return PlayerPrefs.GetFloat(key, def);
-        }
-
-        public int GetInt(string key, int def)
-        {
-            return PlayerPrefs.GetInt(key, def);
-        }
-
-        public string GetString(string key, string def)
-        {
-            return PlayerPrefs.GetString(key, def);
-        }
-        public void DeleteKey(string key)
-        {
-            PlayerPrefs.DeleteKey(key);
-        }
-        public void Save()
-        {
-            PlayerPrefs.Save();
-        }
-        public void ClearAll(bool isReady = false)
-        {
-            if (isReady)
+            YOTOFramework.Instance.StartCoroutine(_storage.ReadCoroutine<T>(dataContaner.SaveKey, _strategy, data =>
             {
-                PlayerPrefs.DeleteAll();
-            }
-   
-        }
-        public  void SaveJson<T>(T data, string filePath, bool prettyPrint = false)
-        {
-            try
-            {
-                string json = JsonUtility.ToJson(data, prettyPrint);
-                string directory = Path.GetDirectoryName(filePath);
-
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                File.WriteAllText(filePath, json);
-                Debug.Log($"[JsonManager] �����ѱ��浽: {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[JsonManager] ���� JSON ʱ����: {e.Message}");
-            }
+                if (data == null) data = new T();
+                dataContaner.__SetData(data);
+                Debug.Log("数据加载完成:"+dataContaner.SaveKey+":"+data);
+                onComplete?.Invoke();
+            }));
         }
 
-        public  T LoadJson<T>(string filePath)
+        public void Delete(string key)
         {
-            try
-            {
-                if (!File.Exists(filePath))
-                {
-                    Debug.LogWarning($"[JsonManager] �ļ�������: {filePath}");
-                    return default;
-                }
-
-                string json = File.ReadAllText(filePath);
-                T data = JsonUtility.FromJson<T>(json);
-                Debug.Log($"[JsonManager] �����Ѵ� {filePath} ��ȡ��");
-                return data;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[JsonManager] ��ȡ JSON ʱ����: {e.Message}");
-                return default;
-            }
+            _storage.Delete(key);
         }
     }
 }

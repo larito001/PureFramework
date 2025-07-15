@@ -20,6 +20,7 @@ namespace YOTO
         public static  EntityMgr entityMgr = new EntityMgr();
         public static  NetMgr netMgr = new NetMgr();
         private static PluginManager PluginMgr = new PluginManager();
+        private static GameDataManager GameDataManager = new GameDataManager();
         public void Init()
         {
             if (!isInit)
@@ -36,6 +37,7 @@ namespace YOTO
                 entityMgr.Init();
                 uIMgr.Init();
                 sceneMgr.Init();
+                GameDataManager.Init();
             }
 
             Debug.Log("YTLOG初始化完成");
@@ -93,6 +95,7 @@ namespace YOTO
             System.GC.Collect();
             PluginMgr.Unload();
             PluginMgr = null;
+            GameDataManager.Unload();
             Unload();
         }
 

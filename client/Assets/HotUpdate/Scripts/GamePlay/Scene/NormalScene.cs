@@ -34,6 +34,7 @@ public class NormalScene : VirtualSceneBase
     //加载常用系统
     public override void OnInit()
     {
+     Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
         YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         var org = GameObject.Find("PlayerOrgPos");
