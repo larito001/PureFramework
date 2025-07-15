@@ -33,6 +33,10 @@ public class ZombieNavCtrl : MonoBehaviour
         {
             zombieEntity.ZombieMovingTrigger();
         }
+        else
+        {
+            zombieEntity.ZombieMoveStopTrigger();
+        }
     }
 
     public void Stop()

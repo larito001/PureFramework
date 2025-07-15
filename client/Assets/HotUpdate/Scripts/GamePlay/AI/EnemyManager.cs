@@ -6,6 +6,7 @@ using System.Linq;
 using ProjectDawn.Navigation.Hybrid;
 using UnityEngine;
 using YOTO;
+using EventType = YOTO.EventType;
 using Random = UnityEngine.Random;
 
 public class EnemyManager : SingletonMono<EnemyManager>
@@ -39,13 +40,14 @@ public class EnemyManager : SingletonMono<EnemyManager>
         for (int i = 0; i < triggers.Count; i++)
         {
             triggers[i].Init(i);
-            triggers[i].SetRange(50);
             zombieAreaList.Add(i, new List<ZombieEntity>());
         }
    
 
         isInit = true;
     }
+
+
     public void GenerateEnemy(int num)
     { 
         // 初始化 trigger 区域信息
@@ -72,8 +74,8 @@ public class EnemyManager : SingletonMono<EnemyManager>
             zombieEntity.Location = spawnPos;
             zombieEntity.InstanceGObj();
             zombieEntity.SetGroup(trigger.GetComponent<CrowdGroupAuthoring>());
-  
-            zombieEntity.SetTarget(null);
+         
+            zombieEntity.SetTarget(PlayerManager.Instance.GetPlayerTrans());
         
             zombieEntities.Add(zombieEntity._entityID, zombieEntity);
             list.Add(zombieEntity);
@@ -106,27 +108,8 @@ public class EnemyManager : SingletonMono<EnemyManager>
         base.Unload();
     }
     
-    public void TriggerEnmeies(int id,Transform target)
-    {
-        if (zombieAreaList.ContainsKey(id))
-        {
-            for (var i = 0; i < zombieAreaList[id].Count; i++)
-            {
-                zombieAreaList[id][i].SetTarget(target);
-            }
-        }
-    }
 
-    public void ExitEnmeies(int id)
-    {
-        if (zombieAreaList.ContainsKey(id))
-        {
-            for (var i = 0; i < zombieAreaList[id].Count; i++)
-            {
-                zombieAreaList[id][i].SetTarget(null);
-            }
-        }
-    }
+ 
 
     public void Hurt(int id, float hurt)
     {

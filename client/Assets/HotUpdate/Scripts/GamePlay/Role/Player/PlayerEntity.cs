@@ -6,6 +6,7 @@ using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
 using YOTO;
+using EventType = YOTO.EventType;
 
 public class PlayerEntity : CharacterBase
 {
@@ -102,6 +103,11 @@ public class PlayerEntity : CharacterBase
         }
 
         return character.transform.position;
+    }
+
+    public Transform GetPlayerTrans()
+    {
+        return character.transform;
     }
     private void TryReload()
     {

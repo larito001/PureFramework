@@ -13,9 +13,17 @@ public class PlayerManager : Singleton<PlayerManager> {
    
     }
 
+    public PlayerEntity GetPlayer()
+    {
+        return player;
+    }
     public Vector3 GetPlayerPos()
     {
         return player.GetPlayerPos();
+    }
+    public Transform GetPlayerTrans()
+    {
+        return player.GetPlayerTrans();
     }
     public override void Unload()
     {

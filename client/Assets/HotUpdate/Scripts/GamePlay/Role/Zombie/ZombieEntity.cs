@@ -116,22 +116,30 @@ public class ZombieEntity : ObjectBase, PoolItem<Vector3>
     public void ZombieMoveStopTrigger()
     {
         if (isDie) return;
-        var pPos = PlayerManager.Instance.GetPlayerPos();
-        var zPos = zombieBase.transform.position;
-        var dis = (pPos - zPos).magnitude;
-        if (dis < 3)
+        if (target != null)
         {
-            if (atkTimer >= 2.4f)
+            var pPos = target.position;
+            var zPos = zombieBase.transform.position;
+            var dis = (pPos - zPos).magnitude; 
+            if (dis < 3)
             {
-                if (!isDie)
+                if (atkTimer >= 2.4f)
                 {
-                    ZombieAnimator.EnemyAtk();
+                    if (!isDie)
+                    {
+                        ZombieAnimator.EnemyAtk();
+                    }
+
+                    atkTimer = 0;
                 }
 
-                atkTimer = 0;
+                atkTimer += Time.fixedDeltaTime;
             }
-
-            atkTimer += Time.fixedDeltaTime;
+            else
+            {
+                atkTimer = 2.4f;
+                ZombieAnimator.EnemyIdel();
+            }
         }
         else
         {

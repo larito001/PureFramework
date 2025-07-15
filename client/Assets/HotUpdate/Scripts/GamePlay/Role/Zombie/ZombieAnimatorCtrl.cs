@@ -3,6 +3,7 @@ using YOTO;
 
 public enum ZombieState
 {
+    None,
     Die,
     Atk,
     Run,
@@ -13,7 +14,7 @@ public class ZombieAnimatorCtrl : MonoBehaviour
 {
     [SerializeField] AnimatedMeshAnimator BodyMeshAnimator;
 
-    public ZombieState state = ZombieState.Idel;
+    public ZombieState state = ZombieState.None;
     private ZombieEntity zombieEntity;
 
     public void Init(ZombieEntity zombieEntity)
@@ -55,9 +56,10 @@ public class ZombieAnimatorCtrl : MonoBehaviour
     {
         if (state == ZombieState.Run) return;
         state = ZombieState.Run;
-
+        
         // Debug.Log("Run");
-        BodyMeshAnimator.Play("Run", 0);
+        float randomNormalizedTime = Random.Range(0f, 0.5f);
+        BodyMeshAnimator.Play("Run", randomNormalizedTime);
     }
 
     public void EnemyIdel()
