@@ -58,6 +58,11 @@ public class ZombieNavCtrl : MonoBehaviour
             this.Target = Target;
             StartMove();
         }
+
+        if (Target == null)
+        {
+            agent.Stop();
+        }
     }
 
     public void Init(ZombieEntity zombieEntity)

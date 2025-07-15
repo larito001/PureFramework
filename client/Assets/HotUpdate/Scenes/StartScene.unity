@@ -9114,6 +9114,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2077050298492264664, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Time
+      value: 0.06355233
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077050298492264664, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Distance
+      value: 0.20344768
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077050298492264664, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Discomfort
+      value: 0.733
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289098593086863839, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Time
+      value: 0.06355233
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289098593086863839, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Distance
+      value: 0.20344768
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289098593086863839, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Discomfort
+      value: 0.733
+      objectReference: {fileID: 0}
     - target: {fileID: 2728002123224574803, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.9
@@ -9138,6 +9162,18 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 3999701786540660212, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Time
+      value: 0.06355233
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999701786540660212, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Distance
+      value: 0.20344768
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999701786540660212, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Discomfort
+      value: 0.733
+      objectReference: {fileID: 0}
     - target: {fileID: 4200982653395666262, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -100
@@ -9149,6 +9185,30 @@ PrefabInstance:
     - target: {fileID: 4525479125711525781, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6640513685023161877, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Time
+      value: 0.06355233
+      objectReference: {fileID: 0}
+    - target: {fileID: 6640513685023161877, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Distance
+      value: 0.20344768
+      objectReference: {fileID: 0}
+    - target: {fileID: 6640513685023161877, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Discomfort
+      value: 0.733
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074637587384772797, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Time
+      value: 0.06355233
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074637587384772797, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Distance
+      value: 0.20344768
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074637587384772797, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_CostWeights.Discomfort
+      value: 0.733
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

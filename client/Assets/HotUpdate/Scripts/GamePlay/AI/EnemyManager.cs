@@ -69,10 +69,11 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
             // 创建并初始化僵尸
             ZombieEntity zombieEntity = ZombieEntity.pool.GetItem(Vector3.zero);
+            zombieEntity.Location = spawnPos;
             zombieEntity.InstanceGObj();
             zombieEntity.SetGroup(trigger.GetComponent<CrowdGroupAuthoring>());
-            zombieEntity.Location = spawnPos;
-            zombieEntity.SetTarget(trigger.transform);
+  
+            zombieEntity.SetTarget(null);
         
             zombieEntities.Add(zombieEntity._entityID, zombieEntity);
             list.Add(zombieEntity);

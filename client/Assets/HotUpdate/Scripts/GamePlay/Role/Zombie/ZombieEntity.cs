@@ -40,8 +40,8 @@ public class ZombieEntity : ObjectBase, PoolItem<Vector3>
         colliderCtrl.Init(this);
         colliderCtrl.Run();
         HP = 100;
-        zombieBase.GetComponent<AgentCrowdPathingAuthoring>().Group = group;
-
+        var auth = zombieBase.GetComponent<AgentCrowdPathingAuthoring>();
+        auth.Group = group;
         isInit = true;
     }
 
@@ -148,6 +148,7 @@ public class ZombieEntity : ObjectBase, PoolItem<Vector3>
         bullet.InstanceGObj();
         bullet.FireFromTo(bullet.Location, zombieBase.forward);
     }
+
     public void ZombieMovingTrigger()
     {
         if (isDie) return;
