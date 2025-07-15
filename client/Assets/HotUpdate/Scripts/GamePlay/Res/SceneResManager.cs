@@ -15,7 +15,7 @@ public class SceneResManager : Singleton<SceneResManager>
     public void Init()
     {
         var org = GameObject.Find("SceneResPos");
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 20; i++)
         {
             // 在 50 米半径内随机生成位置
             Vector3 randomOffset = Random.insideUnitSphere * 50f;

@@ -10,12 +10,13 @@ public class GameDataManager
 
     public void Init()
     {
-        InitData<TestPlayerDataContaner>();
+        // InitData<TestPlayerDataContaner>();
+        InitData<LevelInfoDataContaner>();
+        
     }
 
     public void Unload()
     {
-        SaveAllData();
         m_DataContainers.Clear();
     }
     public void SaveAllData()

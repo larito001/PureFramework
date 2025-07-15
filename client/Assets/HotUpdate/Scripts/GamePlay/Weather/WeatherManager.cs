@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using log4net.Core;
 using UnityEngine;
 using YOTO;
 
 public enum DayTimeType
 {
-    Morning,
+    Morning=0,
     MidDay,
     Afternoon,
     NightTime,
@@ -13,7 +14,7 @@ public enum DayTimeType
 }
 public enum Weather
 {
-    Normal,
+    Normal=0,
     Storm,
     Shower
 }
@@ -25,11 +26,24 @@ public class WeatherManager : SingletonMono<WeatherManager>
     private Coroutine transitionCoroutine;
     private RainParticleBase showerEffect;
     private RainParticleBase stormEffect;
-    public void Init()
+    private Queue<LevelWeatherInfoData> datas = new Queue<LevelWeatherInfoData>();
+    public void Init(int level)
     {
         dirLight = GameObject.Find("DirLight").GetComponent<Light>();
-        StartCoroutine(TestDayTimeCycle());
-        StartCoroutine(TestWeatherCycle());
+        datas.Clear();
+        foreach (var levelInfoDatas in LevelInfoDataContaner.Instance.GetData().Datas)
+        {
+            if (levelInfoDatas.level == level)
+            {
+                var infos = levelInfoDatas.WeatherInfos;
+                foreach (var levelInfoData in infos)
+                {
+                    datas.Enqueue(levelInfoData);
+                }
+            }
+        }
+     
+        StartCoroutine(DayTimeCycle());
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/shower.prefab",
             LoadShowerComplete);
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/Storm.prefab",
@@ -42,29 +56,22 @@ public class WeatherManager : SingletonMono<WeatherManager>
         GameObject.Destroy(stormEffect);
         base.Unload();
     }
-    IEnumerator TestDayTimeCycle()
+    IEnumerator DayTimeCycle()
     {
-        while (true)
+        while (datas.Count>0)
         {
-            foreach (DayTimeType time in System.Enum.GetValues(typeof(DayTimeType)))
-            {
-                ChangeDayTime(time);
-                yield return new WaitForSeconds(5f);
-            }
+            var info =datas.Dequeue();
+            ChangeDayTime((DayTimeType)info.dayTime);
+            WeatherManager.Instance.ChangeWeather((Weather)info.weather);
+            yield return new WaitForSeconds(info.during);
         }
-    }
-    private IEnumerator TestWeatherCycle()
-    {
-        Weather[] weathers = new Weather[] { Weather.Normal, Weather.Shower, Weather.Storm };
 
-        while (true)
-        {
-            foreach (var weather in weathers)
-            {
-                WeatherManager.Instance.ChangeWeather(weather);
-                yield return new WaitForSeconds(5f);
-            }
-        }
+        LevelWeatherFinish();
+    }
+
+    private void LevelWeatherFinish()
+    {
+        
     }
     public void ChangeWeather(Weather weather)
     {

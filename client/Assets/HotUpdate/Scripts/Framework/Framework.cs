@@ -82,7 +82,7 @@ namespace YOTO
             gameInputMgr.DisableGamePlayInput();
             isInit = true;
             // poolMgr=null;
-            storeMgr=null;
+      
             toolMgr=null;
             logger=null;
             resMgr=null;
@@ -96,6 +96,7 @@ namespace YOTO
             PluginMgr.Unload();
             PluginMgr = null;
             GameDataManager.Unload();
+            storeMgr=null;
             Unload();
         }
 
