@@ -23,6 +23,7 @@ public class LevelWeatherInfoData
     public int during;//持续时间
     public int weather;//天气
     public int dayTime;//日期
+    public int enemyNum;//敌人数量
 }
 public class LevelInfoDataContaner : DataContaner<LevelInfoDatas>
 {
@@ -74,18 +75,15 @@ public class NormalScene : VirtualSceneBase
         
     }
 
-
+    private Queue<LevelWeatherInfoData> datas = new Queue<LevelWeatherInfoData>();
     //加载常用系统
     public override void OnInit()
     {
-
-   
-
         // Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
         YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         var org = GameObject.Find("PlayerOrgPos");
-        WeatherManager.Instance.Init(_param.level);
+        WeatherManager.Instance.Init();
         //加载紧急事件系统
         // EmergencyManager.Instance.Init();
         YOTOFramework.uIMgr.Show(UIEnum.FightingPanel);
@@ -95,20 +93,42 @@ public class NormalScene : VirtualSceneBase
         SceneResManager.Instance.Init();
         YOTOFramework.uIMgr.Show(UIEnum.AimUI);
         
-        //todo:开启计时
-        YOTOFramework.timeMgr.LoopCall(() =>
+        datas.Clear();
+        foreach (var levelInfoDatas in LevelInfoDataContaner.Instance.GetData().Datas)
         {
-            NextState();
-        },20);
-        
+            if (levelInfoDatas.level == _param.level)
+            {
+                var infos = levelInfoDatas.WeatherInfos;
+                foreach (var levelInfoData in infos)
+                {
+                    datas.Enqueue(levelInfoData);
+                }
+            }
+        }
+      YOTOFramework.Instance.StartCoroutine(DayTimeCycle());
+      
+    }
+    IEnumerator DayTimeCycle()
+    {
+        while (datas.Count>0)
+        {
+            var info =datas.Dequeue();
+            WeatherManager.Instance.ChangeDayTime((DayTimeType)info.dayTime);
+            WeatherManager.Instance.ChangeWeather((Weather)info.weather);
+            EnemyManager.Instance.GenerateEnemy(info.enemyNum);
+            yield return new WaitForSeconds(info.during);
+        }
+        LevelTimeFinish();
     }
 
-    private void NextState()
+    private void LevelTimeFinish()
     {
         
     }
+    
     public override void UnLoad()
     {
+        YOTOFramework.Instance.StopCoroutine(DayTimeCycle());
         GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();
         YOTOFramework.uIMgr.ClearUI();

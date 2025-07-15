@@ -26,7 +26,7 @@ public class EnemyManager : SingletonMono<EnemyManager>
         foreach (var trigger in triggers)
         {
             // 生成随机方向并缩放到30米半径内的随机距离
-            Vector3 randomOffset = Random.insideUnitSphere * 30f;
+            Vector3 randomOffset = Random.insideUnitSphere * 50f;
             // 保持y轴不变（如果需要）
             randomOffset.y = 0; // 如果不需要垂直方向的随机分布，可以去掉这行
     
@@ -36,33 +36,49 @@ public class EnemyManager : SingletonMono<EnemyManager>
             // 如果需要触发器始终朝向中心点
             // trigger.transform.LookAt(poss.transform);
         }
-        
-        
-        for (var i = 0; i < triggers.Count; i++)
+        for (int i = 0; i < triggers.Count; i++)
         {
             triggers[i].Init(i);
             triggers[i].SetRange(50);
-            var list = new List<ZombieEntity>();
-            zombieAreaList.Add(i,list);
-            
-            var pos = triggers[i].transform.position;
-            for (int j = 0; j < 4; j++)
-            {
-                ZombieEntity zombieEntity=  ZombieEntity.pool.GetItem(Vector3.zero);
-                zombieEntity.InstanceGObj();
-                zombieEntity.SetGroup(triggers[i].GetComponent<CrowdGroupAuthoring>());
-                // 设置位置，假设僵尸在地面上（y轴为0）
-                zombieEntity.Location=pos;
-                zombieEntity.SetTarget(triggers[i].transform);
-                zombieEntities.Add(zombieEntity._entityID, zombieEntity);
-                list.Add(zombieEntity);
-                zombieAreaDic.Add(zombieEntity._entityID,i);
-            }
+            zombieAreaList.Add(i, new List<ZombieEntity>());
         }
+   
 
         isInit = true;
     }
+    public void GenerateEnemy(int num)
+    { 
+        // 初始化 trigger 区域信息
+     
+        for (int i = 0; i < num; i++)
+        {
+            // 随机选择一个 trigger
+            int triggerIndex = UnityEngine.Random.Range(0, triggers.Count);
+            var trigger = triggers[triggerIndex];
+            var list = zombieAreaList[triggerIndex];
 
+            // 随机生成一个位置：基于 trigger 的位置，加一定范围内的偏移
+            Vector3 basePos = trigger.transform.position;
+            float range = 10f; // 控制分散半径
+            Vector3 offset = new Vector3(
+                UnityEngine.Random.Range(-range, range),
+                0,
+                UnityEngine.Random.Range(-range, range)
+            );
+            Vector3 spawnPos = basePos + offset;
+
+            // 创建并初始化僵尸
+            ZombieEntity zombieEntity = ZombieEntity.pool.GetItem(Vector3.zero);
+            zombieEntity.InstanceGObj();
+            zombieEntity.SetGroup(trigger.GetComponent<CrowdGroupAuthoring>());
+            zombieEntity.Location = spawnPos;
+            zombieEntity.SetTarget(trigger.transform);
+        
+            zombieEntities.Add(zombieEntity._entityID, zombieEntity);
+            list.Add(zombieEntity);
+            zombieAreaDic.Add(zombieEntity._entityID, triggerIndex);
+        }
+    }
     private void FixedUpdate()
     {
         if (isInit)

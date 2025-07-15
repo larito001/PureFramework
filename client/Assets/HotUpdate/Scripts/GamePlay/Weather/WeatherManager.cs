@@ -26,24 +26,10 @@ public class WeatherManager : SingletonMono<WeatherManager>
     private Coroutine transitionCoroutine;
     private RainParticleBase showerEffect;
     private RainParticleBase stormEffect;
-    private Queue<LevelWeatherInfoData> datas = new Queue<LevelWeatherInfoData>();
-    public void Init(int level)
+    public void Init()
     {
         dirLight = GameObject.Find("DirLight").GetComponent<Light>();
-        datas.Clear();
-        foreach (var levelInfoDatas in LevelInfoDataContaner.Instance.GetData().Datas)
-        {
-            if (levelInfoDatas.level == level)
-            {
-                var infos = levelInfoDatas.WeatherInfos;
-                foreach (var levelInfoData in infos)
-                {
-                    datas.Enqueue(levelInfoData);
-                }
-            }
-        }
-     
-        StartCoroutine(DayTimeCycle());
+        
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/shower.prefab",
             LoadShowerComplete);
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/Storm.prefab",
@@ -56,23 +42,9 @@ public class WeatherManager : SingletonMono<WeatherManager>
         GameObject.Destroy(stormEffect);
         base.Unload();
     }
-    IEnumerator DayTimeCycle()
-    {
-        while (datas.Count>0)
-        {
-            var info =datas.Dequeue();
-            ChangeDayTime((DayTimeType)info.dayTime);
-            WeatherManager.Instance.ChangeWeather((Weather)info.weather);
-            yield return new WaitForSeconds(info.during);
-        }
 
-        LevelWeatherFinish();
-    }
 
-    private void LevelWeatherFinish()
-    {
-        
-    }
+
     public void ChangeWeather(Weather weather)
     {
         if (showerEffect != null) showerEffect.StopAndFadeOut();
