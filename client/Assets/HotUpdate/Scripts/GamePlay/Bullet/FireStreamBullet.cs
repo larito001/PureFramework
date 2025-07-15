@@ -52,7 +52,7 @@ public class FireStreamBullet : BulletEntity
     public override void Remove()
     {
         atkEnemy.Clear();
-        Debug.Log("回收");
+        // Debug.Log("回收");
         base.Remove();
         pool.RecoverItem(this);
     }

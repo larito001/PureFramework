@@ -49,14 +49,14 @@ public class BloodFVXEntity : ObjectBase, PoolItem<Vector3>
 
     private void DelayRemove()
     {
-        Debug.Log("回收血"+_entityID+objTrans.position);
+        // Debug.Log("回收血"+_entityID+objTrans.position);
         RecoverObject();
         pool.RecoverItem(this);
     }
 
     public void AfterIntoObjectPool()
     {
-        Debug.Log("RemoveObj"+_entityID);
+        // Debug.Log("RemoveObj"+_entityID);
     }
 
     public void SetData(Vector3 data)

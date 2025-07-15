@@ -52,7 +52,7 @@ public class NormalTowerBulletEntity : BulletEntity
     //主动移除
     public override void Remove()
     {
-        Debug.Log("回收");
+        // Debug.Log("回收");
         base.Remove();
         pool.RecoverItem(this);
     }
@@ -69,7 +69,7 @@ public class NormalTowerBulletEntity : BulletEntity
                 EnemyManager.Instance.Hurt(ctrl.entityId, 44);
    
                 var fvx = BloodFVXEntity.pool.GetItem(objTrans.position);
-                Debug.Log("生成血+"+fvx._entityID+pos);
+                // Debug.Log("生成血+"+fvx._entityID+pos);
                 fvx.Location = pos;
                 fvx.StartPlay();
                 fvx.InstanceGObj();
