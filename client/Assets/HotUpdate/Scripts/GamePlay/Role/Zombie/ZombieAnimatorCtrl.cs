@@ -59,7 +59,7 @@ public class ZombieAnimatorCtrl : MonoBehaviour
         
         // Debug.Log("Run");
         float randomNormalizedTime = Random.Range(0f, 0.5f);
-        BodyMeshAnimator.Play("Run", randomNormalizedTime);
+        BodyMeshAnimator.Play("Zombie_Walk_Fast01_Forward_InPlace", randomNormalizedTime);
     }
 
     public void EnemyIdel()

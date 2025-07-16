@@ -114,6 +114,18 @@ MonoBehaviour:
     StartFrame: 288
     EndFrame: 311
     FrameCount: 24
+  - Name: Zombie_Idle_03
+    StartFrame: 312
+    EndFrame: 591
+    FrameCount: 280
+  - Name: Zombie_Idle_Death
+    StartFrame: 592
+    EndFrame: 651
+    FrameCount: 60
+  - Name: Zombie_Walk_Fast01_Forward_InPlace
+    StartFrame: 652
+    EndFrame: 674
+    FrameCount: 23
   PropertyBlockController: {fileID: 3630765632338445181}
 --- !u!114 &3630765632338445181
 MonoBehaviour:

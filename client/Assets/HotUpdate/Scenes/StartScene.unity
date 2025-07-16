@@ -8640,7 +8640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2077050298492264664, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Speed.Max
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2077050298492264664, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_CostWeights.Time
@@ -8656,7 +8656,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2289098593086863839, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Speed.Max
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2289098593086863839, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_CostWeights.Time
@@ -8691,12 +8691,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_Width
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_Height
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_Size.x
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Size.y
-      value: 200
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 3999701786540660212, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Speed.Max
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3999701786540660212, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_CostWeights.Time
@@ -8724,7 +8736,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6640513685023161877, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Speed.Max
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6640513685023161877, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_CostWeights.Time
@@ -8740,7 +8752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074637587384772797, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Speed.Max
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 9074637587384772797, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_CostWeights.Time
