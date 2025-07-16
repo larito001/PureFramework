@@ -74,8 +74,15 @@ public class EnemyManager : SingletonMono<EnemyManager>
             zombieEntity.Location = spawnPos;
             zombieEntity.InstanceGObj();
             zombieEntity.SetGroup(trigger.GetComponent<CrowdGroupAuthoring>());
-         
-            zombieEntity.SetTarget(PlayerManager.Instance.GetPlayerTrans());
+            if (triggerIndex>2)
+            {
+                zombieEntity.SetTarget(PlayerManager.Instance.GetPlayerTrans());  
+            }
+            else
+            {
+                zombieEntity.SetTarget(PlayerManager.Instance.GetTrainTrans());
+            }
+          
         
             zombieEntities.Add(zombieEntity._entityID, zombieEntity);
             list.Add(zombieEntity);

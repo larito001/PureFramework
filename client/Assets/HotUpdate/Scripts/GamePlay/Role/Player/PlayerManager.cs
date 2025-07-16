@@ -2,15 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerManager : Singleton<PlayerManager> {
     private PlayerEntity player;
-    
+    private TrainEntity _trainEntity;
     public void Init(Transform org)
     {
         player = new PlayerEntity();
+        _trainEntity = new TrainEntity();
         player.Init(org.position);
-   
+        
     }
 
     public PlayerEntity GetPlayer()
@@ -24,6 +26,10 @@ public class PlayerManager : Singleton<PlayerManager> {
     public Transform GetPlayerTrans()
     {
         return player.GetPlayerTrans();
+    }
+    public Transform GetTrainTrans()
+    {
+        return _trainEntity.GetAttackPos();
     }
     public override void Unload()
     {

@@ -88,6 +88,7 @@ public class NormalScene : VirtualSceneBase
         System.GC.Collect();
         // Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
+        YOTOFramework.uIMgr.Hide(UIEnum.GameMap);
         YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         var org = GameObject.Find("PlayerOrgPos");
         WeatherManager.Instance.Init();
@@ -95,10 +96,8 @@ public class NormalScene : VirtualSceneBase
         // EmergencyManager.Instance.Init();
         YOTOFramework.uIMgr.Show(UIEnum.FightingPanel);
         PlayerManager.Instance.Init(org.transform);
-        TowerManager.Instance.Init();
         SceneResManager.Instance.Init();
-        YOTOFramework.uIMgr.Show(UIEnum.AimUI);
-
+        
         datas.Clear();
         foreach (var levelInfoDatas in LevelInfoDataContaner.Instance.GetData().Datas)
         {
@@ -114,6 +113,8 @@ public class NormalScene : VirtualSceneBase
 
         YOTOFramework.timeMgr.DelayCall(() =>
             {
+                YOTOFramework.uIMgr.Show(UIEnum.AimUI);
+                TowerManager.Instance.Init();
                 EnemyManager.Instance.Init();
                 YOTOFramework.Instance.StartCoroutine(DayTimeCycle());
             }

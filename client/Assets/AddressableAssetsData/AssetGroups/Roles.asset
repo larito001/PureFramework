@@ -29,6 +29,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - all
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf67e06cd6001db44bf46d04bd16c12b
+    m_Address: Assets/HotUpdate/prefabs/Train/Tain.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - all
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9195e527738c21e4f8021deaa48a5e38, type: 2}
   m_SchemaSet:
