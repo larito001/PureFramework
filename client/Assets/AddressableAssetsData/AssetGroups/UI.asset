@@ -71,6 +71,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - all
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e316a3f48e10f5e499e7aaf8c42fa9ec
+    m_Address: Assets/HotUpdate/prefabs/UI/ResSelectPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - all
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f50e5ef80b9c7f7419c4baa4ee07d65b
     m_Address: Assets/HotUpdate/prefabs/UI/FightingPanel.prefab
     m_ReadOnly: 0

@@ -30,7 +30,7 @@ public class PluginManager
 
       public void InitPlugins()
       {
-            //InstallPlugin<T>();
+            InstallPlugin<GameMapPlugin>();
       }
       public void InstallPlugin<T>() where T : LogicPluginBase, new()
       {

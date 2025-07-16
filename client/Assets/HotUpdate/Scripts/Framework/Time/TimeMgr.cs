@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 namespace YOTO
@@ -13,49 +14,68 @@ namespace YOTO
     }
     public class TimeMgr
     {
-        private List<Timer> timers = new List<Timer>();
+        private Dictionary<UnityAction,Timer> timers = new Dictionary<UnityAction,Timer>();
         private TimeScaler scaler = new TimeScaler();
         public void Init()
         {
 
         }
+        public void RemoveTimer(UnityAction callback)
+        {
+            if (timers.ContainsKey(callback))
+            {
+                timers[callback].Stop();
+            }
+        }
         public void DelayCall(UnityAction callback, float delayTime)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Time, delayTime, 1);
-            timers.Add(timer);
+            timers.Add(callback,timer);
         }
         public void DelayCallFram(UnityAction callback, int delayFrames)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Frame, delayFrames, 1);
-            timers.Add(timer);
+            timers.Add(callback,timer);
         }
         public void LoopCall(UnityAction callback, float time,int loopCount=-1)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Time, time, loopCount);  // -1表示无限循环
-            timers.Add(timer);
+            timers.Add(callback,timer);
         }
         public void LoopCallFram(UnityAction callback, int frames)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Frame, frames, -1);  // -1表示无限循环
-            timers.Add(timer);
+            timers.Add(callback,timer);
         }
         public void SetTimeScale(float scale)
         {
             scaler.SetTimeScale(scale);
         }
+        List<UnityAction> removeList = new List<UnityAction>();
         public void Update(float deltaTime)
         {
-            for (int i = timers.Count - 1; i >= 0; i--)
+           
+            foreach (var keyValuePair in timers.ToList())
             {
-                timers[i].Update(deltaTime);
-                if (timers[i].IsStop())
+                if ( keyValuePair.Value.IsStop())
                 {
-                    timers.RemoveAt(i);
+                    removeList.Add(keyValuePair.Key);
                 }
+                else
+                {
+                    keyValuePair.Value.Update(deltaTime);
+                }
+              
+            }
+
+            for (int i = removeList.Count - 1; i >= 0; i--)
+            {
+                timers.Remove(removeList[i]);
+                removeList.RemoveAt(i);
             }
         }
     }

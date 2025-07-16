@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using YOTO;
+using EventType = YOTO.EventType;
 
 
 public class GameMap : UIPageBase
@@ -23,19 +24,11 @@ public class GameMap : UIPageBase
 
     private void EnterLevel(int level)
     {
-        YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
-        YOTOFramework.timeMgr.DelayCall(() =>
-        {
-            YOTOFramework.sceneMgr.LoadScene<NormalScene>(new NormalScene.NormalSceneParam()
-            {
-                level = level
-            }); 
-        },1);
-        YOTOFramework.timeMgr.DelayCall(() =>
-        {
-            CloseSelf();
-            YOTOFramework.uIMgr.Hide(UIEnum.StartLoadingPanel);
-        },8);
+     
+        YOTOFramework.uIMgr.Show(UIEnum.ResSelectPanel);
+        GameMapPlugin.Instance.level=level;
+        CloseSelf();
+
     }
     public override void OnShow()
     {

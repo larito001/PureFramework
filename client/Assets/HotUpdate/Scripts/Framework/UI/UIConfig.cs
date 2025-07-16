@@ -44,7 +44,8 @@ public enum UIEnum
     TowerCreateUI,
     FightingEndPanel,
     StartLoadingPanel,
-    GameMap
+    GameMap,
+    ResSelectPanel
 }
 public class UIConfig
 {
@@ -57,6 +58,7 @@ public class UIConfig
          { UIEnum.StartLoadingPanel, new UIInfo( UIEnum.StartLoadingPanel,UILayerEnum.Tips,"Assets/HotUpdate/prefabs/UI/LoadingUI.prefab") },
          { UIEnum.AimUI, new UIInfo( UIEnum.AimUI,UILayerEnum.Top,"Assets/HotUpdate/prefabs/UI/Aim.prefab") },
          { UIEnum.GameMap, new UIInfo( UIEnum.GameMap,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/GameMap.prefab") },
+         { UIEnum.ResSelectPanel, new UIInfo( UIEnum.ResSelectPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/ResSelectPanel.prefab") },
     };
 
 }
