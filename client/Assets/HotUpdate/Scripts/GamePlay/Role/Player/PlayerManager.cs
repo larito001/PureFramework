@@ -10,11 +10,16 @@ public class PlayerManager : Singleton<PlayerManager> {
     public void Init(Transform org)
     {
         player = new PlayerEntity();
+        player.DontMove();
         _trainEntity = new TrainEntity();
         player.Init(org.position);
         
     }
 
+    public void Start()
+    {
+        player.CanMove();
+    }
     public PlayerEntity GetPlayer()
     {
         return player;
@@ -34,7 +39,7 @@ public class PlayerManager : Singleton<PlayerManager> {
     public override void Unload()
     {
         base.Unload();
-        player.Free();
+        player?.Free();
         player = null;
     }
 }

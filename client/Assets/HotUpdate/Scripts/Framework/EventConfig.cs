@@ -7,6 +7,7 @@ namespace YOTO
     public enum EventType
     {
        //input :
+       GameStart,
        Move,
 
        Sprint,

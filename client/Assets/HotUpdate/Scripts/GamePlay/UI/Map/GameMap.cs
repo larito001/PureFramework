@@ -27,6 +27,10 @@ public class GameMap : UIPageBase
      
         YOTOFramework.uIMgr.Show(UIEnum.ResSelectPanel);
         GameMapPlugin.Instance.level=level;
+        YOTOFramework.sceneMgr.LoadScene<NormalScene>(new NormalScene.NormalSceneParam()
+        {
+            level = GameMapPlugin.Instance.level
+        });
         CloseSelf();
 
     }

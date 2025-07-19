@@ -38,6 +38,12 @@ public class WeatherManager : SingletonMono<WeatherManager>
 
     public override void Unload()
     {
+        if (transitionCoroutine != null)
+        {
+            StopCoroutine(transitionCoroutine);
+        }
+
+        transitionCoroutine = null;
         GameObject.Destroy(showerEffect);
         GameObject.Destroy(stormEffect);
         base.Unload();

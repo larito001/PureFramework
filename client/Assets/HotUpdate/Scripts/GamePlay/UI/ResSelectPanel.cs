@@ -25,6 +25,7 @@ public class ResSelectPanel : UIPageBase
     public TextMeshProUGUI IronNum;
     public override void OnLoad()
     {
+   
         list.Initialize(item.gameObject, 10);
         Goto.onClick.AddListener(OnGotoClick);
         GoBack.onClick.AddListener(OnGoBackClick);
@@ -37,14 +38,9 @@ public class ResSelectPanel : UIPageBase
 
     private void OnGotoClick()
     {
-        YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
-        YOTOFramework.timeMgr.DelayCall(() =>
-        {
-            YOTOFramework.sceneMgr.LoadScene<NormalScene>(new NormalScene.NormalSceneParam()
-            {
-                level = GameMapPlugin.Instance.level
-            });
-        },1);
+        // YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
+    
+        YOTOFramework.eventMgr.TriggerEvent(EventType.GameStart);
      
         YOTOFramework.timeMgr.DelayCall(() =>
         {
@@ -55,6 +51,7 @@ public class ResSelectPanel : UIPageBase
     }
     private void OnGoBackClick()
     {
+        YOTOFramework.sceneMgr.LoadScene<StartScene>();
         YOTOFramework.uIMgr.Show(UIEnum.GameMap);
         CloseSelf();
     }
@@ -82,6 +79,7 @@ public class ResSelectPanel : UIPageBase
 
     public override void OnShow()
     {
+   
         YOTOFramework.eventMgr.AddEventListener(EventType.RefreshResInfo,RefreshInfo);
         List<EnemeyHeaderData> data = new List<EnemeyHeaderData>()
         {

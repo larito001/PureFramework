@@ -67,6 +67,7 @@ public class NormalScene : VirtualSceneBase
     //
     public override void Onload(SceneParam param)
     {
+        YOTOFramework.eventMgr.AddEventListener(EventType.GameStart,GameStart);
         _param = param as NormalSceneParam;
         Debug.Log("YTLOG;加载了场景" + _param.level);
         foreach (var levelInfoData in LevelInfoDataContaner.Instance.GetData().Datas)
@@ -86,16 +87,18 @@ public class NormalScene : VirtualSceneBase
     {
         System.GC.Collect();
         System.GC.Collect();
+        
         // Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
         YOTOFramework.uIMgr.Hide(UIEnum.GameMap);
-        YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
-        var org = GameObject.Find("PlayerOrgPos");
+  
+        YOTOFramework.sceneMgr.cameraCtrl.UseSelectCamera();
         WeatherManager.Instance.Init();
         //加载紧急事件系统
         // EmergencyManager.Instance.Init();
-        YOTOFramework.uIMgr.Show(UIEnum.FightingPanel);
+        var org = GameObject.Find("PlayerOrgPos");
         PlayerManager.Instance.Init(org.transform);
+
         SceneResManager.Instance.Init();
         
         datas.Clear();
@@ -110,15 +113,7 @@ public class NormalScene : VirtualSceneBase
                 }
             }
         }
-
-        YOTOFramework.timeMgr.DelayCall(() =>
-            {
-                YOTOFramework.uIMgr.Show(UIEnum.AimUI);
-                TowerManager.Instance.Init();
-                EnemyManager.Instance.Init();
-                YOTOFramework.Instance.StartCoroutine(DayTimeCycle());
-            }
-            , 2);
+        
     }
 
     IEnumerator DayTimeCycle()
@@ -139,8 +134,21 @@ public class NormalScene : VirtualSceneBase
     {
     }
 
+    private void GameStart()
+    {
+     
+        PlayerManager.Instance.Start();
+        YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+        YOTOFramework.uIMgr.Show(UIEnum.FightingPanel);
+        YOTOFramework.uIMgr.Show(UIEnum.AimUI);
+        TowerManager.Instance.Init();
+        EnemyManager.Instance.Init();
+        YOTOFramework.Instance.StartCoroutine(DayTimeCycle());
+       
+    }
     public override void UnLoad()
     {
+        YOTOFramework.eventMgr.RemoveEventListener(EventType.GameStart,GameStart);
         PlayerResManager.Instance.SaveRes();
         YOTOFramework.Instance.StopCoroutine(DayTimeCycle());
         GameObject.Destroy(_sceneObj);
