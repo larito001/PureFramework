@@ -12,40 +12,43 @@ namespace YOTO
         Time,
         Frame
     }
+    public delegate void TimerCallback();
     public class TimeMgr
     {
-        private Dictionary<UnityAction,Timer> timers = new Dictionary<UnityAction,Timer>();
+    
+        private Dictionary<TimerCallback,Timer> timers = new Dictionary<TimerCallback,Timer>();
         private TimeScaler scaler = new TimeScaler();
         public void Init()
         {
 
         }
-        public void RemoveTimer(UnityAction callback)
+        public void RemoveTimer(TimerCallback callback)
         {
             if (timers.ContainsKey(callback))
             {
                 timers[callback].Stop();
             }
         }
-        public void DelayCall(UnityAction callback, float delayTime)
+        public void DelayCall(TimerCallback callback, float delayTime)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Time, delayTime, 1);
             timers.Add(callback,timer);
         }
-        public void DelayCallFram(UnityAction callback, int delayFrames)
+        
+        public void DelayCallFram(TimerCallback callback, int delayFrames)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Frame, delayFrames, 1);
             timers.Add(callback,timer);
         }
-        public void LoopCall(UnityAction callback, float time,int loopCount=-1)
+        public void LoopCall(TimerCallback callback, float time,int loopCount=-1)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Time, time, loopCount);  // -1表示无限循环
             timers.Add(callback,timer);
         }
-        public void LoopCallFram(UnityAction callback, int frames)
+        public void LoopCallFram(TimerCallback callback, int frames)
         {
             Timer timer = new Timer();
             timer.Init(callback, TimerType.Frame, frames, -1);  // -1表示无限循环
@@ -55,28 +58,23 @@ namespace YOTO
         {
             scaler.SetTimeScale(scale);
         }
-        List<UnityAction> removeList = new List<UnityAction>();
         public void Update(float deltaTime)
         {
-           
-            foreach (var keyValuePair in timers.ToList())
+            var shoot = timers.ToList();
+            foreach (var keyValuePair in shoot)
             {
-                if ( keyValuePair.Value.IsStop())
-                {
-                    removeList.Add(keyValuePair.Key);
-                }
-                else
+                if (timers.ContainsKey(keyValuePair.Key))
                 {
                     keyValuePair.Value.Update(deltaTime);
+                    if (timers[keyValuePair.Key].IsStop())
+                    {
+                        timers.Remove(keyValuePair.Key);    
+                    }
+                  
                 }
-              
+         
             }
-
-            for (int i = removeList.Count - 1; i >= 0; i--)
-            {
-                timers.Remove(removeList[i]);
-                removeList.RemoveAt(i);
-            }
+            
         }
     }
     class Timer { 
@@ -86,8 +84,8 @@ namespace YOTO
         private int loopCount;
         private float elapsedTime;
         private float stepTime;
-        private UnityAction callback;
-        public void Init(UnityAction callback, TimerType type, float stepTime,  int loopCount = -1)
+        private TimerCallback callback;
+        public void Init(TimerCallback callback, TimerType type, float stepTime,  int loopCount = -1)
         {
             this.type = type;
             this.loopCount = loopCount;

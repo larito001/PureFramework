@@ -1463,6 +1463,12 @@ MonoBehaviour:
   list: {fileID: 2708176115963237646}
   Goto: {fileID: 6960896986048001293}
   GoBack: {fileID: 3919448152548768854}
+  AddWoodBtn: {fileID: 1545752911521700356}
+  RemoveWoodBtn: {fileID: 5523941388605734828}
+  AddIronBtn: {fileID: 8733253719679420851}
+  RemoveIronBtn: {fileID: 4628430289444625443}
+  WoodNum: {fileID: 3645430344132548541}
+  IronNum: {fileID: 9134858444943690200}
 --- !u!1 &6229008267064281405
 GameObject:
   m_ObjectHideFlags: 0

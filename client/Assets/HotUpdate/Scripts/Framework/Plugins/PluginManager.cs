@@ -31,6 +31,7 @@ public class PluginManager
       public void InitPlugins()
       {
             InstallPlugin<GameMapPlugin>();
+            InstallPlugin<PlayerResManager>();
       }
       public void InstallPlugin<T>() where T : LogicPluginBase, new()
       {

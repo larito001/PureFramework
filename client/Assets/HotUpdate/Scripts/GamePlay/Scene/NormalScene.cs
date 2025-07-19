@@ -141,6 +141,7 @@ public class NormalScene : VirtualSceneBase
 
     public override void UnLoad()
     {
+        PlayerResManager.Instance.SaveRes();
         YOTOFramework.Instance.StopCoroutine(DayTimeCycle());
         GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();

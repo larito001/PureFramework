@@ -26,8 +26,10 @@ namespace YOTO
             if (!isInit)
             {
                 isInit = true;
-                PluginMgr.InitPlugins();
                 storeMgr.Init();
+                GameDataManager.Init();
+                PluginMgr.InitPlugins();
+    
                 toolMgr.Init();
                 logger.Init();
                 resMgr.Init();
@@ -37,7 +39,7 @@ namespace YOTO
                 entityMgr.Init();
                 uIMgr.Init();
                 sceneMgr.Init();
-                GameDataManager.Init();
+      
             }
 
             Debug.Log("YTLOG初始化完成");

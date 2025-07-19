@@ -12,7 +12,7 @@ public class GameDataManager
     {
         // InitData<TestPlayerDataContaner>();
         InitData<LevelInfoDataContaner>();
-        
+        InitData<PlayerResDataContaner>();
     }
 
     public void Unload()
