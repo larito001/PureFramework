@@ -45,8 +45,8 @@ public class WeatherManager : SingletonMono<WeatherManager>
         }
         ResetWeather();
         transitionCoroutine = null;
-        GameObject.Destroy(showerEffect);
-        GameObject.Destroy(stormEffect);
+        GameObject.Destroy(showerEffect.gameObject);
+        GameObject.Destroy(stormEffect.gameObject);
         base.Unload();
     }
 

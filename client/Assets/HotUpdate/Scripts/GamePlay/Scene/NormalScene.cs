@@ -150,8 +150,11 @@ public class NormalScene : VirtualSceneBase
     {
         YOTOFramework.eventMgr.RemoveEventListener(EventType.GameStart,GameStart);
         PlayerResManager.Instance.SaveRes();
-        YOTOFramework.Instance.StopCoroutine(generateEnemyIE);
-        generateEnemyIE = null;
+        if (generateEnemyIE != null)
+        {
+            YOTOFramework.Instance.StopCoroutine(generateEnemyIE);
+            generateEnemyIE = null;
+        }
         GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();
         YOTOFramework.uIMgr.ClearUI();

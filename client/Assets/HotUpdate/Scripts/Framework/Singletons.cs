@@ -48,7 +48,7 @@ public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     
     public virtual void Unload()
     {
-        GameObject.Destroy(instance);
+        GameObject.Destroy(instance.gameObject);
         instance = null;
     }
 }
