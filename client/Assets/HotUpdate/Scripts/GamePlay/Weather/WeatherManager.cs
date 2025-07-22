@@ -23,7 +23,7 @@ public enum Weather
 public class WeatherManager : SingletonMono<WeatherManager>
 {
     private Light dirLight;
-    private Coroutine transitionCoroutine;
+    private IEnumerator transitionCoroutine;
     private RainParticleBase showerEffect;
     private RainParticleBase stormEffect;
     public void Init()
@@ -38,11 +38,12 @@ public class WeatherManager : SingletonMono<WeatherManager>
 
     public override void Unload()
     {
+        
         if (transitionCoroutine != null)
         {
             StopCoroutine(transitionCoroutine);
         }
-
+        ResetWeather();
         transitionCoroutine = null;
         GameObject.Destroy(showerEffect);
         GameObject.Destroy(stormEffect);
@@ -68,11 +69,18 @@ public class WeatherManager : SingletonMono<WeatherManager>
                 break;
         }
     }
+
+    private void ResetWeather()
+    {
+        dirLight.color = new Color(1.0f, 0.7f, 0.5f);
+        dirLight.transform.rotation =  Quaternion.Euler(new Vector3(30f, 30f, 0f));
+    }
     public void ChangeDayTime(DayTimeType time)
     {
         if (transitionCoroutine != null)
         {
             StopCoroutine(transitionCoroutine);
+            transitionCoroutine = null;
         }
 
         Color targetColor = Color.white;
@@ -102,7 +110,8 @@ public class WeatherManager : SingletonMono<WeatherManager>
                 break;
         }
 
-        transitionCoroutine = StartCoroutine(TransitionLight(targetColor, targetDirection, 5f));
+        transitionCoroutine = TransitionLight(targetColor, targetDirection, 5f);
+        StartCoroutine(transitionCoroutine);
     }
     private void LoadShowerComplete(GameObject obj )
     {

@@ -39,7 +39,6 @@ public class LevelInfoDataContaner : DataContaner<LevelInfoDatas>
 
     private LevelInfoDatas _data = new LevelInfoDatas();
     public override string SaveKey => "LevelInfo";
-
     public override LevelInfoDatas GetData()
     {
         return _data;
@@ -51,7 +50,7 @@ public class LevelInfoDataContaner : DataContaner<LevelInfoDatas>
 public class NormalScene : VirtualSceneBase
 {
     private GameObject _sceneObj;
-
+    private IEnumerator generateEnemyIE;
     public class NormalSceneParam : SceneParam
     {
         public int level = 0;
@@ -143,14 +142,16 @@ public class NormalScene : VirtualSceneBase
         YOTOFramework.uIMgr.Show(UIEnum.AimUI);
         TowerManager.Instance.Init();
         EnemyManager.Instance.Init();
-        YOTOFramework.Instance.StartCoroutine(DayTimeCycle());
+        generateEnemyIE = DayTimeCycle();
+        YOTOFramework.Instance.StartCoroutine(generateEnemyIE);
        
     }
     public override void UnLoad()
     {
         YOTOFramework.eventMgr.RemoveEventListener(EventType.GameStart,GameStart);
         PlayerResManager.Instance.SaveRes();
-        YOTOFramework.Instance.StopCoroutine(DayTimeCycle());
+        YOTOFramework.Instance.StopCoroutine(generateEnemyIE);
+        generateEnemyIE = null;
         GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();
         YOTOFramework.uIMgr.ClearUI();

@@ -43,7 +43,14 @@ public class TrainEntity : BaseEntity
     {
       
     }
+    public override void Free()
+    {
 
+        GameObject.Destroy(train.gameObject);
+        train = null;
+        AttackPos = null;
+        base.Free();
+    }
     public override void YOTOOnHide()
     {
         

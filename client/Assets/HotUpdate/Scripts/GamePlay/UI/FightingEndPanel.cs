@@ -12,6 +12,7 @@ public class FightingEndPanel : UIPageBase
         gobackBtn.onClick.AddListener(() =>
         {
             YOTOFramework.sceneMgr.LoadScene<StartScene>();
+            CloseSelf();
         });
     }
 

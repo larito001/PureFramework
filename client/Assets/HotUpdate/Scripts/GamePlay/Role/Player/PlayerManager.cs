@@ -39,6 +39,8 @@ public class PlayerManager : Singleton<PlayerManager> {
     public override void Unload()
     {
         base.Unload();
+        _trainEntity?.Free();
+        _trainEntity = null;
         player?.Free();
         player = null;
     }
