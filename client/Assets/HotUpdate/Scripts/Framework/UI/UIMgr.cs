@@ -33,7 +33,7 @@ public class UILayer
         canvas.sortingOrder = ((int)layer * 100);
         CanvasScaler scaler = layerRoot.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(2532, 1170);
+        scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
         scaler.matchWidthOrHeight = 0;
         // 添加其他必要组件

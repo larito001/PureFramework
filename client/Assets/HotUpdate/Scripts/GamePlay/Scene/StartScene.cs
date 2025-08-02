@@ -6,7 +6,7 @@ using YOTO;
 
 public class StartScene : VirtualSceneBase
 {
- 
+    private TrainEntity _trainEntity;
     public override void OnAdd()
     {
   
@@ -19,13 +19,14 @@ public class StartScene : VirtualSceneBase
 
     public override void OnInit()
     {
+        _trainEntity = new TrainEntity();
         YOTOFramework.sceneMgr.cameraCtrl.UseStartCamera();
         YOTOFramework.uIMgr.Show(UIEnum.StartPanel);
     }
 
     public override void UnLoad()
     {
-
+        _trainEntity?.Free();
     }
 
     public override void Update(float dt)

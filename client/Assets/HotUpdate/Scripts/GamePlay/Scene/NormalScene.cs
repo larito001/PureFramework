@@ -88,8 +88,8 @@ public class NormalScene : VirtualSceneBase
         System.GC.Collect();
         
         // Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
-        YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
-        YOTOFramework.uIMgr.Hide(UIEnum.GameMap);
+ 
+
   
         YOTOFramework.sceneMgr.cameraCtrl.UseSelectCamera();
         WeatherManager.Instance.Init();
@@ -157,7 +157,6 @@ public class NormalScene : VirtualSceneBase
         }
         GameObject.Destroy(_sceneObj);
         WeatherManager.Instance.Unload();
-        YOTOFramework.uIMgr.ClearUI();
         EnemyManager.Instance.Unload();
         TowerManager.Instance.Unload();
         SceneResManager.Instance.Unload();

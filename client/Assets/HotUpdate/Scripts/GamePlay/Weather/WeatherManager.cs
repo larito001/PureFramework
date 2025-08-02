@@ -34,6 +34,7 @@ public class WeatherManager : SingletonMono<WeatherManager>
             LoadShowerComplete);
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/Storm.prefab",
              LoadStromComplete);
+        ResetWeather();
     }
 
     public override void Unload()
