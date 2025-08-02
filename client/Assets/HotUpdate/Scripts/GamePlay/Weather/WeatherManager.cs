@@ -34,6 +34,7 @@ public class WeatherManager : SingletonMono<WeatherManager>
             LoadShowerComplete);
         YOTOFramework.resMgr.LoadGameObject("Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/Storm.prefab",
              LoadStromComplete);
+        ResetWeather();
     }
 
     public override void Unload()
@@ -116,12 +117,12 @@ public class WeatherManager : SingletonMono<WeatherManager>
     private void LoadShowerComplete(GameObject obj )
     {
         showerEffect = GameObject.Instantiate(obj).GetComponent<RainParticleBase>();
-        showerEffect.transform.position += new Vector3(0, 4, 0);
+        showerEffect.transform.position += new Vector3(0, 20, 20);
     }
     private void LoadStromComplete(GameObject obj)
     {
         stormEffect = GameObject.Instantiate(obj).GetComponent<RainParticleBase>();
-        stormEffect.transform.position += new Vector3(0, 4, 0);
+        stormEffect.transform.position += new Vector3(0, 20, 20);
     }
     private IEnumerator TransitionLight(Color targetColor, Vector3 targetEuler, float duration)
     {

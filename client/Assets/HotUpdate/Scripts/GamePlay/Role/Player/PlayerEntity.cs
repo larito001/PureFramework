@@ -71,27 +71,27 @@ public class PlayerEntity : CharacterBase
 
     private void OnMove(Vector2 move)
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         moveInput = move;
     }
 
     private void OnTouchScreen()
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         isTouching = true;
         isAiming = isTouching;
     }
 
     private void TryFire()
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         isAiming = true;
         isFireing = true;
     }
 
     private void RefrshMousePos(Vector3 pos)
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         mousePoint = pos;
     }
 
@@ -111,7 +111,7 @@ public class PlayerEntity : CharacterBase
     }
     private void TryReload()
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         if (gun != null)
         {
             gun.Reload();
@@ -126,7 +126,7 @@ public class PlayerEntity : CharacterBase
 
     private void FireRelease()
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         if (!isTouching)
         {
             isAiming = false;
@@ -138,7 +138,7 @@ public class PlayerEntity : CharacterBase
 
     private void TouchReless()
     {
-        if (!isInit) return;
+        if (!isInit||!canMove) return;
         mousePoint = Vector3.zero;
         isTouching = false;
         isAiming = isTouching;
@@ -146,7 +146,7 @@ public class PlayerEntity : CharacterBase
 
     private void SwitchWeapon(int index)
     {
-        if (isWaiting) return;
+        if (isWaiting||!canMove) return;
 
         isWaiting = true;
         YOTOFramework.timeMgr.DelayCall(() => { isWaiting = false; }, 0.7f);
