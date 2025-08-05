@@ -8,19 +8,20 @@ public class TowerManager : Singleton<TowerManager>
     Dictionary<int, TowerBaseEntity> towers = new Dictionary<int, TowerBaseEntity>();
     public void Init()
     {
-        var trainPos = GameObject.Find("BasePos");
-        var list = trainPos.GetComponentsInChildren<Transform>().ToList();
-        for (int i = 0; i < list.Count; i++)
-        {
-            GenerateTowerBase(list[i].position); 
-        }
+        // var trainPos = GameObject.Find("BasePos");
+        // var list = trainPos.GetComponentsInChildren<Transform>().ToList();
+        // for (int i = 0; i < list.Count; i++)
+        // {
+        //     GenerateTowerBase(list[i].position); 
+        // }
     }
-    public void GenerateTowerBase(Vector3 pos)
+    public ObjectBase GenerateTowerBase(Vector3 pos)
     {
         var tower = TowerBaseEntity.pool.GetItem(Vector3.zero);
         tower.Location = pos;
         tower.InstanceGObj();
         towers.Add(tower._entityID, tower);
+        return tower;
     }
     
     public TowerBaseEntity GetTowerById(int id)

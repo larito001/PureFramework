@@ -55,13 +55,13 @@ public class EnemyManager : SingletonMono<EnemyManager>
         for (int i = 0; i < num; i++)
         {
             // 随机选择一个 trigger
-            int triggerIndex = UnityEngine.Random.Range(0, triggers.Count);
+            int triggerIndex = Random.Range(0, triggers.Count);
             var trigger = triggers[triggerIndex];
             var list = zombieAreaList[triggerIndex];
 
             // 随机生成一个位置：基于 trigger 的位置，加一定范围内的偏移
             Vector3 basePos = trigger.transform.position;
-            float range = 10f; // 控制分散半径
+            float range = 2f; // 控制分散半径
             Vector3 offset = new Vector3(
                 UnityEngine.Random.Range(-range, range),
                 0,
@@ -74,14 +74,8 @@ public class EnemyManager : SingletonMono<EnemyManager>
             zombieEntity.Location = spawnPos;
             zombieEntity.InstanceGObj();
             zombieEntity.SetGroup(trigger.GetComponent<CrowdGroupAuthoring>());
-            if (triggerIndex>2)
-            {
-                zombieEntity.SetTarget(PlayerManager.Instance.GetPlayerTrans());  
-            }
-            else
-            {
-                zombieEntity.SetTarget(PlayerManager.Instance.GetTrainTrans());
-            }
+            zombieEntity.SetTarget(PlayerManager.Instance.GetPlayerTrans());  
+       
           
         
             zombieEntities.Add(zombieEntity._entityID, zombieEntity);

@@ -28,7 +28,20 @@ public class TowerBaseEntity : ObjectBase, PoolItem<Vector3>
     {
     }
 
-
+    public void AddPower()
+    {
+        if(tower==null)
+        GenerateTower(TowerEnum.NormalBullet);
+    }
+    public void RemovePower()
+    {
+        if (tower != null)
+        {
+            tower?.Free();
+            tower = null;   
+        }
+    
+    }
 
     public void GenerateTower(TowerEnum towerType)
     {

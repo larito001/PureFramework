@@ -6,11 +6,18 @@ using UnityEngine.UI;
 using YOTO;
 using EventType = YOTO.EventType;
 
+public class TestData : YOTOScrollViewDataBase
+{
+    public string name;
+    public int price;
+}
 public class FightingPanel : UIPageBase
 {
     public Button settingUI;
     public TextMeshProUGUI wood;
     public TextMeshProUGUI iron;
+    public YOTOScrollView itemList;
+    public YOTOScrollViewItem item;
     public override void OnLoad()
     {
         settingUI.onClick.AddListener(() =>
@@ -21,6 +28,15 @@ public class FightingPanel : UIPageBase
 
     public override void OnShow()
     {
+        itemList.Initialize(item.gameObject,10,true);
+        itemList.SetData(new List<TestData>(10)
+        {
+            new TestData(),
+            new TestData(),
+            new TestData(),
+            new TestData(),
+            new TestData(),
+        });
       YOTOFramework.eventMgr.AddEventListener(EventType.RefreshResInfo,RefreshInfo);
       RefreshInfo();
     }

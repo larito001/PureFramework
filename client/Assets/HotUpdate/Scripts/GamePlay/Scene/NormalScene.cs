@@ -88,10 +88,7 @@ public class NormalScene : VirtualSceneBase
         System.GC.Collect();
         
         // Debug.Log( "获取数据："+TestPlayerDataContaner.Instance.GetData().playerName);  
- 
-
-  
-        YOTOFramework.sceneMgr.cameraCtrl.UseSelectCamera();
+        
         WeatherManager.Instance.Init();
         //加载紧急事件系统
         // EmergencyManager.Instance.Init();
@@ -122,7 +119,7 @@ public class NormalScene : VirtualSceneBase
             var info = datas.Dequeue();
             WeatherManager.Instance.ChangeDayTime((DayTimeType)info.dayTime);
             WeatherManager.Instance.ChangeWeather((Weather)info.weather);
-            EnemyManager.Instance.GenerateEnemy(info.enemyNum);
+
             yield return new WaitForSeconds(info.during);
         }
 

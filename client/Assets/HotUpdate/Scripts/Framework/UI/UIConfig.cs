@@ -50,12 +50,12 @@ public enum UIEnum
 public class UIConfig
 {
     public readonly Dictionary<UIEnum, UIInfo> uiConfigDic = new Dictionary<UIEnum, UIInfo>() {
-         { UIEnum.FightingEndPanel, new UIInfo( UIEnum.FightingEndPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/FightingEndPanel.prefab") },
+         { UIEnum.FightingEndPanel, new UIInfo( UIEnum.FightingEndPanel,UILayerEnum.RayCast,"Assets/HotUpdate/prefabs/UI/FightingEndPanel.prefab") },
          { UIEnum.StartPanel, new UIInfo( UIEnum.StartPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/StartPanel.prefab") },
          { UIEnum.SkillTreePanel, new UIInfo(UIEnum.SkillTreePanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/SkillTreePanel.prefab") },
-         { UIEnum.FightingPanel, new UIInfo( UIEnum.FightingPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/FightingPanel.prefab") },
-         { UIEnum.TowerCreateUI, new UIInfo( UIEnum.TowerCreateUI,UILayerEnum.Tips,"Assets/HotUpdate/prefabs/UI/TowerCreateUI.prefab") },
-         { UIEnum.StartLoadingPanel, new UIInfo( UIEnum.StartLoadingPanel,UILayerEnum.Tips,"Assets/HotUpdate/prefabs/UI/LoadingUI.prefab") },
+         { UIEnum.FightingPanel, new UIInfo( UIEnum.FightingPanel,UILayerEnum.RayCast,"Assets/HotUpdate/prefabs/UI/FightingPanel.prefab") },
+         { UIEnum.TowerCreateUI, new UIInfo( UIEnum.TowerCreateUI,UILayerEnum.RayCast,"Assets/HotUpdate/prefabs/UI/TowerCreateUI.prefab") },
+         { UIEnum.StartLoadingPanel, new UIInfo( UIEnum.StartLoadingPanel,UILayerEnum.RayCast,"Assets/HotUpdate/prefabs/UI/LoadingUI.prefab") },
          { UIEnum.AimUI, new UIInfo( UIEnum.AimUI,UILayerEnum.Top,"Assets/HotUpdate/prefabs/UI/Aim.prefab") },
          { UIEnum.GameMap, new UIInfo( UIEnum.GameMap,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/GameMap.prefab") },
          { UIEnum.ResSelectPanel, new UIInfo( UIEnum.ResSelectPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/ResSelectPanel.prefab") },

@@ -273,13 +273,13 @@ public class PlayerEntity : CharacterBase
         mCamera.m_Lens.FieldOfView = 60;
         charCameraPos = GameObject.Find("CharCameraPos").transform;
 
-        mCamera.m_Follow = charCameraPos;
+        // mCamera.m_Follow = charCameraPos;
         mCamera.m_LookAt = charCameraPos;
         var body = mCamera.AddCinemachineComponent<CinemachineFramingTransposer>();
         body.m_TrackedObjectOffset = new Vector3(0, 2, 0);
         body.m_DeadZoneWidth = 0f;
         body.m_DeadZoneHeight = 0f;
-        body.m_CameraDistance = 10;
+        body.m_CameraDistance = 50;
     }
 
     #endregion

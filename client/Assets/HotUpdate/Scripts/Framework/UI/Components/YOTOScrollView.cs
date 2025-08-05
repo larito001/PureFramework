@@ -19,8 +19,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private RectTransform viewport;
 
     [Header("Item Settings")]
-    [SerializeField] private float itemWidth = 100f;
-    [SerializeField] private float itemHeight = 100f;
+    private float itemWidth = 100f;
+   private float itemHeight = 100f;
     [SerializeField] private int spacing = 5;
 
     private List<YOTOScrollViewItem> itemPool;
@@ -30,7 +30,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private float contentWidth;
     private float contentHeight;
     private int poolSize;
-
+    private bool isStatic=false;
+    
     // For vertical layout
     private int startRow, endRow;
     // For horizontal layout
@@ -74,13 +75,16 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void Start() => Canvas.ForceUpdateCanvases();
 
-    public void Initialize(GameObject itemPrefab, int poolSize)
+    public void Initialize(GameObject itemPrefab, int poolSize=10,bool isStatic=false)
     {
+        this.isStatic=isStatic;
         this.poolSize = poolSize;
         foreach (var it in itemPool)
             if (it) Destroy(it.gameObject);
         itemPool.Clear();
 
+        itemWidth=itemPrefab.GetComponent<RectTransform>().rect.width;
+        itemHeight=itemPrefab.GetComponent<RectTransform>().rect.height;
         for (int i = 0; i < poolSize; i++)
         {
             var go = Instantiate(itemPrefab, content);
@@ -270,12 +274,14 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void OnBeginDrag(PointerEventData ev)
     {
+        if (isStatic) return;
         isDragging = true;
         lastDragPosition = ev.position;
     }
 
     public void OnDrag(PointerEventData ev)
     {
+        if (isStatic) return;
         if (!isDragging) return;
         Vector2 delta = ev.position - lastDragPosition;
         if (layout == LayoutType.Vertical)
@@ -288,7 +294,11 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         lastDragPosition = ev.position;
     }
 
-    public void OnEndDrag(PointerEventData ev) => isDragging = false;
+    public void OnEndDrag(PointerEventData ev)
+    {
+        if (isStatic) return;
+        isDragging = false;
+    }
 
     private void ClampContentPosition()
     {
@@ -308,7 +318,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void Update()
     {
-        if (content.anchoredPosition != lastContentPosition)
+        if (!isStatic&&content.anchoredPosition != lastContentPosition)
         {
             lastContentPosition = content.anchoredPosition;
             RefreshItems();

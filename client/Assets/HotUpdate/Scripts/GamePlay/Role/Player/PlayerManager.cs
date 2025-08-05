@@ -6,12 +6,12 @@ using UnityEngine.Events;
 
 public class PlayerManager : Singleton<PlayerManager> {
     private PlayerEntity player;
-    private TrainEntity _trainEntity;
+    // private TrainEntity _trainEntity;
     public void Init(Transform org)
     {
         player = new PlayerEntity();
         player.DontMove();
-        _trainEntity = new TrainEntity();
+        // _trainEntity = new TrainEntity();
         player.Init(org.position);
         
     }
@@ -32,15 +32,15 @@ public class PlayerManager : Singleton<PlayerManager> {
     {
         return player.GetPlayerTrans();
     }
-    public Transform GetTrainTrans()
-    {
-        return _trainEntity.GetAttackPos();
-    }
+    // public Transform GetTrainTrans()
+    // {
+    //     return _trainEntity.GetAttackPos();
+    // }
     public override void Unload()
     {
         base.Unload();
-        _trainEntity?.Free();
-        _trainEntity = null;
+        // _trainEntity?.Free();
+        // _trainEntity = null;
         player?.Free();
         player = null;
     }

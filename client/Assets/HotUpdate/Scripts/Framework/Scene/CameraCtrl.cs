@@ -10,7 +10,7 @@ using EventType = YOTO.EventType;
 public class CameraCtrl
 {
     CinemachineVirtualCamera startVCamera;
-    CinemachineVirtualCamera selectVCamera;
+    // CinemachineVirtualCamera selectVCamera;
     CinemachineVirtualCamera vCamera;
     Vector3 moveDirection;
     Vector3 currentVelocity; 
@@ -39,11 +39,8 @@ public class CameraCtrl
     public CameraCtrl()
     {
         startVCamera = YOTOFramework.cameraMgr.getVirtualCamera("StartCameraVirtual");
-        selectVCamera= YOTOFramework.cameraMgr.getVirtualCamera("SelectCameraVirtual");
+        startVCamera.m_Lens.OrthographicSize = 50;
         startCameraDir = GameObject.Find("StartCameraDir");
-        var  selectCameraDir= GameObject.Find("SelectCameraDir");
-        selectVCamera.transform.position = selectCameraDir.transform.position;
-        selectVCamera.transform.rotation = selectCameraDir.transform.rotation;
         startVCamera.transform.position = startCameraDir.transform.position;
         startVCamera.transform.rotation = startCameraDir.transform.rotation;
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.Look,
@@ -55,12 +52,13 @@ public class CameraCtrl
 
 
         vCamera.m_Lens.FieldOfView = 30;
+        vCamera.m_Lens.OrthographicSize = 40;
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.Touch, Touch);
         YOTOFramework.eventMgr.AddEventListener(YOTO.EventType.PressLeftMouse, Press);
         //YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.TouchMove, CameraMove);
         // YOTOFramework.eventMgr.AddEventListener<float>(YOTO.EventType.Scroll, CameraSclae);
 
-        graphicRaycaster = YOTOFramework.uIMgr.GetLayer(UILayerEnum.Tips).layerRoot.GetComponent<GraphicRaycaster>();
+        graphicRaycaster = YOTOFramework.uIMgr.GetLayer(UILayerEnum.RayCast).layerRoot.GetComponent<GraphicRaycaster>();
         pointerEventData = new PointerEventData(EventSystem.current);
     }
 
@@ -94,19 +92,12 @@ public class CameraCtrl
     {
         startVCamera.Priority = 999;
         vCamera.Priority = 0;
-        selectVCamera.Priority = 0;
-    }
-    public void UseSelectCamera()
-    {
-        selectVCamera.Priority = 999;
-        vCamera.Priority = 0;
-        startVCamera.Priority = 0;
     }
     public void UsePlayerCamera()
     {
         startVCamera.Priority = 0;
         vCamera.Priority = 999;
-        selectVCamera.Priority = 0;
+
     }
 
     private void CameraMove(Vector2 dir)
@@ -126,7 +117,8 @@ public class CameraCtrl
         graphicRaycaster.Raycast(pointerEventData, results);
         if (results.Count > 0)
         {
-            Debug.Log("点到UI");
+    
+            Debug.Log("点到UI"+        results[0].gameObject.name);
         }
         else
         {

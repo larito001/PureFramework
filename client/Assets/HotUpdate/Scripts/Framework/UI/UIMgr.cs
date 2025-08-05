@@ -7,6 +7,7 @@ public enum UILayerEnum
 {
     Normal,
     Top,
+    RayCast,
     Tips,
     PopText,
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using YOTO;
+using EventType = YOTO.EventType;
 
 public class StartPanel : UIPageBase
 {
@@ -13,7 +14,17 @@ public class StartPanel : UIPageBase
        
         startBtn.onClick.AddListener(() =>
         {
-            YOTOFramework.uIMgr.Show(UIEnum.GameMap);
+            YOTOFramework.uIMgr.Show(UIEnum.StartLoadingPanel);
+            YOTOFramework.sceneMgr.LoadScene<CityScene>();
+            CloseSelf();
+    
+            YOTOFramework.timeMgr.DelayCall(() =>
+            {
+                YOTOFramework.eventMgr.TriggerEvent(EventType.GameStart);
+                YOTOFramework.uIMgr.Hide(UIEnum.StartLoadingPanel);
+            },2);
+       
+            // YOTOFramework.uIMgr.Show(UIEnum.GameMap);
         });
         treeBtn.onClick.AddListener(() =>
         {
