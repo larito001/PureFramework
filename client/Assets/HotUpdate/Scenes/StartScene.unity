@@ -14833,6 +14833,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
+      propertyPath: m_Data
+      value: 
+      objectReference: {fileID: 11400000, guid: b0fd023139d8b694981ee1f855e3df2e, type: 2}
+    - target: {fileID: 3952162240268813824, guid: 3752c3514fff9d54e99519713cc0f2ee, type: 3}
       propertyPath: m_Width
       value: 75
       objectReference: {fileID: 0}
