@@ -16,43 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: b18c0ee19488ddd429fb18f4bcc57ab6
-  m_SerializeEntries:
-  - m_GUID: 2f3d3949c4374ef42a8352da0cd2c251
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_1.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 55c073f6242755f4bb02af4b9a1aaad0
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_2.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 631c26906a48898458ef973c3f4064c8
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_3.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 677e4e4b6cc929849ae708543d49c38b
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_6.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7d061067912db4b46b340c892d24c1fc
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_5.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 91a341eb744609e44871ab69fb22c775
-    m_Address: Assets/HotUpdate/prefabs/Level/Level_4.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9195e527738c21e4f8021deaa48a5e38, type: 2}
   m_SchemaSet:

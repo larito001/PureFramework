@@ -17,30 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 8aa8659fe21b04b42a69608d87ff4c4a
   m_SerializeEntries:
-  - m_GUID: 35ca89a303c5e71428ec2fd15b28b68c
-    m_Address: Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/shower.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5d67695b32bcf9947b316de5741dff51
-    m_Address: Assets/HotUpdate/prefabs/Realistic Rain FX/Prefabs/Distort/Storm.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 98df3777bd2ba9d40a75a33288dcfef5
-    m_Address: Assets/HotUpdate/prefabs/Laser/Prefab/Laser.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d31c63b1178737a45919f63aab757a81
-    m_Address: Assets/Fire Axe/Prefab/PBR/Fire_Axe_LODA.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9f9bf1ca5142254ba3a359ff4a34b3e
     m_Address: Assets/HotUpdate/prefabs/Role/Gun/SM_Wep_AssaultRifle_02.prefab
     m_ReadOnly: 0

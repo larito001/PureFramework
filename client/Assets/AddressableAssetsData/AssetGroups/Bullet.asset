@@ -17,38 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ad6eb62022f441240b061a6a99bba53b
   m_SerializeEntries:
-  - m_GUID: 08e3ca4a8798512439a37954eb1aaea5
-    m_Address: Assets/HotUpdate/prefabs/Bullet/Impact.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 364a1eb1f202eda489d3fa96c1eddf0f
-    m_Address: Assets/HotUpdate/prefabs/Bullet/Bullet.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 774536a8e8b731e4ab8ba65065deb368
-    m_Address: Assets/HotUpdate/prefabs/Bullet/MeleeBullet.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 79a7b95272c8d6541b92726a8f4aaf16
-    m_Address: Assets/HotUpdate/prefabs/Bullet/Fire.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c27aeead6d968e4ba986702d6b84335
     m_Address: Assets/HotUpdate/prefabs/SimpleFX/Prefabs/FX_BloodSplatter.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8ef33879cb59b2d48b4e21f28963ba41
-    m_Address: Assets/HotUpdate/prefabs/Bullet/FireSteam.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - all

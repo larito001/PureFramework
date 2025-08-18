@@ -17,12 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 28c43e6065de7a1458f6eb888ef1264d
   m_SerializeEntries:
-  - m_GUID: 66f1060a20a027a49a3719e593c11763
-    m_Address: Assets/HotUpdate/prefabs/IronRes/Prefabs/IronRes.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbdc4af67b29f26479eef2288fd0dda0
     m_Address: .prefabAwesomeFreeScans/WoodLogs/Prefabs/LowEndPC/SmallWood.prefab
     m_ReadOnly: 0
