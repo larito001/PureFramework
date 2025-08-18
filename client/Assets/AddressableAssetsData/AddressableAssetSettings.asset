@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: cf7b9316c6f752d4180dcc007fdf0f00
+  m_DefaultGroup: 00a810385016c8d44acf1729b84eab27
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 04cbbe386c03513d1a2f2debd9781402
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
@@ -46,18 +46,9 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: e260bd40a19a024419ad36dd2ce5c996, type: 2}
   - {fileID: 11400000, guid: 3104283dd3b7a58449b7dc9d0ee7259d, type: 2}
-  - {fileID: 11400000, guid: f8a55e6a3a81b3c43b6f4c6ce282298d, type: 2}
-  - {fileID: 11400000, guid: 635d6b6a5fc066647a32b21814b91362, type: 2}
-  - {fileID: 11400000, guid: d5e8c77cf8d3b104bbb5280bd7a7aa6f, type: 2}
   - {fileID: 11400000, guid: f27df2a42ed494543a6efcabf0cde709, type: 2}
-  - {fileID: 11400000, guid: 36f690c87e505e449a3ce12c045c0279, type: 2}
   - {fileID: 11400000, guid: e9a2fe68581481c489ddc777abbb1321, type: 2}
   - {fileID: 11400000, guid: 71b0293dac51e9e40b1cdd130d16bb59, type: 2}
-  - {fileID: 11400000, guid: 776d49c34e3acd74db907bfdc75043c1, type: 2}
-  - {fileID: 11400000, guid: 79134f6cf0ff8d9469350e776630a5d2, type: 2}
-  - {fileID: 11400000, guid: f5dfdbf97d12d964d8808d1f9dea2368, type: 2}
-  - {fileID: 11400000, guid: d842ae6aa0c9bb243a8734b74518a018, type: 2}
-  - {fileID: 11400000, guid: c575edaa2c2b1494eb02f1b9a21eab03, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -146,7 +137,7 @@ MonoBehaviour:
           m_Key: HostingServiceUploadSpeed
         - m_AssemblyName: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
           m_ClassName: System.String
-          m_Data: ServerData/StandaloneWindows64;Library/com.unity.addressables/aa/Windows/StandaloneWindows64
+          m_Data: ServerData/StandaloneWindows64
           m_Key: ContentRoot
         - m_AssemblyName: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
           m_ClassName: System.Boolean

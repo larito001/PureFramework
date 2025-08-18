@@ -17,68 +17,14 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 8030e5fd98e49d440a0926daacec0c38
   m_SerializeEntries:
-  - m_GUID: 0ff06a0753cccf74aad65797a10fdd6a
-    m_Address: Assets/HotUpdate/prefabs/UI/ComPanel.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 18bf7a91304850642861c071dbd3e0cb
-    m_Address: Assets/HotUpdate/prefabs/UI/SkillTreePanel.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 32f61a25ebe3bfc44b608b560a60f5b0
-    m_Address: Assets/HotUpdate/prefabs/UI/Aim.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 46aa4acaa6b2c014eb8082adccb8a37b
-    m_Address: Assets/HotUpdate/prefabs/UI/FightingEndPanel.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63d47703bd4d46849848259ee2a46f3d
-    m_Address: Assets/HotUpdate/prefabs/UI/LoadingUI.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67b712b42fd128e42b78e47ed7e7cf18
     m_Address: Assets/HotUpdate/prefabs/UI/StartPanel.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - all
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6f608641c4970a04aa04b62efb43778f
-    m_Address: Assets/HotUpdate/prefabs/UI/TowerCreateUI.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e099f280c2a6f24b9b49081fc9d6e06
     m_Address: Assets/HotUpdate/prefabs/FlyTextPrefab.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9f50688ea8bc4b84b9e4a9837efc79d2
-    m_Address: Assets/HotUpdate/prefabs/UI/GameMap.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e316a3f48e10f5e499e7aaf8c42fa9ec
-    m_Address: Assets/HotUpdate/prefabs/UI/ResSelectPanel.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - all
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f50e5ef80b9c7f7419c4baa4ee07d65b
-    m_Address: Assets/HotUpdate/prefabs/UI/FightingPanel.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - all
