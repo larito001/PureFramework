@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Proto;
+
 using UnityEngine;
 using YOTO;
 using EventType = YOTO.EventType;

@@ -1,61 +1,42 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
-using Google.Protobuf;
-using Proto;
-using System.Threading.Tasks;
 using Mirror;
 
 namespace  YOTO
 {
-    public struct MoveMessage : NetworkMessage
+    // 请求基类
+    public interface IRequest : NetworkMessage { }
+
+// 响应基类
+    public interface IResponse : NetworkMessage { }
+    // 例子：移动请求
+    public struct MoveRequest : IRequest
     {
-        public uint NetId;
-        public Vector3 Position;
-    }
-    public abstract class BaseResponse
-    {
-        public abstract void Init();
-    }
-    public class NetData
-    {
-        public MessageType type;
-        public  IMessage message;
+        public uint playerId;
+        public Vector3 targetPos;
     }
 
-    public enum NetDataType
+// 例子：移动响应
+    public struct MoveResponse : IResponse
     {
-        Room,
-        GamePlay
+        public uint playerId;
+        public Vector3 confirmedPos;
     }
-
     public class NetMgr
     {
-
-
+        //todo:Server
+        //todo:Client
+        public void Init()
+        {
+            
+        }
         public void FixUpdate(float dt)
         {
 
 
         }
 
-        public void Init()
-        {
-            NetworkClient.RegisterHandler<MoveMessage>(OnMoveMessage);
-            SendMove(123, Vector3.one);
-        }
-        public void SendMove(uint netId, Vector3 pos)
-        {
-            MoveMessage msg = new MoveMessage { NetId = netId, Position = pos };
-            NetworkClient.Send(msg);
-        }
 
-        private void OnMoveMessage(MoveMessage msg)
-        {
-        Debug.LogError("收到消息："+msg.NetId);
-        }
     }
 
 

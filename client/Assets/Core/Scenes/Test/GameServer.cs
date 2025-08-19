@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using YOTO;
 
 public class GameServer : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class GameServer : MonoBehaviour
         #endif
 
 
-        var mgr = NetworkMessageManager.Instance;
-
+        var mgr = ServerMessageManager.Instance;
+        // NetworkManager.singleton.networkAddress = serverIP;
         // 注册移动请求处理
         mgr.RegisterRequestHandler<MoveRequest>((req) =>
         {
@@ -25,7 +26,7 @@ public class GameServer : MonoBehaviour
                 playerId = req.playerId,
                 confirmedPos = finalPos
             };
-            NetworkServer.SendToReady(res);
+            mgr.SendNotify(res);
             
             return  res;
         });

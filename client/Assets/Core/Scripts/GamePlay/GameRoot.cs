@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-using Proto;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using YOTO;

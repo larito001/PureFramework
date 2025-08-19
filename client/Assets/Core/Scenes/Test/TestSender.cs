@@ -19,7 +19,7 @@ public class TestSender : MonoBehaviour
 
     private void Init()
     {
-        var mgr = NetworkMessageManager.Instance;
+        var mgr = ClientMessageManager.Instance;
 #if !UNITY_EDITOR
 NetworkManager.singleton.StartClient();
 #endif
@@ -54,7 +54,7 @@ NetworkManager.singleton.StartClient();
 
     public void RequestMove(uint playerId, Vector3 targetPos)
     {
-        var mgr = NetworkMessageManager.Instance;
+        var mgr = ClientMessageManager.Instance;
         mgr.SendRequest(new MoveRequest
         {
             playerId = playerId,
