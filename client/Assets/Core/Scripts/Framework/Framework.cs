@@ -39,7 +39,7 @@ namespace YOTO
                 entityMgr.Init();
                 uIMgr.Init();
                 sceneMgr.Init();
-      
+                netMgr.Init();
             }
 
             Debug.Log("YTLOG初始化完成");
@@ -79,7 +79,6 @@ namespace YOTO
         private void OnDestroy()
         {
             Debug.Log("YTLOG销毁完成");
-            netMgr.Dispose();
             logger.OnDisable();
             gameInputMgr.DisableGamePlayInput();
             isInit = true;
