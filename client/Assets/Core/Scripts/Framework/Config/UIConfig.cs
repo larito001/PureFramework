@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public struct UIInfo
+public class UIInfo
 {
     public UIInfo(UIEnum e, UILayerEnum l, string k)
     {
-
         uiEnum = e;
         key = k;
         layer = l;
     }
+
     public UIEnum uiEnum;
     public string key;
     public UILayerEnum layer;
@@ -20,8 +20,8 @@ public struct UIInfo
     {
         if (!(obj is UIInfo)) return false;
         UIInfo other = (UIInfo)obj;
-        return layer == other.layer && 
-               key == other.key && 
+        return layer == other.layer &&
+               key == other.key &&
                layer == other.layer;
     }
 
@@ -34,16 +34,34 @@ public struct UIInfo
         return hash;
     }
 }
+
 public enum UIEnum
 {
     None = 0,
     StartPanel,
-
 }
+
 public class UIConfig
 {
-    public readonly Dictionary<UIEnum, UIInfo> uiConfigDic = new Dictionary<UIEnum, UIInfo>() {
-         { UIEnum.StartPanel, new UIInfo( UIEnum.StartPanel,UILayerEnum.Normal,"Assets/HotUpdate/prefabs/UI/StartPanel.prefab") },
+    private List<UIInfo> uiList = new List<UIInfo>()
+    {
+        new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "Assets/HotUpdate/prefabs/UI/StartPanel.prefab")
     };
 
+    #region  对外
+
+    public readonly Dictionary<UIEnum, UIInfo> uiConfigDic = new Dictionary<UIEnum, UIInfo>();
+
+    public void Init()
+    {
+        uiConfigDic.Clear();
+        for (var i = 0; i < uiList.Count; i++)
+        {
+            var config = uiList[i];
+            uiConfigDic.Add(config.uiEnum, config);
+        }
+    }
+
+    #endregion
+ 
 }

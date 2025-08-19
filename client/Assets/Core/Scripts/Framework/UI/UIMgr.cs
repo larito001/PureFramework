@@ -112,6 +112,7 @@ public class UIMgr
     public void Init()
     {
         uIConfig = new UIConfig();
+        uIConfig.Init();
         UIRoot = new GameObject("UIRoot");
         UIRoot.layer = LayerMask.NameToLayer("UI");
         GameObject.DontDestroyOnLoad(UIRoot);
@@ -121,7 +122,7 @@ public class UIMgr
             layertemp.Init(UIRoot,layer);
             uiLayers.Add(layer,layertemp);
         }
-
+   
     }
 
     public void Show(UIEnum uiEnum)
