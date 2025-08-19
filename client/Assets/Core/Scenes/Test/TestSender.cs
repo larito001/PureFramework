@@ -43,7 +43,7 @@ NetworkManager.singleton.StartClient();
         }
 
         timer+=Time.deltaTime;
-        if (timer > 5&&!isInit)
+        if (timer > 1&&!isInit)
         {
             Init();
             isInit = true;

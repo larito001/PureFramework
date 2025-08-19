@@ -16,7 +16,7 @@ public class ClientMessageManager : Singleton<ClientMessageManager>
         if (NetworkClient.active)
             NetworkClient.RegisterHandler<T>(OnClientReceiveResponse);
     }
-    public void  UnRegisterResponseHandler  <T>() where T : struct, IResponse
+    public void  UnRegisterResponseHandler<T>() where T : struct, IResponse
     {
         responseCallbacks.Remove(typeof(T));
     }
