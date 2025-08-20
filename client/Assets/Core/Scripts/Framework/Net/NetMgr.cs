@@ -21,7 +21,7 @@ namespace  YOTO
             client = new DemoGameClient();
             mirrorManager=YOTOMirrorNetworkManager.singleton as YOTOMirrorNetworkManager;
             mirrorManager.Init();
-            CreateHost(7777);
+
         }
 
         public void CreateHost(ushort port)

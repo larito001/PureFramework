@@ -12,7 +12,7 @@ public abstract class GameClientBase
     {
         messageMgr = ClientMessageManager.Instance;
         var mgr = YOTOFramework.netMgr.mirrorManager;
-        mgr.AddStartClientListener(OnInit);
+        mgr.AddClientConnectListener(OnInit);
         mgr.AddStopClientListener(OnShutdown);
         var transport = mgr.transport;
         var kcp = transport as KcpTransport;

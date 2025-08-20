@@ -6,7 +6,13 @@ public class DemoGameClient : GameClientBase
 {
     public override void OnInit()
     {
-        RequestMove(123,new Vector3(111,222,333));
+        #if !UNITY_EDITOR
+        RequestMove(456,new Vector3(111,222,333));
+        #endif
+#if UNITY_EDITOR
+        RequestMove(123,new Vector3(111,222,333));    
+#endif
+  
     }
 
     public override void Update()

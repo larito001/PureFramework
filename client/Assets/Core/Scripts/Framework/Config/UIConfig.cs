@@ -45,7 +45,7 @@ public class UIConfig
 {
     private List<UIInfo> uiList = new List<UIInfo>()
     {
-        new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "Assets/HotUpdate/prefabs/UI/StartPanel.prefab")
+        new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "prefabs/UI/StartPanel")
     };
 
     #region  对外
