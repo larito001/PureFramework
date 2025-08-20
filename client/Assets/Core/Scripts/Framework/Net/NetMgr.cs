@@ -11,6 +11,7 @@ namespace  YOTO
     {
         private bool isServer=false;
         private bool isClient=false;
+        private bool isServerClient = false;
         GameServerBase server;
         GameClientBase client;
         public  YOTOMirrorNetworkManager mirrorManager;
@@ -27,8 +28,8 @@ namespace  YOTO
         {
             if (!isServer&&!isClient)
             {
-                JoinHost("", 0, true);
                 isServer = true;
+                JoinHost("", 0);
                 server.StartServer(port); 
             }
             else
@@ -52,13 +53,16 @@ namespace  YOTO
  
         }
 
-        public void JoinHost(string ip, ushort port,bool isHostPlayer=false)
+        public void JoinHost(string ip, ushort port)
         {
             if (!isClient&&!isServer)
             {
                 client.StartClient(ip,port);
                 isClient = true;
                 
+            }else if(isServer&&!isServerClient){
+                client.StartHostClient();
+                isServerClient = true;
             }
             else
             {

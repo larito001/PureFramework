@@ -10,7 +10,6 @@ using EventType = YOTO.EventType;
 public class CameraCtrl
 {
     CinemachineVirtualCamera startVCamera;
-    // CinemachineVirtualCamera selectVCamera;
     CinemachineVirtualCamera vCamera;
     Vector3 moveDirection;
     Vector3 currentVelocity; 

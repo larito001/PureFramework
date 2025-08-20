@@ -8,8 +8,10 @@ using YOTO;
 
 public abstract class GameServerBase
 {
+    protected ServerMessageManager messageMgr;
     public void StartServer(ushort port)
     {
+        messageMgr = ServerMessageManager.Instance; 
         var mgr = YOTOFramework.netMgr.mirrorManager;
         mgr.AddStartServerListener(OnInit);
         mgr.AddStopServerListener(OnShutdown);
