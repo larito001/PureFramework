@@ -8,34 +8,74 @@ using YOTO;
 public abstract class GameClientBase
 {
     protected ClientMessageManager messageMgr;
-    public void StartClient(string ip, ushort prot)
+
+    // ==== 启动客户端 ====
+    public void StartClient(string ip, ushort port)
     {
         messageMgr = ClientMessageManager.Instance;
         var mgr = YOTOFramework.netMgr.mirrorManager;
-        mgr.AddClientConnectListener(OnInit);
-        mgr.AddStopClientListener(OnShutdown);
-        var transport = mgr.transport;
-        var kcp = transport as KcpTransport;
-        if (kcp != null)
+
+        RegisterClientEvents(mgr);
+
+        var transport = mgr.transport as KcpTransport;
+        if (transport != null)
         {
-            kcp.Port = prot;
-            mgr.StartClient();
+            transport.Port = port;
         }
+
+        mgr.networkAddress = ip;
+        mgr.StartClient();
     }
+
+    // ==== 启动 Host 客户端（本地 Host） ====
     public void StartHostClient()
     {
         messageMgr = ClientMessageManager.Instance;
         var mgr = YOTOFramework.netMgr.mirrorManager;
-        mgr.AddStartClientListener(OnInit);
-        mgr.AddStopClientListener(OnShutdown);
+
+        RegisterClientEvents(mgr);
     }
 
+    // ==== 停止客户端 ====
     public void StopClient()
     {
-        YOTOFramework.netMgr.mirrorManager.StopClient();
+        var mgr = YOTOFramework.netMgr.mirrorManager;
+
+        RemoveClientEvents(mgr);
+
+        mgr.StopClient();
     }
 
-    public abstract void OnInit();
+    // ==== 封装注册和移除方法 ====
+    private void RegisterClientEvents(YOTOMirrorNetworkManager mgr)
+    {
+        mgr.AddStartClientListener(OnStartClient);
+        mgr.AddStopClientListener(OnStopClient);
+        mgr.AddClientConnectListener(OnClientConnect);
+        mgr.AddClientDisconnectListener(OnClientDisconnect);
+        mgr.AddClientNotReadyListener(OnClientNotReady);
+        mgr.AddClientChangeSceneListener(OnClientChangeScene);
+        mgr.AddClientSceneChangedListener(OnClientSceneChanged);
+    }
+
+    private void RemoveClientEvents(YOTOMirrorNetworkManager mgr)
+    {
+        mgr.RemoveStartClientListener(OnStartClient);
+        mgr.RemoveStopClientListener(OnStopClient);
+        mgr.RemoveClientConnectListener(OnClientConnect);
+        mgr.RemoveClientDisconnectListener(OnClientDisconnect);
+        mgr.RemoveClientNotReadyListener(OnClientNotReady);
+        mgr.RemoveClientChangeSceneListener(OnClientChangeScene);
+        mgr.RemoveClientSceneChangedListener(OnClientSceneChanged);
+    }
+
+    // ==== 抽象生命周期方法 ====
     public abstract void Update();
-    public abstract void OnShutdown();
+    public abstract void OnStartClient();       // 客户端启动
+    public abstract void OnStopClient();        // 客户端停止
+    public abstract void OnClientConnect();     // 连接成功
+    public abstract void OnClientDisconnect();  // 断开连接
+    public abstract void OnClientNotReady();    // 标记 NotReady
+    public abstract void OnClientChangeScene(); // 切换场景
+    public abstract void OnClientSceneChanged();// 场景切换完成
 }
