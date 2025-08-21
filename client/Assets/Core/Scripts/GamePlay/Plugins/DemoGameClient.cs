@@ -6,18 +6,30 @@ using UnityEngine;
 public class DemoGameClient : GameClientBase
 {
     private int connectionId;
+
+
+    private void AddEvent()
+    {
+        ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
+        ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
+    }
+    private void RemoveEvent()
+    {
+        
+    }
+    
+    #region 登录登出
     public void LoginRequest(string name)
     {
         var mgr = ClientMessageManager.Instance;
         mgr.SendRequest(new LoginRequest()
         {
             playerName = name,
-            
         });
     }
     private void LoginNotify(LoginNotify obj)
     {
-        Debug.Log($"当前人数:{obj. playerDatas.Count}");
+        Debug.Log($"当前人数:{obj.playerDatas.Count}");
     }
 
     private void LoginResponse(LoginResponse obj)
@@ -27,32 +39,35 @@ public class DemoGameClient : GameClientBase
         {
             Debug.Log($"Login:{obj.playerData.playerId}");
         }
-
     }
+
+
+    #endregion
+
+
+
+    #region 生命周期
 
     public override void Update()
     {
         // 每帧客户端逻辑
     }
 
-    // ---------------- Client Lifecycle ----------------
     public override void OnStartClient()
     {
         Debug.Log("✅ Client started (attempting connection...)");
-        var mgr = ClientMessageManager.Instance;
-        Debug.Log("✅ Client connected to server");
-        mgr.RegisterResponseHandler<LoginResponse>(LoginResponse);
-        mgr.RegisterResponseHandler<LoginNotify>(LoginNotify);
-        
+        AddEvent();
+     
     }
 
     public override void OnStopClient()
     {
         Debug.Log("🛑 Client stopped");
+        RemoveEvent();
     }
 
     public override void OnClientConnect()
-    {   
+    {
 #if !UNITY_EDITOR
         LoginRequest("其他玩家");
 #else
@@ -79,4 +94,7 @@ public class DemoGameClient : GameClientBase
     {
         Debug.Log("🌍 Client scene changed");
     }
+
+    #endregion
+   
 }

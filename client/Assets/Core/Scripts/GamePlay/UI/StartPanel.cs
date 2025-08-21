@@ -10,6 +10,7 @@ public class StartPanel : UIPageBase
 {
     public Button startBtn;
     public Button createBtn;
+    public Button RemoveBtn;
     // textMeshpro的input
     public TMP_InputField IPInput;
     public TMP_InputField PortInput;
@@ -25,6 +26,10 @@ public class StartPanel : UIPageBase
         createBtn.onClick .AddListener(() =>
         {
             YOTOFramework.netMgr.CreateHost(ushort.Parse(PortInput. text));
+        });
+        RemoveBtn.onClick.AddListener(() =>
+        {
+            YOTOFramework.netMgr.LeaveHost();
         });
   
     }

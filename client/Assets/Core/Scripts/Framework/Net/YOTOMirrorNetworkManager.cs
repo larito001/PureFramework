@@ -4,23 +4,103 @@ using UnityEngine.Events;
 
 public class YOTOMirrorNetworkManager : NetworkManager
 {
-    // ==== 事件定义（带 connectionId 参数） ====
+ // ==== Host 相关事件 ====
+    /// <summary>
+    /// 调用 StartHost() 后触发（Host = Server + 本地 Client）  
+    /// 用途：初始化房间、分配本地玩家
+    /// </summary>
     private event UnityAction OnStartHostEvent;
+
+    /// <summary>
+    /// 调用 StopHost() 后触发  
+    /// 用途：关闭房间、清理 Host 资源
+    /// </summary>
     private event UnityAction OnStopHostEvent;
+
+    // ==== Server 相关事件 ====
+    /// <summary>
+    /// 服务器启动后触发（包括 Host）  
+    /// 用途：初始化服务器逻辑、加载场景
+    /// </summary>
     private event UnityAction OnStartServerEvent;
+
+    /// <summary>
+    /// 服务器停止后触发（包括 Host）  
+    /// 用途：清理服务器资源
+    /// </summary>
     private event UnityAction OnStopServerEvent;
 
+    // ==== Server 与客户端连接相关事件 ====
+    /// <summary>
+    /// 客户端连接服务器时触发  
+    /// 参数 connectionId：客户端连接 ID（Host 本地客户端 = 0）  
+    /// 用途：身份验证、初始化连接数据
+    /// </summary>
     private event UnityAction<int> OnServerConnectEvent;
+
+    /// <summary>
+    /// 客户端断开连接时触发  
+    /// 参数 connectionId：断开客户端 ID  
+    /// 用途：清理玩家数据、广播断线消息
+    /// </summary>
     private event UnityAction<int> OnServerDisconnectEvent;
+
+    /// <summary>
+    /// 客户端 Ready 后触发  
+    /// 参数 connectionId：客户端 ID  
+    /// 用途：确认客户端状态、同步初始数据
+    /// </summary>
     private event UnityAction<int> OnServerReadyEvent;
+
+    /// <summary>
+    /// 为客户端创建玩家对象时触发  
+    /// 参数 connectionId：玩家连接 ID  
+    /// 用途：初始化玩家对象、绑定玩家数据
+    /// </summary>
     private event UnityAction<int> OnServerAddPlayerEvent;
 
+    // ==== Client 生命周期事件 ====
+    /// <summary>
+    /// 客户端启动后触发  
+    /// 用途：初始化客户端状态
+    /// </summary>
     private event UnityAction OnStartClientEvent;
+
+    /// <summary>
+    /// 客户端停止后触发  
+    /// 用途：清理客户端资源、返回主界面
+    /// </summary>
     private event UnityAction OnStopClientEvent;
+
+    // ==== Client 与服务器连接相关事件 ====
+    /// <summary>
+    /// 客户端连接到服务器时触发  
+    /// 用途：请求登录、加载大厅数据
+    /// </summary>
     private event UnityAction OnClientConnectEvent;
+
+    /// <summary>
+    /// 客户端断开服务器连接时触发  
+    /// 用途：提示断线、返回主菜单
+    /// </summary>
     private event UnityAction OnClientDisconnectEvent;
+
+    /// <summary>
+    /// 服务器标记客户端 NotReady 时触发  
+    /// 用途：禁用交互、显示加载提示
+    /// </summary>
     private event UnityAction OnClientNotReadyEvent;
+
+    /// <summary>
+    /// 客户端开始切换场景时触发  
+    /// 用途：显示加载界面
+    /// </summary>
     private event UnityAction OnClientChangeSceneEvent;
+
+    /// <summary>
+    /// 客户端完成场景切换时触发  
+    /// 用途：初始化场景 UI 和对象
+    /// </summary>
     private event UnityAction OnClientSceneChangedEvent;
 
     // ==== 对外注册接口 ====
