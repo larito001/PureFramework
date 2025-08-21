@@ -4,15 +4,17 @@ using UnityEngine.Events;
 
 public class YOTOMirrorNetworkManager : NetworkManager
 {
-    // ==== 事件定义 ====
+    // ==== 事件定义（带 connectionId 参数） ====
     private event UnityAction OnStartHostEvent;
     private event UnityAction OnStopHostEvent;
     private event UnityAction OnStartServerEvent;
     private event UnityAction OnStopServerEvent;
-    private event UnityAction OnServerConnectEvent;
-    private event UnityAction OnServerDisconnectEvent;
-    private event UnityAction OnServerReadyEvent;
-    private event UnityAction OnServerAddPlayerEvent;
+
+    private event UnityAction<int> OnServerConnectEvent;
+    private event UnityAction<int> OnServerDisconnectEvent;
+    private event UnityAction<int> OnServerReadyEvent;
+    private event UnityAction<int> OnServerAddPlayerEvent;
+
     private event UnityAction OnStartClientEvent;
     private event UnityAction OnStopClientEvent;
     private event UnityAction OnClientConnectEvent;
@@ -34,17 +36,17 @@ public class YOTOMirrorNetworkManager : NetworkManager
     public void AddStopServerListener(UnityAction listener) => OnStopServerEvent += listener;
     public void RemoveStopServerListener(UnityAction listener) => OnStopServerEvent -= listener;
 
-    public void AddServerConnectListener(UnityAction listener) => OnServerConnectEvent += listener;
-    public void RemoveServerConnectListener(UnityAction listener) => OnServerConnectEvent -= listener;
+    public void AddServerConnectListener(UnityAction<int> listener) => OnServerConnectEvent += listener;
+    public void RemoveServerConnectListener(UnityAction<int> listener) => OnServerConnectEvent -= listener;
 
-    public void AddServerDisconnectListener(UnityAction listener) => OnServerDisconnectEvent += listener;
-    public void RemoveServerDisconnectListener(UnityAction listener) => OnServerDisconnectEvent -= listener;
+    public void AddServerDisconnectListener(UnityAction<int> listener) => OnServerDisconnectEvent += listener;
+    public void RemoveServerDisconnectListener(UnityAction<int> listener) => OnServerDisconnectEvent -= listener;
 
-    public void AddServerReadyListener(UnityAction listener) => OnServerReadyEvent += listener;
-    public void RemoveServerReadyListener(UnityAction listener) => OnServerReadyEvent -= listener;
+    public void AddServerReadyListener(UnityAction<int> listener) => OnServerReadyEvent += listener;
+    public void RemoveServerReadyListener(UnityAction<int> listener) => OnServerReadyEvent -= listener;
 
-    public void AddServerAddPlayerListener(UnityAction listener) => OnServerAddPlayerEvent += listener;
-    public void RemoveServerAddPlayerListener(UnityAction listener) => OnServerAddPlayerEvent -= listener;
+    public void AddServerAddPlayerListener(UnityAction<int> listener) => OnServerAddPlayerEvent += listener;
+    public void RemoveServerAddPlayerListener(UnityAction<int> listener) => OnServerAddPlayerEvent -= listener;
 
     public void AddStartClientListener(UnityAction listener) => OnStartClientEvent += listener;
     public void RemoveStartClientListener(UnityAction listener) => OnStartClientEvent -= listener;
@@ -98,25 +100,25 @@ public class YOTOMirrorNetworkManager : NetworkManager
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
-        OnServerConnectEvent?.Invoke();
+        OnServerConnectEvent?.Invoke(conn.connectionId);
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         base.OnServerDisconnect(conn);
-        OnServerDisconnectEvent?.Invoke();
+        OnServerDisconnectEvent?.Invoke(conn.connectionId);
     }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
-        OnServerReadyEvent?.Invoke();
+        OnServerReadyEvent?.Invoke(conn.connectionId);
     }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
-        OnServerAddPlayerEvent?.Invoke();
+        OnServerAddPlayerEvent?.Invoke(conn.connectionId);
     }
 
     // ---------------- Client ----------------

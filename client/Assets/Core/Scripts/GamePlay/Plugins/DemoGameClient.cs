@@ -1,23 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class DemoGameClient : GameClientBase
 {
-    public void RequestMove(uint playerId, Vector3 targetPos)
+    private int connectionId;
+    public void LoginRequest(string name)
     {
         var mgr = ClientMessageManager.Instance;
-        mgr.RegisterResponseHandler<MoveResponse>(OnMoveResponse);
-        mgr.SendRequest(new MoveRequest
+        mgr.SendRequest(new LoginRequest()
         {
-            playerId = playerId,
-            targetPos = targetPos
+            playerName = name,
+            
         });
     }
-
-    private void OnMoveResponse(MoveResponse obj)
+    private void LoginNotify(LoginNotify obj)
     {
-        Debug.Log($"moveResponse {obj.playerId}: {obj.confirmedPos}");
+        Debug.Log($"当前人数:{obj. playerDatas.Count}");
+    }
+
+    private void LoginResponse(LoginResponse obj)
+    {
+        Debug.Log($"Login:{obj.isSuccess}");
+        if (obj.isSuccess)
+        {
+            Debug.Log($"Login:{obj.playerData.playerId}");
+        }
+
     }
 
     public override void Update()
@@ -29,6 +39,11 @@ public class DemoGameClient : GameClientBase
     public override void OnStartClient()
     {
         Debug.Log("✅ Client started (attempting connection...)");
+        var mgr = ClientMessageManager.Instance;
+        Debug.Log("✅ Client connected to server");
+        mgr.RegisterResponseHandler<LoginResponse>(LoginResponse);
+        mgr.RegisterResponseHandler<LoginNotify>(LoginNotify);
+        
     }
 
     public override void OnStopClient()
@@ -37,13 +52,11 @@ public class DemoGameClient : GameClientBase
     }
 
     public override void OnClientConnect()
-    {
-        Debug.Log("✅ Client connected to server");
-
+    {   
 #if !UNITY_EDITOR
-        RequestMove(456, new Vector3(111, 222, 333));
+        LoginRequest("其他玩家");
 #else
-        RequestMove(123, new Vector3(111, 222, 333));
+        LoginRequest("房主");
 #endif
     }
 

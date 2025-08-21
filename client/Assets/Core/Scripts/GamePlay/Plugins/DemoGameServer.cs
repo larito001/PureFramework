@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DemoGameServer : GameServerBase
 {
+    private List<PlayerData> players = new List<PlayerData>();
+    private readonly int playerMaxNum = 3;
+
     public override void Update()
     {
         // 可以在这里处理服务器每帧逻辑
@@ -31,42 +35,67 @@ public class DemoGameServer : GameServerBase
         Debug.Log("🛑 Server stopped");
     }
 
-    public override void OnServerConnect()
+    public override void OnServerConnect(int connectionId)
     {
-        Debug.Log("📡 Client connected to server");
+        Debug.Log("📡 Client connected to server"+connectionId);
 
         var mgr = ServerMessageManager.Instance;
-        mgr.RegisterRequestHandler<MoveRequest>((req) =>
-        {
-            Debug.Log($"Player {req.playerId} wants to move to {req.targetPos}");
-
-            // 服务器校验和逻辑
-            Vector3 finalPos = req.targetPos; // 可以做阻挡检测/修正
-
-            // 广播给所有客户端
-            var res = new MoveResponse
-            {
-                playerId = req.playerId,
-                confirmedPos = finalPos
-            };
-            mgr.SendNotify(res);
-
-            return res;
-        });
+        mgr.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
     }
 
-    public override void OnServerDisconnect()
+
+
+    public override void OnServerDisconnect(int connectionId)
     {
         Debug.Log("📴 Client disconnected from server");
+        players.Remove( players.First(x => x.playerId == connectionId));
+        RefreshPlayer();
     }
 
-    public override void OnServerReady()
+    public override void OnServerReady(int connectionId)
     {
         Debug.Log("✅ Client is ready");
     }
 
-    public override void OnServerAddPlayer()
+    public override void OnServerAddPlayer(int connectionId)
     {
-        Debug.Log("👤 Player added for client");
+        var mgr = ServerMessageManager.Instance;
+        //发送LinkConfig 的请求
+
+    }
+    private IResponse OnLoginRequest(LoginRequest req,int connectionId)
+    {
+        Debug.Log($"Player {req.playerName}");
+
+        PlayerData playerDataTemp = null;
+        LoginResponse res = new LoginResponse
+        {
+            isSuccess = false,
+            playerData = null
+        };
+        if (players.Count < playerMaxNum)
+        {
+            playerDataTemp = new PlayerData();
+            playerDataTemp.playerId = connectionId ;
+            playerDataTemp.playerName = req.playerName;
+            players.Add(playerDataTemp);
+            // 广播给所有客户端
+            RefreshPlayer();
+
+            res.isSuccess = true;
+            res.playerData = playerDataTemp;
+        }
+        return res;
+    }
+
+    private void RefreshPlayer()
+    {
+        var mgr = ServerMessageManager.Instance;
+
+        LoginNotify notify = new LoginNotify
+        {
+            playerDatas = players
+        };
+        mgr.SendNotify(notify);
     }
 }

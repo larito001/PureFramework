@@ -8,17 +8,34 @@ public interface IRequest : NetworkMessage { }
 
 // 响应基类
 public interface IResponse : NetworkMessage { }
-public struct MoveRequest : IRequest
+
+public class PlayerData
 {
-    public uint playerId;
-    public Vector3 targetPos;
-}
+    public int playerId;
+    public string playerName;
     
-// 例子：移动响应
-public struct MoveResponse : IResponse
+}
+public struct LoginRequest : IRequest
 {
-    public uint playerId;
-    public Vector3 confirmedPos;
+    public string playerName;
+}
+public struct LoginNotify : IResponse
+{
+    public List<PlayerData> playerDatas;
+}
+public struct LinkConfig: IRequest
+{
+    public int connectId;
+}
+public struct LinkConfigResponse: IResponse
+{
+    public bool isSuccess;
+}
+// 例子：移动响应
+public struct LoginResponse : IResponse
+{
+    public PlayerData playerData;
+    public bool isSuccess;
 }
 public class MessageData 
 {

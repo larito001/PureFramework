@@ -41,6 +41,8 @@ public abstract class GameServerBase
         mgr.AddStopHostListener(OnStopHost);
         mgr.AddStartServerListener(OnStartServer);
         mgr.AddStopServerListener(OnStopServer);
+
+        // 这些事件现在是带 int 参数的
         mgr.AddServerConnectListener(OnServerConnect);
         mgr.AddServerDisconnectListener(OnServerDisconnect);
         mgr.AddServerReadyListener(OnServerReady);
@@ -53,21 +55,24 @@ public abstract class GameServerBase
         mgr.RemoveStopHostListener(OnStopHost);
         mgr.RemoveStartServerListener(OnStartServer);
         mgr.RemoveStopServerListener(OnStopServer);
+
         mgr.RemoveServerConnectListener(OnServerConnect);
         mgr.RemoveServerDisconnectListener(OnServerDisconnect);
         mgr.RemoveServerReadyListener(OnServerReady);
         mgr.RemoveServerAddPlayerListener(OnServerAddPlayer);
     }
 
-    // === 抽象方法：所有生命周期必须实现 ===
+    // === 抽象方法：生命周期 ===
     public abstract void Update();
 
     public abstract void OnStartHost();
     public abstract void OnStopHost();
     public abstract void OnStartServer();
     public abstract void OnStopServer();
-    public abstract void OnServerConnect();
-    public abstract void OnServerDisconnect();
-    public abstract void OnServerReady();
-    public abstract void OnServerAddPlayer();
+
+    // 这些方法改为接收 connectionId
+    public abstract void OnServerConnect(int connectionId);
+    public abstract void OnServerDisconnect(int connectionId);
+    public abstract void OnServerReady(int connectionId);
+    public abstract void OnServerAddPlayer(int connectionId);
 }
