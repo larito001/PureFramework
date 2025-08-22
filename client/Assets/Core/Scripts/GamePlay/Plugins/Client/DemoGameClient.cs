@@ -2,50 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using YOTO;
 
 public class DemoGameClient : GameClientBase
 {
     private int connectionId;
-
-
-    private void AddEvent()
-    {
-        ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
-        ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
-    }
-    private void RemoveEvent()
-    {
-        
-    }
     
-    #region 登录登出
-    public void LoginRequest(string name)
-    {
-        var mgr = ClientMessageManager.Instance;
-        mgr.SendRequest(new LoginRequest()
-        {
-            playerName = name,
-        });
-    }
-    private void LoginNotify(LoginNotify obj)
-    {
-        Debug.Log($"当前人数:{obj.playerDatas.Count}");
-    }
-
-    private void LoginResponse(LoginResponse obj)
-    {
-        Debug.Log($"Login:{obj.isSuccess}");
-        if (obj.isSuccess)
-        {
-            Debug.Log($"Login:{obj.playerData.playerId}");
-        }
-    }
-
-
-    #endregion
-
-
-
     #region 生命周期
 
     public override void Update()
@@ -56,23 +18,17 @@ public class DemoGameClient : GameClientBase
     public override void OnStartClient()
     {
         Debug.Log("✅ Client started (attempting connection...)");
-        AddEvent();
-     
     }
 
     public override void OnStopClient()
     {
         Debug.Log("🛑 Client stopped");
-        RemoveEvent();
     }
 
     public override void OnClientConnect()
     {
-#if !UNITY_EDITOR
-        LoginRequest("其他玩家");
-#else
-        LoginRequest("房主");
-#endif
+        Debug.Log("✅ Client connected");
+        LoginPlugin.Instance.LoginRequest("testName");
     }
 
     public override void OnClientDisconnect()

@@ -13,7 +13,6 @@ public class ClientMessageManager : Singleton<ClientMessageManager>
     {
         responseCallbacks[typeof(T)] = (res) => callback((T)res);
 
-        if (NetworkClient.active)
             NetworkClient.RegisterHandler<T>(OnClientReceiveResponse);
     }
     public void  UnRegisterResponseHandler<T>() where T : struct, IResponse
@@ -23,7 +22,17 @@ public class ClientMessageManager : Singleton<ClientMessageManager>
     
     public void SendRequest<T>(T request) where T : struct, IRequest
     {
-        NetworkClient.Send(request);
+        //如果客户端已就绪
+        if (NetworkClient.active)
+        {
+            NetworkClient.Send(request); 
+        }
+        else
+        {
+            Debug.LogError("客户端未就绪");
+        }
+  
+        
     }
 
     

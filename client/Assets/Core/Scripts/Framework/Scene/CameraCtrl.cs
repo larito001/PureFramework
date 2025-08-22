@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using YOTO;
-using EventType = YOTO.EventType;
 
 public class CameraCtrl
 {
@@ -42,7 +41,7 @@ public class CameraCtrl
         startCameraDir = GameObject.Find("StartCameraDir");
         startVCamera.transform.position = startCameraDir.transform.position;
         startVCamera.transform.rotation = startCameraDir.transform.rotation;
-        YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.Look,
+        YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Look,
             (lookInput) => { this.lookInput = lookInput; });
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
         cameraDir = GameObject.Find("CameraDir");
@@ -52,8 +51,8 @@ public class CameraCtrl
 
         vCamera.m_Lens.FieldOfView = 30;
         vCamera.m_Lens.OrthographicSize = 40;
-        YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.EventType.Touch, Touch);
-        YOTOFramework.eventMgr.AddEventListener(YOTO.EventType.PressLeftMouse, Press);
+        YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Touch, Touch);
+        YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.PressLeftMouse, Press);
 
         graphicRaycaster = YOTOFramework.uIMgr.GetLayer(UILayerEnum.RayCast).layerRoot.GetComponent<GraphicRaycaster>();
         pointerEventData = new PointerEventData(EventSystem.current);
@@ -179,7 +178,7 @@ public class CameraCtrl
                 if (Physics.Raycast(ray, out hitInfo, 1000, LayerMask.GetMask("Ground")))
                 {
                     // Debug.Log("Ground hit");
-                    YOTOFramework.eventMgr.TriggerEvent<Vector3>(YOTO.EventType.RefreshMousePos, hitInfo.point);
+                    YOTOFramework.eventMgr.TriggerEvent<Vector3>(YOTO.YOTOEventType.RefreshMousePos, hitInfo.point);
                 }
             }
             rayTimer -= 0.02f;

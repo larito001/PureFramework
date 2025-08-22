@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class YOTOScrollViewItem : MonoBehaviour
 {
-    private YOTOScrollViewDataBase _currentData;
+    private object _currentData;
     private bool _isVisible;
     private int _dataIndex = -1;
     private void Awake()
@@ -14,7 +14,7 @@ public class YOTOScrollViewItem : MonoBehaviour
         _dataIndex = -1;
     }
 
-    public virtual void OnRenderItem(YOTOScrollViewDataBase data)
+    public virtual void OnRenderItem(object data)
     {
         if (data == null) return;
         
@@ -22,7 +22,7 @@ public class YOTOScrollViewItem : MonoBehaviour
         _isVisible = true;
     }
 
-    public virtual void OnHidItem(YOTOScrollViewDataBase data)
+    public virtual void OnHidItem(object data)
     {
         _currentData = null;
         _isVisible = false;
@@ -30,7 +30,7 @@ public class YOTOScrollViewItem : MonoBehaviour
     }
 
     public bool IsVisible => _isVisible;
-    public YOTOScrollViewDataBase CurrentData => _currentData;
+    public object CurrentData => _currentData;
     public int DataIndex
     {
         get => _dataIndex;

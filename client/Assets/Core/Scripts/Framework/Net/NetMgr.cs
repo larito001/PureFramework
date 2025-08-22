@@ -14,7 +14,6 @@ namespace YOTO
         }
 
         private NetState currentState = NetState.Idle;
-
         private GameServerBase server;
         private GameClientBase client;
         public YOTOMirrorNetworkManager mirrorManager;

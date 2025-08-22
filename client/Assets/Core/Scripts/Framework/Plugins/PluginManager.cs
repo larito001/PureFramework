@@ -30,6 +30,7 @@ public class PluginManager
 
       public void InitPlugins()
       {
+            InstallPlugin<LoginPlugin>();
       }
       public void InstallPlugin<T>() where T : LogicPluginBase, new()
       {

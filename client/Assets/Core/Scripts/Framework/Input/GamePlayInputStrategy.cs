@@ -13,7 +13,7 @@ namespace YOTO
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent<float>(YOTO.EventType.Scroll, context.ReadValue<Vector2>().y);
+                YOTOFramework.eventMgr.TriggerEvent<float>(YOTO.YOTOEventType.Scroll, context.ReadValue<Vector2>().y);
             }
 
         }
@@ -25,7 +25,7 @@ namespace YOTO
             // Debug.Log("look");
             if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent<Vector2>(EventType.Look, context.ReadValue<Vector2>()); 
+                YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTOEventType.Look, context.ReadValue<Vector2>()); 
             }
         }
 
@@ -33,11 +33,11 @@ namespace YOTO
         {
              if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent<Vector2>(EventType.Move, context.ReadValue<Vector2>()); 
+                YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTOEventType.Move, context.ReadValue<Vector2>()); 
             }
             else if (context.phase == InputActionPhase.Canceled)
             {
-                YOTOFramework.eventMgr.TriggerEvent<Vector2>(EventType.Move, context.ReadValue<Vector2>());
+                YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTOEventType.Move, context.ReadValue<Vector2>());
             }
         }
         
@@ -47,7 +47,7 @@ namespace YOTO
          
              if (context.phase == InputActionPhase.Performed)
              {
-                 YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTO.EventType.Touch, context.ReadValue<Vector2>());
+                 YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTO.YOTOEventType.Touch, context.ReadValue<Vector2>());
              }
          
          
@@ -57,12 +57,12 @@ namespace YOTO
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                 YOTOFramework.eventMgr.TriggerEvent(YOTO.EventType.TouchPress);
+                 YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.TouchPress);
 
             }else if (context.phase == InputActionPhase.Canceled) // 松开触发事件
             {
 
-                YOTOFramework.eventMgr.TriggerEvent(YOTO.EventType.TouchRelease);
+                YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.TouchRelease);
             }
         }
 
@@ -70,11 +70,11 @@ namespace YOTO
         {
              if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent(YOTO.EventType.PressLeftMouse);
+                YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.PressLeftMouse);
             }
              else if (context.phase == InputActionPhase.Canceled) // 松开触发事件
              {
-                 YOTOFramework.eventMgr.TriggerEvent(YOTO.EventType.FireRelease);
+                 YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.FireRelease);
              }
         }
 
@@ -114,7 +114,7 @@ namespace YOTO
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent(EventType.TryReload);
+                YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.TryReload);
             }
         }
 
@@ -122,7 +122,7 @@ namespace YOTO
         {
             if (context.phase == InputActionPhase.Performed)
             {
-               YOTOFramework.eventMgr.TriggerEvent<int>(EventType.KeyBoardNumClick,1);
+               YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.KeyBoardNumClick,1);
             }
         }
 
@@ -130,7 +130,7 @@ namespace YOTO
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                YOTOFramework.eventMgr.TriggerEvent<int>(EventType.KeyBoardNumClick,2);
+                YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.KeyBoardNumClick,2);
             }
         }
     }

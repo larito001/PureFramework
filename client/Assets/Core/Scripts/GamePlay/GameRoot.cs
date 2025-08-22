@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using YOTO;
-using EventType = YOTO.EventType;
 
 //控制游戏模式（场景）
 public class GameRoot : SingletonMono<GameRoot>

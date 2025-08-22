@@ -4,16 +4,10 @@ using UnityEngine;
 
 namespace YOTO
 {    
-    public enum EventType
+    public enum YOTOEventType
     {
        //input :
-       GameStart,
        Move,
-
-       Sprint,
-       //UI
-       Loading,
-       //touch
        Touch,
        TouchPress,
        TouchRelease,
@@ -27,8 +21,8 @@ namespace YOTO
        KeyBoardNumClick,
        Look,
        
-       //刷新资源页面
-       RefreshResInfo,
+       //刷新
+       RefreshRoleList,
     }
 
 

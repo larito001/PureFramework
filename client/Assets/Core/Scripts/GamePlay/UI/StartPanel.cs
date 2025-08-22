@@ -4,13 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using YOTO;
-using EventType = YOTO.EventType;
 
 public class StartPanel : UIPageBase
 {
     public Button startBtn;
     public Button createBtn;
-    public Button RemoveBtn;
     // textMeshpro的input
     public TMP_InputField IPInput;
     public TMP_InputField PortInput;
@@ -22,15 +20,14 @@ public class StartPanel : UIPageBase
         {
             YOTOFramework.netMgr.JoinHost(IPInput.text, ushort.Parse(PortInput.text));
             // CloseSelf();
+            YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         });
         createBtn.onClick .AddListener(() =>
         {
             YOTOFramework.netMgr.CreateHost(ushort.Parse(PortInput. text));
+            YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         });
-        RemoveBtn.onClick.AddListener(() =>
-        {
-            YOTOFramework.netMgr.LeaveHost();
-        });
+    
   
     }
 

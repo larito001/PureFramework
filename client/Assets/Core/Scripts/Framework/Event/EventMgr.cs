@@ -34,9 +34,9 @@ namespace YOTO
 
     public class EventMgr
     {
-        private Dictionary<EventType, IEventInfo> eventDictionary = new Dictionary<EventType, IEventInfo>();
+        private Dictionary<YOTOEventType, IEventInfo> eventDictionary = new Dictionary<YOTOEventType, IEventInfo>();
 
-        private void AddListenerInternal<TEventInfo>(EventType type, Action<TEventInfo> addAction) where TEventInfo : IEventInfo, new()
+        private void AddListenerInternal<TEventInfo>(YOTOEventType type, Action<TEventInfo> addAction) where TEventInfo : IEventInfo, new()
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo existingEventInfo))
             {
@@ -53,7 +53,7 @@ namespace YOTO
             }
         }
 
-        private void RemoveListenerInternal<TEventInfo>(EventType type, Action<TEventInfo> removeAction) where TEventInfo : class, IEventInfo
+        private void RemoveListenerInternal<TEventInfo>(YOTOEventType type, Action<TEventInfo> removeAction) where TEventInfo : class, IEventInfo
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo existingEventInfo))
             {
@@ -84,57 +84,57 @@ namespace YOTO
             return false;
         }
 
-        public void AddEventListener(EventType type, UnityAction action)
+        public void AddEventListener(YOTOEventType type, UnityAction action)
         {
             AddListenerInternal<EventInfo>(type, ei => ei.action += action);
         }
 
-        public void RemoveEventListener(EventType type, UnityAction action)
+        public void RemoveEventListener(YOTOEventType type, UnityAction action)
         {
             RemoveListenerInternal<EventInfo>(type, ei => ei.action -= action);
         }
 
-        public void AddEventListener<T>(EventType type, UnityAction<T> action)
+        public void AddEventListener<T>(YOTOEventType type, UnityAction<T> action)
         {
             AddListenerInternal<EventInfo<T>>(type, ei => ei.action += action);
         }
 
-        public void RemoveEventListener<T>(EventType type, UnityAction<T> action)
+        public void RemoveEventListener<T>(YOTOEventType type, UnityAction<T> action)
         {
             RemoveListenerInternal<EventInfo<T>>(type, ei => ei.action -= action);
         }
 
-        public void AddEventListener<T, U>(EventType type, UnityAction<T, U> action)
+        public void AddEventListener<T, U>(YOTOEventType type, UnityAction<T, U> action)
         {
             AddListenerInternal<EventInfo<T, U>>(type, ei => ei.action += action);
         }
 
-        public void RemoveEventListener<T, U>(EventType type, UnityAction<T, U> action)
+        public void RemoveEventListener<T, U>(YOTOEventType type, UnityAction<T, U> action)
         {
             RemoveListenerInternal<EventInfo<T, U>>(type, ei => ei.action -= action);
         }
 
-        public void AddEventListener<T, U, V>(EventType type, UnityAction<T, U, V> action)
+        public void AddEventListener<T, U, V>(YOTOEventType type, UnityAction<T, U, V> action)
         {
             AddListenerInternal<EventInfo<T, U, V>>(type, ei => ei.action += action);
         }
 
-        public void RemoveEventListener<T, U, V>(EventType type, UnityAction<T, U, V> action)
+        public void RemoveEventListener<T, U, V>(YOTOEventType type, UnityAction<T, U, V> action)
         {
             RemoveListenerInternal<EventInfo<T, U, V>>(type, ei => ei.action -= action);
         }
 
-        public void AddEventListener<T, U, V, W>(EventType type, UnityAction<T, U, V, W> action)
+        public void AddEventListener<T, U, V, W>(YOTOEventType type, UnityAction<T, U, V, W> action)
         {
             AddListenerInternal<EventInfo<T, U, V, W>>(type, ei => ei.action += action);
         }
 
-        public void RemoveEventListener<T, U, V, W>(EventType type, UnityAction<T, U, V, W> action)
+        public void RemoveEventListener<T, U, V, W>(YOTOEventType type, UnityAction<T, U, V, W> action)
         {
             RemoveListenerInternal<EventInfo<T, U, V, W>>(type, ei => ei.action -= action);
         }
 
-        public void TriggerEvent(EventType type)
+        public void TriggerEvent(YOTOEventType type)
         {
             // 先触发普通事件
             if (eventDictionary.TryGetValue(type, out IEventInfo eventInfo))
@@ -145,7 +145,7 @@ namespace YOTO
    
         }
 
-        public void TriggerEvent<T>(EventType type, T value)
+        public void TriggerEvent<T>(YOTOEventType type, T value)
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo eventInfo))
             {
@@ -154,7 +154,7 @@ namespace YOTO
 
         }
 
-        public void TriggerEvent<T, U>(EventType type, T value1, U value2)
+        public void TriggerEvent<T, U>(YOTOEventType type, T value1, U value2)
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo eventInfo))
             {
@@ -163,7 +163,7 @@ namespace YOTO
    
         }
 
-        public void TriggerEvent<T, U, V>(EventType type, T value1, U value2, V value3)
+        public void TriggerEvent<T, U, V>(YOTOEventType type, T value1, U value2, V value3)
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo eventInfo))
             {
@@ -172,7 +172,7 @@ namespace YOTO
 
         }
 
-        public void TriggerEvent<T, U, V, W>(EventType type, T value1, U value2, V value3, W value4)
+        public void TriggerEvent<T, U, V, W>(YOTOEventType type, T value1, U value2, V value3, W value4)
         {
             if (eventDictionary.TryGetValue(type, out IEventInfo eventInfo))
             {

@@ -2,8 +2,6 @@ using System.Collections;
 
 using UnityEngine;
 using YOTO;
-using EventType = YOTO.EventType;
-
 
 
 public class NormalScene : VirtualSceneBase

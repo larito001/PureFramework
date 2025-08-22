@@ -18,13 +18,14 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private RectTransform content;
     [SerializeField] private RectTransform viewport;
 
+    [SerializeField] private GameObject itemPrefab ;
     [Header("Item Settings")]
     private float itemWidth = 100f;
    private float itemHeight = 100f;
     [SerializeField] private int spacing = 5;
 
     private List<YOTOScrollViewItem> itemPool;
-    private List<YOTOScrollViewDataBase> dataList;
+    private List<object> dataList;
     private HashSet<int> visibleIndices;
 
     private float contentWidth;
@@ -44,7 +45,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private void Awake()
     {
         itemPool = new List<YOTOScrollViewItem>();
-        dataList = new List<YOTOScrollViewDataBase>();
+        dataList = new List<object>();
         visibleIndices = new HashSet<int>();
 
         // Transparent and raycastable for drag
@@ -75,7 +76,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void Start() => Canvas.ForceUpdateCanvases();
 
-    public void Initialize(GameObject itemPrefab, int poolSize=10,bool isStatic=false)
+    public void Initialize(int poolSize=10,bool isStatic=false)
     {
         this.isStatic=isStatic;
         this.poolSize = poolSize;
@@ -99,7 +100,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
-    public void SetData<T>(List<T> data) where T : YOTOScrollViewDataBase
+    public void SetData<T>(List<T> data)
     {
         if (content == null || viewport == null) return;
         if (itemPool == null || itemPool.Count == 0)
@@ -124,7 +125,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             return;
         }
 
-        dataList = data.ConvertAll(x => (YOTOScrollViewDataBase)x);
+        dataList = data.ConvertAll(x => (object)x);
         int count = dataList.Count;
 
         int totalRows, totalCols;

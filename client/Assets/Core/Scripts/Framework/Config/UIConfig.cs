@@ -39,13 +39,15 @@ public enum UIEnum
 {
     None = 0,
     StartPanel,
+    RoomPanel,
 }
 
 public class UIConfig
 {
     private List<UIInfo> uiList = new List<UIInfo>()
     {
-        new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "prefabs/UI/StartPanel")
+        new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "prefabs/UI/StartPanel"),
+        new UIInfo(UIEnum.RoomPanel, UILayerEnum.Normal, "prefabs/UI/RoomPanel")
     };
 
     #region  对外
