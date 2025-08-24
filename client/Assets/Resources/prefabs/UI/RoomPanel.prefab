@@ -1060,7 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layout: 0
-  columns: 2
+  columns: 1
   rows: 1
   content: {fileID: 7685671471141210472}
   viewport: {fileID: 8669893444108807674}

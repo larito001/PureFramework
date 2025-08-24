@@ -26,16 +26,16 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private int spacing = 5;
 
     private List<YOTOScrollViewItem> itemPool;
-    private IList rawDataList;
+    // private IList rawDataList;
     private HashSet<int> visibleIndices;
-
+    private int dataCount =0;
     private float contentWidth;
     private float contentHeight;
     private int poolSize;
     private bool isStatic = false;
 
     // 泛型回调（不再使用 DynamicInvoke）
-    private Action<YOTOScrollViewItem, object> renderAction;
+    private Action<YOTOScrollViewItem, int> renderAction;
 
     // 缓存 Dictionary，避免 GC
     private Dictionary<int, YOTOScrollViewItem> currentVisible;
@@ -105,9 +105,12 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             itemPool.Add(item);
         }
     }
-
-    public void SetData<T>(List<T> data, Action<YOTOScrollViewItem, T> onRender)
+    public void SetRenderer( Action<YOTOScrollViewItem, int> onRender){
+        renderAction = (item, obj) => onRender(item, obj);
+    }
+    public void SetData(int count)
     {
+        dataCount = count;
         if (content == null || viewport == null) return;
         if (itemPool == null || itemPool.Count == 0)
         {
@@ -119,33 +122,23 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             if (it.gameObject.activeSelf)
             {
-                it.OnHidItem(it.CurrentData);
+                it.OnHidItem();
                 it.gameObject.SetActive(false);
             }
         }
         visibleIndices.Clear();
         currentVisible.Clear();
 
-        if (data == null || data.Count == 0)
-        {
-            rawDataList = null;
-            content.sizeDelta = Vector2.zero;
-            return;
-        }
-
-        rawDataList = data;
-        renderAction = (item, obj) => onRender(item, (T)obj);
-
-        int count = data.Count;
+        
         int totalRows, totalCols;
         if (layout == LayoutType.Vertical)
         {
-            totalCols = Mathf.Max(1, columns);
+            totalCols = Mathf.Max(0, columns);
             totalRows = Mathf.CeilToInt((float)count / totalCols);
         }
         else
         {
-            totalRows = Mathf.Max(1, rows);
+            totalRows = Mathf.Max(0, rows);
             totalCols = Mathf.CeilToInt((float)count / totalRows);
         }
 
@@ -168,7 +161,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void RefreshItems()
     {
-        if (rawDataList == null || rawDataList.Count == 0 || renderAction == null) return;
+        if ( renderAction == null) return;
 
         currentVisible.Clear();
 
@@ -182,7 +175,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             int visRows = Mathf.CeilToInt(viewH / rowH) + 1;
             endRow = startRow + visRows;
 
-            int maxRow = Mathf.CeilToInt((float)rawDataList.Count / columns) - 1;
+            int maxRow = Mathf.CeilToInt((float)dataCount / columns) - 1;
             startRow = Mathf.Clamp(startRow, 0, maxRow);
             endRow = Mathf.Clamp(endRow, 0, maxRow);
 
@@ -194,7 +187,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                     int r = idx / columns;
                     if (r < startRow || r > endRow)
                     {
-                        it.OnHidItem(it.CurrentData);
+                        it.OnHidItem();
                         it.gameObject.SetActive(false);
                         visibleIndices.Remove(idx);
                     }
@@ -207,7 +200,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                 for (int c = 0; c < columns; c++)
                 {
                     int idx = r * columns + c;
-                    if (idx >= rawDataList.Count) break;
+                    if (idx >= dataCount) break;
 
                     float x = c * (itemWidth + spacing) + itemWidth * 0.5f;
                     float y = -r * (itemHeight + spacing) - itemHeight * 0.5f;
@@ -223,8 +216,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                     ni.transform.localPosition = new Vector3(x, y, 0);
                     ni.DataIndex = idx;
                     ni.gameObject.SetActive(true);
-
-                    renderAction(ni, rawDataList[idx]);
+                    ni.OnRenderItem();
+                    renderAction(ni,idx);
                     visibleIndices.Add(idx);
                 }
             }
@@ -239,7 +232,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             int visCols = Mathf.CeilToInt(viewW / colW) + 1;
             endCol = startCol + visCols;
 
-            int maxCol = Mathf.CeilToInt((float)rawDataList.Count / rows) - 1;
+            int maxCol = Mathf.CeilToInt((float)dataCount / rows) - 1;
             startCol = Mathf.Clamp(startCol, 0, maxCol);
             endCol = Mathf.Clamp(endCol, 0, maxCol);
 
@@ -251,7 +244,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                     int c = idx / rows;
                     if (c < startCol || c > endCol)
                     {
-                        it.OnHidItem(it.CurrentData);
+                        it.OnHidItem();
                         it.gameObject.SetActive(false);
                         visibleIndices.Remove(idx);
                     }
@@ -264,7 +257,7 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                 for (int r = 0; r < rows; r++)
                 {
                     int idx = c * rows + r;
-                    if (idx >= rawDataList.Count) break;
+                    if (idx >= dataCount) break;
 
                     float x = c * (itemWidth + spacing) + itemWidth * 0.5f;
                     float y = -r * (itemHeight + spacing) - itemHeight * 0.5f;
@@ -280,8 +273,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                     ni.transform.localPosition = new Vector3(x, y, 0);
                     ni.DataIndex = idx;
                     ni.gameObject.SetActive(true);
-
-                    renderAction(ni, rawDataList[idx]);
+                    ni.OnRenderItem();
+                    renderAction(ni,idx);
                     visibleIndices.Add(idx);
                 }
             }

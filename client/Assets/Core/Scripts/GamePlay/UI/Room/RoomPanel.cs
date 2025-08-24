@@ -11,11 +11,19 @@ public class RoomPanel : UIPageBase
     public Button readyBtn;
     public override void OnLoad()
     {
+        playerList.SetRenderer(ItemRender);
         leaveBtn.onClick.AddListener(() =>
         {
             YOTOFramework.netMgr.LeaveHost();
         });
     }
+
+    private void ItemRender(YOTOScrollViewItem arg1,int  index)
+    {
+        var info =LoginPlugin.Instance.GetPlayerDatas();
+        (arg1 as RoomListItem).SetData(info[index]);
+    }
+
 
     public override void OnShow()
     {
@@ -26,15 +34,15 @@ public class RoomPanel : UIPageBase
     private void RefreshRoleList()
     {
      var tempList =   LoginPlugin.Instance.GetPlayerDatas();
-        
+   
+     
      playerList.Initialize(10);
-  
+     
+     playerList.SetData(tempList.Count);
 
-     playerList.SetData(tempList, (item, str) =>
-     {
-         item.OnRenderItem(str); // 类型安全
-     });
     }
+
+   
 
     public override void OnHide()
     {

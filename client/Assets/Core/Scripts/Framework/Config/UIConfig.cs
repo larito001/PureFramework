@@ -47,7 +47,7 @@ public class UIConfig
     private List<UIInfo> uiList = new List<UIInfo>()
     {
         new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "prefabs/UI/StartPanel"),
-        new UIInfo(UIEnum.RoomPanel, UILayerEnum.Normal, "prefabs/UI/RoomPanel")
+        new UIInfo(UIEnum.RoomPanel, UILayerEnum.RayCast, "prefabs/UI/RoomPanel")
     };
 
     #region  对外
