@@ -23,11 +23,15 @@ public struct LoginNotify : IResponse
 {
     public List<PlayerData> playerDatas;
 }
-public struct LinkConfig: IRequest
+public struct GameStartRequest: IRequest
 {
-    public int connectId;
+    public bool isSuccess;
 }
-public struct LinkConfigResponse: IResponse
+public struct GameStartResponse: IResponse
+{
+    public bool isSuccess;
+}
+public struct GameStartNotify: IResponse
 {
     public bool isSuccess;
 }

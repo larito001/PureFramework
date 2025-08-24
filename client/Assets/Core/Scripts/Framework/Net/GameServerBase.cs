@@ -30,8 +30,8 @@ public abstract class GameServerBase
     // === 停止服务器 ===
     public void StopServer()
     {
-        UnregisterServerCallbacks();
         mgr.StopHost();
+        UnregisterServerCallbacks();
     }
 
     // === 注册服务器生命周期事件 ===

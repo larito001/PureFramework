@@ -133,7 +133,7 @@ namespace kcp2k
                     const int SIO_UDP_CONNRESET = unchecked((int)(IOC_IN | IOC_VENDOR | 12));
                     socket.IOControl(SIO_UDP_CONNRESET, new byte[] { 0x00 }, null);
                 }
-
+                
                 socket.Bind(new IPEndPoint(IPAddress.IPv6Any, port));
                 return socket;
             }

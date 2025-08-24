@@ -6,6 +6,7 @@ namespace YOTO
 {    
     public enum YOTOEventType
     {
+
        //input :
        Move,
        Touch,

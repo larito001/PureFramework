@@ -45,7 +45,12 @@ public abstract class GameClientBase
 
         mgr.StopClient();
     }
+    public void StopHostClient()
+    {
+        var mgr = YOTOFramework.netMgr.mirrorManager;
+        RemoveClientEvents(mgr);
 
+    }
     // ==== 封装注册和移除方法 ====
     private void RegisterClientEvents(YOTOMirrorNetworkManager mgr)
     {

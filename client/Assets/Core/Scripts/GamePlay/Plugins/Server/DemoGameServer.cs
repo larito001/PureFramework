@@ -18,11 +18,24 @@ public class DemoGameServer : GameServerBase
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
+    }
+
+    private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
+    {
+        var response = new GameStartResponse();
+        response.isSuccess = true;
+        var notify = new GameStartNotify();
+        notify.isSuccess = true;
+        ServerMessageManager.Instance.SendNotify(notify);
+        gameState=GameState.Playing;
+        return response;
     }
 
     private void RemoveEvent()
     {
         ServerMessageManager.Instance.UnRegisterRequestHandler<LoginRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
     }
 
     #region 生命周期
@@ -56,6 +69,7 @@ public class DemoGameServer : GameServerBase
 
     public override void OnStopServer()
     {
+        ClearPlayers();
         RemoveEvent();
         Debug.Log("🛑 Server stopped");
     }
@@ -129,6 +143,12 @@ public class DemoGameServer : GameServerBase
     private void RemovePlayer(int connectionId)
     {
         players.Remove(players.First(x => x.playerId == connectionId));
+        RefreshPlayerNotify();
+    }
+
+    private void ClearPlayers()
+    {
+        players.Clear();
         RefreshPlayerNotify();
     }
 

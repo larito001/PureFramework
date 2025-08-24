@@ -14,8 +14,15 @@ public class RoomPanel : UIPageBase
         playerList.SetRenderer(ItemRender);
         leaveBtn.onClick.AddListener(() =>
         {
+            YOTOFramework.netMgr.StopHost();
             YOTOFramework.netMgr.LeaveHost();
+            CloseSelf();
         });
+        readyBtn.onClick.AddListener(() =>
+        {
+            LoginPlugin.Instance.GameStartRequest();
+        });
+        
     }
 
     private void ItemRender(YOTOScrollViewItem arg1,int  index)

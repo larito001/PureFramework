@@ -11,21 +11,24 @@ public class StartPanel : UIPageBase
     public Button createBtn;
     // textMeshpro的input
     public TMP_InputField IPInput;
+    public TMP_InputField NameInput;
     public TMP_InputField PortInput;
     public override void OnLoad()
     {
         PortInput. text = "9999";  
         IPInput.text = "127.0.0.1";
+        NameInput.text = "testName";
         startBtn.onClick.AddListener(() =>
         {
+            LoginPlugin.Instance.Name=NameInput.text;
             YOTOFramework.netMgr.JoinHost(IPInput.text, ushort.Parse(PortInput.text));
             // CloseSelf();
-            YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
+      
         });
         createBtn.onClick .AddListener(() =>
         {
+            LoginPlugin.Instance.Name=NameInput.text;
             YOTOFramework.netMgr.CreateHost(ushort.Parse(PortInput. text));
-            YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         });
     
   

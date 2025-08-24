@@ -1,3 +1,7 @@
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using UnityEngine;
 using Mirror;
 
@@ -10,7 +14,6 @@ namespace YOTO
             Idle,           // 空闲状态，未连接
             Hosting,        // 本地作为主机（服务器+客户端）
             Client,         // 仅客户端
-            ServerClient    // 服务器模式下的客户端
         }
 
         private NetState currentState = NetState.Idle;
@@ -25,6 +28,28 @@ namespace YOTO
             mirrorManager = YOTOMirrorNetworkManager.singleton as YOTOMirrorNetworkManager;
             mirrorManager.Init();
         }
+        private static bool IsPortInUse(int port)
+        {
+            try
+            {
+                // 尝试绑定到指定端口
+                var listener = new TcpListener(IPAddress.Loopback, port);
+                listener.Start();
+                listener.Stop();
+                return false; // 端口可用
+            }
+            catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+            {
+                return true; // 端口已被使用
+            }
+        }
+        public static bool IsUdpPortInUse(int port)
+        {
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] udpListeners = ipGlobalProperties.GetActiveUdpListeners();
+    
+            return udpListeners.Any(endpoint => endpoint.Port == port);
+        }
 
         // 创建主机 = 服务器 + 客户端
         public void CreateHost(ushort port)
@@ -32,9 +57,17 @@ namespace YOTO
             switch (currentState)
             {
                 case NetState.Idle:
-                    currentState = NetState.Hosting;
-                    JoinHost("", 0); // 本地客户端连接
-                    server.StartServer(port);
+                    if (!IsPortInUse(port)&&!IsUdpPortInUse(port))
+                    {
+                        currentState = NetState.Hosting;
+                        JoinHost("", 0); // 本地客户端连接
+                        server.StartServer(port);  
+                    }
+                    else
+                    {
+                        Debug.LogError("端口已被使用");
+                    }
+               
                     break;
                 default:
                     Debug.LogWarning("创建房间异常: 当前状态=" + currentState);
@@ -48,6 +81,7 @@ namespace YOTO
             {
                 case NetState.Hosting:
                     server.StopServer();
+                    client.StopHostClient();
                     currentState = NetState.Idle;
                     break;
                 default:
@@ -67,7 +101,6 @@ namespace YOTO
                     break;
                 case NetState.Hosting:
                     client.StartHostClient();
-                    currentState = NetState.ServerClient;
                     break;
                 default:
                     Debug.LogWarning("加入host异常: 当前状态=" + currentState);
@@ -80,12 +113,8 @@ namespace YOTO
             switch (currentState)
             {
                 case NetState.Client:
-                case NetState.ServerClient:
                     client.StopClient();
-                    if (currentState == NetState.ServerClient)
-                        currentState = NetState.Hosting; // 保留服务器
-                    else
-                        currentState = NetState.Idle;
+                    currentState = NetState.Idle;
                     break;
                 default:
                     Debug.LogWarning("离开host异常: 当前状态=" + currentState);

@@ -11,27 +11,61 @@ public class LoginPlugin : LogicPluginBase
         Instance = this;
     }
 
+    public string Name = "TestName";
     private List<PlayerData> _playerDatas= new List<PlayerData>();
     protected override void OnInstall()
     {
         base.OnInstall();
-        ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
-        ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
+    
     }
 
     protected override void OnUninstall()
     {
-        ClientMessageManager.Instance.UnRegisterResponseHandler<LoginResponse>();
-        ClientMessageManager.Instance.UnRegisterResponseHandler<LoginNotify>();
+   
         base.OnUninstall();
     }
+    public void OnNetInstall()
+    {
+        ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
+        ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<GameStartNotify>(OnGameStartNotify);
+        
+        ClientMessageManager.Instance.RegisterResponseHandler<GameStartResponse>(OnGameStartResponse);
+    }
     
-    public void LoginRequest(string name)
+    public void OnNetUninstall()
+    {
+        ClientMessageManager.Instance.UnRegisterResponseHandler<LoginResponse>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<LoginNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<GameStartNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<GameStartResponse>();
+    }
+
+    public void GameStartRequest()
     {
         var mgr = ClientMessageManager.Instance;
+        Debug.Log("LoginRequest");
+        mgr.SendRequest(new GameStartRequest()
+        {
+            isSuccess = true,
+        });
+    }
+    private void OnGameStartResponse(GameStartResponse obj)
+    {
+        
+    }
+
+    private void OnGameStartNotify(GameStartNotify obj)
+    {
+        Debug.Log("游戏开始！");
+    }
+    public void LoginRequest()
+    {
+        var mgr = ClientMessageManager.Instance;
+        Debug.Log("LoginRequest");
         mgr.SendRequest(new LoginRequest()
         {
-            playerName = name,
+            playerName = Name,
         });
     }
     private void LoginNotify(LoginNotify obj)
@@ -47,6 +81,7 @@ public class LoginPlugin : LogicPluginBase
         if (obj.isSuccess)
         {
             Debug.Log($"Login:{obj.playerData.playerId}");
+            YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         }
     }
 

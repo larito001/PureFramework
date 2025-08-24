@@ -23,22 +23,26 @@ public class DemoGameClient : GameClientBase
     public override void OnStopClient()
     {
         Debug.Log("🛑 Client stopped");
+        LoginPlugin.Instance.OnNetUninstall();
     }
 
     public override void OnClientConnect()
     {
         Debug.Log("✅ Client connected");
-        LoginPlugin.Instance.LoginRequest("testName");
+        LoginPlugin.Instance.OnNetInstall();
+        LoginPlugin.Instance.LoginRequest();
     }
 
     public override void OnClientDisconnect()
     {
         Debug.Log("🛑 Client disconnected from server");
+        YOTOFramework.netMgr.LeaveHost();
     }
 
     public override void OnClientNotReady()
     {
         Debug.Log("⚠️ Client is not ready");
+        YOTOFramework.netMgr.LeaveHost();
     }
 
     public override void OnClientChangeScene()
