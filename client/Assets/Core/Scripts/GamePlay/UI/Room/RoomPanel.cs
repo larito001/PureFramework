@@ -20,14 +20,20 @@ public class RoomPanel : UIPageBase
     public override void OnShow()
     {
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList,RefreshRoleList);
-        playerList.Initialize();
+        RefreshRoleList();
     }
 
     private void RefreshRoleList()
     {
      var tempList =   LoginPlugin.Instance.GetPlayerDatas();
         
-        playerList.SetData(tempList);
+     playerList.Initialize(10);
+  
+
+     playerList.SetData(tempList, (item, str) =>
+     {
+         item.OnRenderItem(str); // 类型安全
+     });
     }
 
     public override void OnHide()
