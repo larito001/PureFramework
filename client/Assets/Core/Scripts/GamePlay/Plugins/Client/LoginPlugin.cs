@@ -12,6 +12,14 @@ public class LoginPlugin : LogicPluginBase
     }
 
     public string Name = "TestName";
+    private int _playerId = -1;
+
+    public int PlayerId
+    {
+        get { return _playerId; }
+        
+        private set { _playerId = value; }
+    }
     private List<PlayerData> _playerDatas= new List<PlayerData>();
     protected override void OnInstall()
     {
@@ -44,7 +52,7 @@ public class LoginPlugin : LogicPluginBase
     public void GameStartRequest()
     {
         var mgr = ClientMessageManager.Instance;
-        Debug.Log("LoginRequest");
+        Debug.Log("GameStartRequest");
         mgr.SendRequest(new GameStartRequest()
         {
             isSuccess = true,
@@ -58,6 +66,9 @@ public class LoginPlugin : LogicPluginBase
     private void OnGameStartNotify(GameStartNotify obj)
     {
         Debug.Log("游戏开始！");
+        
+        //todo:生成游戏角色
+        StagePlugin.Instance.OnGameStart(_playerId,_playerDatas);
     }
     public void LoginRequest()
     {
@@ -81,6 +92,7 @@ public class LoginPlugin : LogicPluginBase
         if (obj.isSuccess)
         {
             Debug.Log($"Login:{obj.playerData.playerId}");
+            _playerId= obj.playerData.playerId;
             YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         }
     }

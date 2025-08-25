@@ -33,6 +33,8 @@ public class PluginManager
     public void InitPlugins()
     {
         InstallPlugin<LoginPlugin>();
+        InstallPlugin<PlayerPlugin>();
+        InstallPlugin<StagePlugin>();
 
     }
     
