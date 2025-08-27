@@ -24,12 +24,14 @@ public class DemoGameClient : GameClientBase
     {
         Debug.Log("🛑 Client stopped");
         LoginPlugin.Instance.OnNetUninstall();
+        PlayerPlugin.Instance.OnNetUninstall();
     }
 
     public override void OnClientConnect()
     {
         Debug.Log("✅ Client connected");
         LoginPlugin.Instance.OnNetInstall();
+        PlayerPlugin.Instance.OnNetInstall();
         LoginPlugin.Instance.LoginRequest();
     }
 

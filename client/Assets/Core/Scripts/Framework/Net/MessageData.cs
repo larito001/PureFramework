@@ -41,6 +41,20 @@ public struct LoginResponse : IResponse
     public PlayerData playerData;
     public bool isSuccess;
 }
+
+public struct InputRequest: IRequest
+{
+    public int playerId;
+    public Vector2 input;
+}
+public struct InputNotify: IResponse
+{
+    public int playerId;
+    public Vector2 input;
+}
+public struct InputResponse: IResponse
+{
+}
 public class MessageData 
 {
     // 例子：移动请求

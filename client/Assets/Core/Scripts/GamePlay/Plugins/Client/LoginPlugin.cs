@@ -67,7 +67,6 @@ public class LoginPlugin : LogicPluginBase
     {
         Debug.Log("游戏开始！");
         
-        //todo:生成游戏角色
         StagePlugin.Instance.OnGameStart(_playerId,_playerDatas);
     }
     public void LoginRequest()

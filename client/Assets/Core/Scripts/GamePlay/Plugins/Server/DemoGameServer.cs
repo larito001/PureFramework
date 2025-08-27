@@ -19,8 +19,9 @@ public class DemoGameServer : GameServerBase
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<InputRequest>(OnInputRequest);
     }
-
+    
     private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
     {
         var response = new GameStartResponse();
@@ -36,6 +37,7 @@ public class DemoGameServer : GameServerBase
     {
         ServerMessageManager.Instance.UnRegisterRequestHandler<LoginRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<InputRequest>();
     }
 
     #region 生命周期
@@ -151,6 +153,25 @@ public class DemoGameServer : GameServerBase
         players.Clear();
         RefreshPlayerNotify();
     }
+
+    #endregion
+
+    #region 游戏业务
+
+    private IResponse OnInputRequest(InputRequest request, int id)
+    {
+        
+        InputNotify notify = new InputNotify()
+        {
+            playerId =request.playerId,
+            input = request.input
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+        
+        return new InputResponse();
+    }
+
+    
 
     #endregion
 }

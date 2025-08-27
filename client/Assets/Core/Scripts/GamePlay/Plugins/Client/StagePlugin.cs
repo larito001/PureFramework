@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using YOTO;
 
 
 public class StagePlugin : LogicPluginBase
@@ -11,6 +12,7 @@ public class StagePlugin : LogicPluginBase
     }
     private int playerId=-1;
     private List<PlayerData> players = new List<PlayerData>();
+    public bool GameStart = false;
     protected override void OnInstall()
     {
         base.OnInstall();
@@ -22,13 +24,16 @@ public class StagePlugin : LogicPluginBase
     }
     public void OnNetInstall()
     {
+        GameStart = false;
     }
     public void OnNetUninstall()
     {
-
+        GameStart = false;
     }
     public void OnGameStart(int playerId,List<PlayerData> playerDatas)
     {
+        GameStart = true;
+        YOTOFramework.uIMgr.ClearUI();
         this.playerId=playerId;
         players=playerDatas;
         PlayerPlugin.Instance.GeneratePlayers(players);
