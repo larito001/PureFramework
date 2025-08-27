@@ -39,8 +39,6 @@ public class PlayerPlugin : LogicPluginBase
         {
             YOTOFramework.sceneMgr.cameraCtrl.lookInput=obj.input;
         }
-        if(players.ContainsKey(obj.playerId))
-        players[obj.playerId].RoatePlayer(obj.input);
     }
 
     public void OnNetUninstall()
@@ -59,13 +57,7 @@ public class PlayerPlugin : LogicPluginBase
           input = ipt
         });
     }
-
-    private void RatatePlayer(int pid)
-    {
-        //
-        // players.Rotate();
-    }
-
+    
     public void GeneratePlayers(List<PlayerData> playerDatas)
     {
       

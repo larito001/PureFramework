@@ -37,8 +37,7 @@ public class CameraCtrl
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Look, (input) =>
         {
             if(StagePlugin.Instance.GameStart)
-            PlayerPlugin.Instance.RotatePlayerRequest( input);
-            // lookInput = input;
+            PlayerPlugin.Instance.RotatePlayerRequest(input);
         });
 
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
