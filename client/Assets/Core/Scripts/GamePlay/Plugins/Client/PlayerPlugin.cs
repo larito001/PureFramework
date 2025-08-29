@@ -22,39 +22,53 @@ public class PlayerPlugin : LogicPluginBase
     }
     public void OnNetInstall()
     {
-        ClientMessageManager.Instance.RegisterResponseHandler<InputNotify>(OnInputNotify);
-        ClientMessageManager.Instance.RegisterResponseHandler<InputResponse>(OnInputResponse);
+        ClientMessageManager.Instance.RegisterResponseHandler<HeadPosNotify>(OnHeadPosNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<HeadPosResponse>(OnHeadPosResponse);
     
     }
 
-    private void OnInputResponse(InputResponse obj)
+    private void OnHeadPosResponse(HeadPosResponse obj)
     {
         
     }
 
-    private void OnInputNotify(InputNotify obj)
+    private void OnHeadPosNotify(HeadPosNotify obj)
     {
         // players.RotatePlayer();
-        if (LoginPlugin.Instance.PlayerId==obj.playerId)
+        if (LoginPlugin.Instance.PlayerId!=obj.playerId)
         {
-            YOTOFramework.sceneMgr.cameraCtrl.lookInput=obj.input;
+            //todo:旋转眼球
+            if (players.ContainsKey(obj.playerId))
+            {
+                Debug.Log("Player:"+obj.playerId+" 旋转眼球"+obj.pos);
+                players[obj.playerId].SetEyesMove(obj.pos);
+            }
+      
         }
     }
 
+    public void RotateSelfPlayerEyes(Vector2 input)
+    {
+        if (players.ContainsKey(LoginPlugin.Instance.PlayerId))
+        {
+            players[LoginPlugin.Instance.PlayerId].SetEyesMove(input); 
+        }
+    
+    }
     public void OnNetUninstall()
     {
-        ClientMessageManager.Instance.UnRegisterResponseHandler<InputNotify>();
-        ClientMessageManager.Instance.UnRegisterResponseHandler<InputResponse>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosResponse>();
     }
-    public void RotatePlayerRequest(Vector2  ipt)
+    public void RotatePlayerRequest(Vector3  pos)
     {
         var pid = LoginPlugin.Instance.PlayerId;
         var mgr = ClientMessageManager.Instance;
         Debug.Log("RotateRequest");
-        mgr.SendRequest(new InputRequest()
+        mgr.SendRequest(new HeadPosRequest()
         {
           playerId =pid,
-          input = ipt
+          pos = pos
         });
     }
     

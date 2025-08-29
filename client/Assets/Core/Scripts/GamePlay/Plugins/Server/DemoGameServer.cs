@@ -11,6 +11,7 @@ public class DemoGameServer : GameServerBase
         Playing,
     }
     private List<PlayerData> players = new List<PlayerData>();
+    private List<FoodData> foods = new List<FoodData>(); 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
     
@@ -19,25 +20,16 @@ public class DemoGameServer : GameServerBase
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<InputRequest>(OnInputRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
     }
     
-    private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
-    {
-        var response = new GameStartResponse();
-        response.isSuccess = true;
-        var notify = new GameStartNotify();
-        notify.isSuccess = true;
-        ServerMessageManager.Instance.SendNotify(notify);
-        gameState=GameState.Playing;
-        return response;
-    }
+
 
     private void RemoveEvent()
     {
         ServerMessageManager.Instance.UnRegisterRequestHandler<LoginRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<InputRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<HeadPosRequest>();
     }
 
     #region 生命周期
@@ -157,18 +149,46 @@ public class DemoGameServer : GameServerBase
     #endregion
 
     #region 游戏业务
+    private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
+    {
+        var response = new GameStartResponse();
+        response.isSuccess = true;
+        var notify = new GameStartNotify();
+        notify.isSuccess = true;
+        ServerMessageManager.Instance.SendNotify(notify);
+        gameState=GameState.Playing;
 
-    private IResponse OnInputRequest(InputRequest request, int id)
+        GenerateFoods();
+        return response;
+    }
+
+    private void GenerateFoods()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            var food = new FoodData();
+            food.foodId = i;
+            food.position = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+            food.state = FoodState.Idle;
+            foods.Add(food);
+        }
+        FoodNotify notify = new FoodNotify();
+        notify.foodList = foods;
+        ServerMessageManager.Instance.SendNotify(notify);
+        
+    }
+    
+    private IResponse OnHeadRotationRequest(HeadPosRequest request, int id)
     {
         
-        InputNotify notify = new InputNotify()
+        HeadPosNotify notify = new HeadPosNotify()
         {
             playerId =request.playerId,
-            input = request.input
+            pos = request.pos
         };
         ServerMessageManager.Instance.SendNotify(notify);
         
-        return new InputResponse();
+        return new HeadPosResponse();
     }
 
     

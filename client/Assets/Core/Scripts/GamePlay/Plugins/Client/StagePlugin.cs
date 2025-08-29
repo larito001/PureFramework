@@ -1,11 +1,13 @@
 
 using System.Collections.Generic;
+using UnityEngine;
 using YOTO;
 
 
 public class StagePlugin : LogicPluginBase
 {
     public static StagePlugin Instance;
+    public List<FoodData> foodList = new List<FoodData>();
     public StagePlugin()
     {
         Instance = this;
@@ -25,7 +27,25 @@ public class StagePlugin : LogicPluginBase
     public void OnNetInstall()
     {
         GameStart = false;
+        ClientMessageManager.Instance.RegisterResponseHandler<FoodNotify>(OnFoodNotify);
     }
+
+    private void OnFoodNotify(FoodNotify obj)
+    {
+        foodList = obj.foodList;
+        for (var i = 0; i < foodList.Count; i++)
+        {
+            GenerateFoodsOnMap(foodList[i]);
+        }
+    }
+
+    private void GenerateFoodsOnMap(FoodData foodData)
+    {
+       var food=  FoodEntity.pool.GetItem(foodData);
+       food.Location=foodData.position;
+       food.InstanceGObj();
+    }
+
     public void OnNetUninstall()
     {
         GameStart = false;

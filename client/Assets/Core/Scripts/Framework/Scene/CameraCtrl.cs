@@ -26,7 +26,7 @@ public class CameraCtrl
     public float sensitivity = 10f;
     public float smoothTime = 0.5f; // 平滑时间
 
-    public Vector2 lookInput = Vector2.zero;
+    private Vector2 lookInput = Vector2.zero;
     private float rayTimer = 0f;
     private bool isShaking = false;
 
@@ -36,8 +36,8 @@ public class CameraCtrl
 
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Look, (input) =>
         {
-            if(StagePlugin.Instance.GameStart)
-            PlayerPlugin.Instance.RotatePlayerRequest(input);
+            if (StagePlugin.Instance.GameStart)
+                lookInput = input;
         });
 
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
@@ -45,7 +45,7 @@ public class CameraCtrl
         vCamera.transform.position = cameraDir.transform.position;
         vCamera.transform.rotation = cameraDir.transform.rotation;
 
-        vCamera.m_Lens.FieldOfView = 50;
+        vCamera.m_Lens.FieldOfView = 30;
         vCamera.m_Lens.OrthographicSize = 40;
 
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Touch, Touch);
@@ -112,9 +112,10 @@ public class CameraCtrl
             Ray ray = YOTOFramework.cameraMgr.getMainCamera().ScreenPointToRay(dir);
             RaycastHit hitInfo;
 
-            if (Physics.Raycast(ray, out hitInfo, 1000, LayerMask.GetMask("Test")))
+            if (Physics.Raycast(ray, out hitInfo, 1000, LayerMask.GetMask("Food")))
             {
                 // todo: 点击逻辑
+                Debug.Log("点击到了食物"+hitInfo.transform.gameObject.name);
             }
         }
     }
@@ -134,6 +135,7 @@ public class CameraCtrl
     
     public void Update(float dt)
     {
+        PlayerPlugin.Instance.RotateSelfPlayerEyes(lookInput);
         rayTimer += dt;
         if (rayTimer >= 0.02f)
         {
@@ -180,7 +182,7 @@ public class CameraCtrl
 
         float lerpFactor = 1 - Mathf.Exp(-smoothTime * 60f * dt);
         vCamera.transform.rotation = Quaternion.Slerp(vCamera.transform.rotation, targetRotation, lerpFactor);
-
+        
         lookInput = Vector2.zero;
    
     }
