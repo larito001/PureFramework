@@ -11,7 +11,7 @@ public class DemoGameServer : GameServerBase
         Playing,
     }
     private List<PlayerData> players = new List<PlayerData>();
-    private List<FoodData> foods = new List<FoodData>(); 
+    private Dictionary<int,FoodData> foods = new Dictionary<int,FoodData>(); 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
     
@@ -21,8 +21,11 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
+        
     }
-    
+
+ 
 
 
     private void RemoveEvent()
@@ -170,10 +173,10 @@ public class DemoGameServer : GameServerBase
             food.foodId = i;
             food.position = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
             food.state = FoodState.Idle;
-            foods.Add(food);
+            foods.Add( food.foodId,food);
         }
         FoodNotify notify = new FoodNotify();
-        notify.foodList = foods;
+        notify.foodList = foods.Values.ToList();
         ServerMessageManager.Instance.SendNotify(notify);
         
     }
@@ -191,7 +194,41 @@ public class DemoGameServer : GameServerBase
         return new HeadPosResponse();
     }
 
-    
+    private IResponse OnCatchFoodRequest(CatchFoodRequest arg1, int arg2)
+    {
+        bool isSuccess = false;
+        if (foods.ContainsKey(arg1.foodId))
+        {
+            if (foods[arg1.foodId].state == FoodState.Idle)
+            {
+                foods[arg1.foodId].state=FoodState.Catching;
+                isSuccess = true;
+        
+            }else if (foods[arg1.foodId].state == FoodState.Catching)
+            {
+                //todo:开启抢夺
+                foods[arg1.foodId].state=FoodState.Discard;
+            }
+        }
+        CatchFoodNotify notify = new CatchFoodNotify()
+        {
+            playerId =arg1.playerId,
+            foodId = arg1.foodId,
+            isSuccess = isSuccess
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+        NotifyFoodState();
+        return null;
+    }
+
+    private void NotifyFoodState()
+    {
+        var notify = new RefreshFoodStateNotify()
+        {
+            newDatas = foods.Values.ToList()
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
 
     #endregion
 }

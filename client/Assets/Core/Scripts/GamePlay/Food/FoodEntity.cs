@@ -38,14 +38,26 @@ public class FoodEntity :ObjectBase,PoolItem<FoodData>
 
     protected override void AfterInstanceGObj()
     {
-        
+        if (objTrans.TryGetComponent<FoodBase>(out FoodBase food))
+        {
+            food.foodId=data.foodId;
+        }
     }
 
     public void AfterIntoObjectPool()
     {
-        
+        if (objTrans.TryGetComponent<FoodBase>(out FoodBase food))
+        {
+            food.foodId=-1;
+      
+        }
+        RecoverObject();
     }
 
+    public void RefreshState(FoodData newdata)
+    {
+        data=newdata;
+    }
     public void SetData(FoodData serverData)
     {
         this.data=serverData;

@@ -116,6 +116,10 @@ public class CameraCtrl
             {
                 // todo: 点击逻辑
                 Debug.Log("点击到了食物"+hitInfo.transform.gameObject.name);
+                if (hitInfo.transform.TryGetComponent<FoodBase>(out FoodBase food))
+                {
+                    PlayerPlugin.Instance.CatchFood(food.foodId);
+                }
             }
         }
     }

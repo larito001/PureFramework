@@ -24,12 +24,34 @@ public class PlayerPlugin : LogicPluginBase
     {
         ClientMessageManager.Instance.RegisterResponseHandler<HeadPosNotify>(OnHeadPosNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<HeadPosResponse>(OnHeadPosResponse);
+        ClientMessageManager.Instance.RegisterResponseHandler<CatchFoodNotify>(OnCatchFoodNotify);
     
+    }
+
+    private void OnCatchFoodNotify(CatchFoodNotify obj)
+    {
+        if (obj.isSuccess)
+        {
+            // StagePlugin.Instance.RemoveFood(obj.foodId);
+        }
+        
     }
 
     private void OnHeadPosResponse(HeadPosResponse obj)
     {
         
+    }
+
+    public void CatchFood(int fId)
+    {
+        var mgr = ClientMessageManager.Instance;
+        Debug.Log("CatchFood");
+        mgr.SendRequest(new CatchFoodRequest()
+        {
+            playerId =LoginPlugin.Instance.PlayerId,
+            foodId=fId
+            
+        });
     }
 
     private void OnHeadPosNotify(HeadPosNotify obj)
@@ -59,6 +81,7 @@ public class PlayerPlugin : LogicPluginBase
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosResponse>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<CatchFoodNotify>();
     }
     public void RotatePlayerRequest(Vector3  pos)
     {

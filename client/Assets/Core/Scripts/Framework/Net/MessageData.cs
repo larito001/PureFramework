@@ -44,6 +44,11 @@ public class FoodData
     public FoodState state; 
 }
 
+public struct RefreshFoodStateNotify:IResponse
+{
+    public List<FoodData> newDatas;
+}
+
 public struct CatchFoodRequest: IRequest
 {
     public int foodId;
