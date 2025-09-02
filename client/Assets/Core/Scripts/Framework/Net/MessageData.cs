@@ -22,7 +22,11 @@ public class PlayerData
 {
     public int playerId;
     public string playerName;
-    
+
+    public void CatchFood()
+    {
+        
+    }
 }
 
 #endregion
@@ -66,72 +70,35 @@ public class FoodData
             isSuccess = true
         };
         ServerMessageManager.Instance.SendNotify(notify);
-        //todo:倒计时3秒转换状态
     }
 
     public void EndCatch()
     {
         state = FoodState.Eat;
-    }
-    public void StartLooting(int playerId)
-    {
-        playerIds.Add(playerId,0);
-        state = FoodState.Looting;
-        StartLootNotify notify = new StartLootNotify()
+        EndCatchFoodNotify notify = new EndCatchFoodNotify()
         {
             foodId = foodId,
-            playerIds = playerIds.Values.ToList()
+            playerId = playerIds.First().Key,
+            isSuccess = true
         };
         ServerMessageManager.Instance.SendNotify(notify);
     }
-    
-    public void EndLooting()
-    {
-        var maxID = -1;
-        var maxScore = -1;
-        foreach (var keyValuePair in playerIds)
-        {
-            if (keyValuePair.Value >= maxScore)
-            {
-                maxScore=keyValuePair.Value;
-                maxID=keyValuePair.Key;
-            }
-        }
-        //todo:广播结算
-    }
 
-    public void StartDiscard()
-    {
-        state= FoodState.Discard;
-    }
 
     public void Update(float dt)
     {
         if (state == FoodState.Catching)
         {
             timerTemp += dt;
-            if (timerTemp >= 2)
+            if (timerTemp >= 10)
             {
                 timerTemp = 0;
                 EndCatch();
             }
         }
-        else if (state == FoodState.Looting)
-        {
-            timerTemp += dt;
-            if (timerTemp >= 2)
-            {
-                timerTemp = 0;
-                EndLooting();
-            }
-        }
     }
 }
 
-public struct RefreshFoodStateNotify:IResponse
-{
-    public List<FoodData> newDatas;
-}
 
 public struct CatchFoodRequest: IRequest
 {
@@ -144,6 +111,12 @@ public struct CatchFoodResponse: IResponse
     public bool isSuccess;
 }
 public struct CatchFoodNotify:IResponse
+{
+    public int foodId;
+    public int playerId;
+    public bool isSuccess;
+}
+public struct EndCatchFoodNotify:IResponse
 {
     public int foodId;
     public int playerId;
@@ -232,8 +205,6 @@ public struct HeadPosNotify: IResponse
     public int playerId;
     public Vector3 pos;
 }
-public struct HeadPosResponse: IResponse
-{
-}
+
 
 #endregion

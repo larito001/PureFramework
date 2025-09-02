@@ -124,7 +124,7 @@ namespace YOTO
 
         public void FixUpdate(float dt)
         {
-            server.Update();
+            server.Update(dt);
             client.Update();
         }
     }

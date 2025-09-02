@@ -21,8 +21,8 @@ public class CameraCtrl
     private float xRotation = 0f;
     private float yRotation = 0f;
 
-    public float verticalClamp = 90f;
-    public float horizontalClamp = 90f;
+    public float verticalClamp = 45f;
+    public float horizontalClamp = 45f;
     public float sensitivity = 10f;
     public float smoothTime = 0.5f; // 平滑时间
 

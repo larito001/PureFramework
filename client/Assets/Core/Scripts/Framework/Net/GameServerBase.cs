@@ -63,7 +63,7 @@ public abstract class GameServerBase
     }
 
     // === 抽象方法：生命周期 ===
-    public abstract void Update();
+    public abstract void Update(float dt);
 
     public abstract void OnStartHost();
     public abstract void OnStopHost();
