@@ -10,9 +10,7 @@ public class DemoGameServer : GameServerBase
         Idle,
         Playing,
     }
-
-    private List<PlayerData> players = new List<PlayerData>();
-    private Dictionary<int, FoodData> foods = new Dictionary<int, FoodData>();
+    
 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
@@ -40,7 +38,7 @@ public class DemoGameServer : GameServerBase
     public override void Update(float dt)
     {
         // 可以在这里处理服务器每帧逻辑
-        foreach (var food in foods.Values)
+        foreach (var food in ServerDataPlugin.Instance.GetFoodList() )
         {
             food.Update(dt);
         }
@@ -117,12 +115,12 @@ public class DemoGameServer : GameServerBase
             isSuccess = false,
             playerData = null
         };
-        if (players.Count < playerMaxNum && gameState == GameState.Idle)
+        if (ServerDataPlugin.Instance.GetPlayerList().Count < playerMaxNum && gameState == GameState.Idle)
         {
             playerDataTemp = new PlayerData();
             playerDataTemp.playerId = connectionId;
             playerDataTemp.playerName = req.playerName;
-            players.Add(playerDataTemp);
+            ServerDataPlugin.Instance.AddPlayer(playerDataTemp);
             // 广播给所有客户端
             RefreshPlayerNotify();
             res.isSuccess = true;
@@ -136,20 +134,20 @@ public class DemoGameServer : GameServerBase
     {
         LoginNotify notify = new LoginNotify
         {
-            playerDatas = players
+            playerDatas = ServerDataPlugin.Instance.GetPlayerList().ToList()
         };
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
     private void RemovePlayer(int connectionId)
     {
-        players.Remove(players.First(x => x.playerId == connectionId));
+        ServerDataPlugin.Instance.RemovePlayerById(connectionId);
         RefreshPlayerNotify();
     }
 
     private void ClearPlayers()
     {
-        players.Clear();
+        ServerDataPlugin.Instance.RemoveAllPlayers();
         RefreshPlayerNotify();
     }
 
@@ -186,11 +184,11 @@ public class DemoGameServer : GameServerBase
             food.foodId = i;
             food.position = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
             food.Init();
-            foods.Add(food.foodId, food);
+            ServerDataPlugin.Instance.AddFood(food);;
         }
 
         FoodNotify notify = new FoodNotify();
-        notify.foodList = foods.Values.ToList();
+        notify.foodList = ServerDataPlugin.Instance.GetFoodList().ToList();
         ServerMessageManager.Instance.SendNotify(notify);
     }
     /// <summary>
@@ -219,17 +217,13 @@ public class DemoGameServer : GameServerBase
     /// <returns></returns>
     private IResponse OnCatchFoodRequest(CatchFoodRequest arg1, int arg2)
     {
-        if (foods.ContainsKey(arg1.foodId))
+        if (ServerDataPlugin.Instance.CheckHaveFood(arg1.foodId) )
         {
-            if (foods[arg1.foodId].GetState() == FoodState.Idle)
+            if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId) )
             {
-                foods[arg1.foodId].StartCatch(arg1.playerId);
+              var food =  ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
+              food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));
             }
-            else
-            {
-                Debug.Log("food已被占用");
-            }
-     
         }
         return null;
     }

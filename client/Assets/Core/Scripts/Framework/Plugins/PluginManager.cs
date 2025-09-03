@@ -32,9 +32,11 @@ public class PluginManager
 
     public void InitPlugins()
     {
+        InstallPlugin<ServerDataPlugin>();
         InstallPlugin<LoginPlugin>();
         InstallPlugin<PlayerPlugin>();
         InstallPlugin<StagePlugin>();
+
 
     }
     

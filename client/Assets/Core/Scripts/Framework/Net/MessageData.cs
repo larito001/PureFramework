@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using YOTO;
 
 #region 基类
 
@@ -17,15 +18,55 @@ public interface IResponse : NetworkMessage { }
 
 
 #region 角色
-
+public enum PlayerState
+{
+    Idle,//无
+    Catching,//抓取中
+    Looting,//抢夺中
+    Backing,//返回中
+}
 public class PlayerData
 {
     public int playerId;
     public string playerName;
-
-    public void CatchFood()
+    private PlayerState State=PlayerState.Idle;
+    public bool OnCatchFood()
     {
-        
+        if (State == PlayerState.Idle)
+        {
+            State=PlayerState.Catching;
+            return true;
+        }
+
+        return false;
+    }
+    public bool OnLootFood()
+    {
+        if (State == PlayerState.Idle)
+        {
+            State=PlayerState.Looting;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool OnLootAfterCatch()
+    {
+        if (State == PlayerState.Catching)
+        {
+            State = PlayerState.Looting;
+            return true;
+        }
+
+        return false;
+    }
+    public void OnCatchFoodEnd()
+    {
+        if (State == PlayerState.Catching)
+        {
+            State = PlayerState.Idle;  
+        }
     }
 }
 
@@ -47,7 +88,7 @@ public class FoodData
     public int foodId;
     public Vector3 position;
     private FoodState state;
-    private Dictionary<int,int>playerIds = new Dictionary<int,int>();
+    private Dictionary<int,PlayerData>playerIds = new Dictionary<int,PlayerData>();
     private float timerTemp = 0;
     public FoodState GetState()
     {
@@ -58,23 +99,44 @@ public class FoodData
         state = FoodState.Idle;
         playerIds.Clear();
     }
-    public void StartCatch(int playerId)
+    public void StartCatch(PlayerData playerInfo)
     {
-        playerIds.Add(playerId,0);
-        state = FoodState.Catching;
-        timerTemp = 0;
-        CatchFoodNotify notify = new CatchFoodNotify()
+        if (state == FoodState.Idle&&playerInfo.OnCatchFood())
         {
-            playerId =playerId,
-            foodId = foodId,
-            isSuccess = true
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
+            playerIds.Add(playerInfo.playerId,playerInfo);
+            state = FoodState.Catching;
+            timerTemp = 0;
+            CatchFoodNotify notify = new CatchFoodNotify()
+            {
+                playerId =playerInfo.playerId,
+                foodId = foodId,
+                isSuccess = true
+            };
+            ServerMessageManager.Instance.SendNotify(notify); 
+        }else if (state == FoodState.Catching&&playerInfo.OnLootFood())
+        {
+            //通知所有玩家开启抢夺
+            foreach (var info in playerIds.Values)
+            {
+                info.OnLootAfterCatch();
+            }
+            //todo:广播玩家开抢
+            Debug.Log("开抢");
+        }
+        else
+        {
+            Debug.Log("抓取失败");
+        }
+        
     }
 
     public void EndCatch()
     {
         state = FoodState.Eat;
+        foreach (var info in playerIds.Values)
+        {
+            info.OnCatchFoodEnd();
+        }
         EndCatchFoodNotify notify = new EndCatchFoodNotify()
         {
             foodId = foodId,
@@ -90,7 +152,7 @@ public class FoodData
         if (state == FoodState.Catching)
         {
             timerTemp += dt;
-            if (timerTemp >= 10)
+            if (timerTemp >= 2)
             {
                 timerTemp = 0;
                 EndCatch();
