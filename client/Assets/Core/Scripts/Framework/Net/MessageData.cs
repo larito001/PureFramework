@@ -30,6 +30,11 @@ public class PlayerData
     public int playerId;
     public string playerName;
     private PlayerState State=PlayerState.Idle;
+    public int lootNum = 0;
+    public PlayerState GetState()
+    {
+        return State;
+    }
     public bool OnCatchFood()
     {
         if (State == PlayerState.Idle)
@@ -55,6 +60,7 @@ public class PlayerData
     {
         if (State == PlayerState.Catching)
         {
+            lootNum = 0;
             State = PlayerState.Looting;
             return true;
         }
@@ -66,6 +72,13 @@ public class PlayerData
         if (State == PlayerState.Catching)
         {
             State = PlayerState.Idle;  
+        }
+    }
+    public void OnLootFoodEnd()
+    {
+        if (State == PlayerState.Looting)
+        {
+            State = PlayerState.Idle;
         }
     }
 }
@@ -115,17 +128,33 @@ public class FoodData
             ServerMessageManager.Instance.SendNotify(notify); 
         }else if (state == FoodState.Catching&&playerInfo.OnLootFood())
         {
+            state=FoodState.Looting;
             //通知所有玩家开启抢夺
             foreach (var info in playerIds.Values)
             {
                 info.OnLootAfterCatch();
             }
+
+            StartLootNotify notify = new StartLootNotify()
+            {
+                foodId = foodId,
+                playerIds = playerIds.Select(x => x.Key).ToList()
+            };
+            ServerMessageManager.Instance.SendNotify(notify);
             //todo:广播玩家开抢
             Debug.Log("开抢");
+            timerTemp = 0;
         }
-        else
+        else if(playerInfo.GetState()==PlayerState.Idle)
         {
             Debug.Log("抓取失败");
+            CatchFoodNotify notify = new CatchFoodNotify()
+            {
+                playerId =playerInfo.playerId,
+                foodId = foodId,
+                isSuccess = false
+            };
+            ServerMessageManager.Instance.SendNotify(notify); 
         }
         
     }
@@ -146,19 +175,57 @@ public class FoodData
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
+    private void EndLoot()
+    {
+        state=FoodState.Eat;
+        int maxId = -1;
+        int maxNum = -1;
+        foreach (var info in playerIds.Values)
+        {
+            info.OnLootFoodEnd();
+        }
+        foreach (var data in playerIds.Values)
+        {
+            if (data.lootNum >= maxNum)
+            {
+                maxId = data.playerId;
+                maxNum = data.lootNum;
+            }
+        }
+        StopLootNotify notify = new StopLootNotify()
+        {
+            foodId = foodId,
+            winPlayerId = maxId,
+            res = LootRes.Success,
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+        
 
+    }
     public void Update(float dt)
     {
         if (state == FoodState.Catching)
         {
             timerTemp += dt;
-            if (timerTemp >= 2)
+            if (timerTemp >= 10)
             {
                 timerTemp = 0;
                 EndCatch();
             }
         }
+
+        if (state == FoodState.Looting)
+        {
+            timerTemp += dt;
+            if (timerTemp >= 2)
+            {
+                timerTemp = 0;
+                EndLoot();
+            }
+        }
     }
+
+
 }
 
 
@@ -184,24 +251,23 @@ public struct EndCatchFoodNotify:IResponse
     public int playerId;
     public bool isSuccess;
 }
-public enum LootRes
-{
-    Success,//胜利
-    Dogfall,//平局
-}
+
 public struct StartLootNotify:IResponse
 {
     public int foodId;
     public List<int> playerIds;
 }
+
+public enum LootRes
+{
+    Success,//胜利
+    Dogfall,//平局
+}
+
 public struct LootingInputRequest:IRequest
 {
     public int foodId;
     public int playerId;
-}
-public struct LootingInputResponse:IResponse
-{
-    
 }
 public struct LootingInputNotify:IResponse
 {

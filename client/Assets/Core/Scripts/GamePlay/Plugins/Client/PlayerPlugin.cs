@@ -25,19 +25,36 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<HeadPosNotify>(OnHeadPosNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<CatchFoodNotify>(OnCatchFoodNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<EndCatchFoodNotify>(OnEndCatchFoodNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<StartLootNotify>(OnStartLootNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<StopLootNotify>(OnStopLootNotify);
     
     }
-
+    
     public void OnNetUninstall()
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<CatchFoodNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<EndCatchFoodNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<StartLootNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<StopLootNotify>();
     }
 
     #region 食物操作
     
     
+    private void OnStartLootNotify(StartLootNotify obj)
+    {
+        //todo:开抢，对应id进入特殊状态
+        Debug.Log("开始抢夺");
+        
+    }
+    private void OnStopLootNotify(StopLootNotify obj)
+    {
+        //todo:抢夺结束，退出特殊状态
+        Debug.Log("抢夺结束，player"+obj.winPlayerId+"赢了");
+        
+    }
+
 
     public void CatchFood(int fId)
     {
@@ -51,12 +68,7 @@ public class PlayerPlugin : LogicPluginBase
     }
     private void OnCatchFoodNotify(CatchFoodNotify obj)
     {
-        if (obj.isSuccess)
-        {
-            // StagePlugin.Instance.RemoveFood(obj.foodId);
-     
-            players[obj.playerId].CatchFood(obj.foodId);
-        }
+        players[obj.playerId].CatchFood(obj.foodId,obj.isSuccess);
     }
     private void OnEndCatchFoodNotify(EndCatchFoodNotify obj)
     {

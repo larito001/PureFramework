@@ -42,10 +42,10 @@ public class PlayerEntity :ObjectBase,PoolItem<PlayerData>
         eyesCtrl.ForceMove(pos);
     }
 
-    public void CatchFood(int foodId)
+    public void CatchFood(int foodId,bool success)
     {
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-        handCtrl.ExtendLeftHand(food.ObjTrans);
+        handCtrl.ExtendLeftHand(food.ObjTrans,success);
     }
     public void EndCatch()
     {

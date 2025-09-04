@@ -41,7 +41,7 @@ public class HandCtrl : MonoBehaviour
     /// <summary>
     /// 左手伸出去抓目标
     /// </summary>
-    public void ExtendLeftHand(Transform target)
+    public void ExtendLeftHand(Transform target,bool success)
     {
         if (leftHand == null || target == null) return;
 
@@ -51,9 +51,17 @@ public class HandCtrl : MonoBehaviour
                 .SetEase(moveEase)
                 .OnComplete(() =>
                 {
-                    target.SetParent(leftHand);
-                    target.localPosition = Vector3.zero;
-                    target.localRotation = Quaternion.identity;
+                    if (success)
+                    {
+                        target.SetParent(leftHand);
+                        target.localPosition = Vector3.zero;
+                        target.localRotation = Quaternion.identity;
+                    }
+                    else
+                    {
+                        RetractLeftHand();
+                    }
+           
                 });
     }
 
