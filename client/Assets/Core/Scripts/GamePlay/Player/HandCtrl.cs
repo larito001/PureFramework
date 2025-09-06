@@ -87,18 +87,22 @@ public class HandCtrl : MonoBehaviour
     /// <summary>
     /// 左手收回
     /// </summary>
-    public void RetractLeftHand(bool releaseTarget = false)
+    /// 左手收回
+    /// </summary>
+    public void RetractLeftHand()
     {
         if (leftHand == null) return;
 
         leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase);
-        leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase);
-
-        if (releaseTarget && leftTarget != null)
-        {
-            leftTarget.SetParent(null);
-            leftTarget = null;
-        }
+        leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase)
+            .OnComplete(() => {
+                if (leftTarget != null)
+                {
+                    // 销毁物体
+                    var food =leftTarget.GetComponent<FoodBase>();
+                    StagePlugin.Instance.RemoveFood(food.foodId);
+                }
+            });
     }
 
     /// <summary>

@@ -78,60 +78,13 @@ namespace YOTO
              }
         }
 
-
-        //public void OnTouch(InputAction.CallbackContext context)
-        //{
-        //    if (context.phase == InputActionPhase.Performed)
-        //    {
-        //        YOTOFramework.eventMgr.TriggerEvent<Vector2>(YOTO.EventType.Touch, context.ReadValue<Vector2>());
-        //    }
-        //}
-        public void OnSprint(InputAction.CallbackContext context)
+        public void OnSpace(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                // YOTOFramework.eventMgr.TriggerEvent(EventType.Sprint);
+                YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.Space);
             }
         }
 
-        public void OnUseItem(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-                // YOTOFramework.eventMgr.TriggerEvent(EventType.UseItem);
-            }
-        }
-
-        public void OnCooking(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-                // YOTOFramework.eventMgr.TriggerEvent(EventType.Cooking);
-            }
-        }
-
-        public void OnReload(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-                YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.TryReload);
-            }
-        }
-
-        public void OnOne(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-               YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.KeyBoardNumClick,1);
-            }
-        }
-
-        public void OnTwo(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-                YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.KeyBoardNumClick,2);
-            }
-        }
     }
 }

@@ -23,24 +23,21 @@ public class NormalScene : VirtualSceneBase
     //
     public override void Onload(SceneParam param)
     {
-     
+        YOTOFramework.uIMgr.ClearUI();
+        PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas());
     }
     
 
     //加载常用系统
     public override void OnInit()
     {
-        YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();  
+        
     }
-
-  
-    private void LevelTimeFinish()
-    {
-    }
-    
     public override void UnLoad()
     {
-       
+        YOTOFramework.uIMgr.ClearUI();
+        PlayerPlugin.Instance.RemoveAllPlayers();
+        StagePlugin.Instance.RemoveAllFoods();
     }
 
     public override void Update(float dt)

@@ -34,7 +34,7 @@ public class PlayerEntity :ObjectBase,PoolItem<PlayerData>
     
     public void SetEyesMove(Vector2 input)
     {
-        eyesCtrl.SetEyesMove(input);
+        eyesCtrl?.SetEyesMove(input);
     }
     
     public void SetEyesMove(Vector3 pos)
@@ -49,6 +49,31 @@ public class PlayerEntity :ObjectBase,PoolItem<PlayerData>
     }
     public void EndCatch()
     {
+        handCtrl.RetractLeftHand();
+    }
+
+    public void StartLooting(int foodId)
+    {
+        var food = StagePlugin.Instance.GetFoodEntityById(foodId);
+        handCtrl.ExtendLeftHand(food.ObjTrans,true);
+
+        if (isSelf)
+        {
+             //todo：进入特殊视角
+        }
+        else
+        {
+            
+        }
+        
+    }
+    public void EndLooting(bool win,int foodId)
+    {
+        if (win)
+        {
+            var food = StagePlugin.Instance.GetFoodEntityById(foodId);
+            handCtrl.ExtendLeftHand(food.ObjTrans,true);
+        }
         handCtrl.RetractLeftHand();
     }
     public override void YOTONetUpdate()
@@ -68,7 +93,7 @@ public class PlayerEntity :ObjectBase,PoolItem<PlayerData>
 
     public void AfterIntoObjectPool()
     {
-        
+        RecoverObject();
     }
 
     public void SetData(PlayerData data)
@@ -89,6 +114,7 @@ public class PlayerEntity :ObjectBase,PoolItem<PlayerData>
         eyesCtrl.Init(this);
         handCtrl.Init( this);
     }
+
 
 
 }

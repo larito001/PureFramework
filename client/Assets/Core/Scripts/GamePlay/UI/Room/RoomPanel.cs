@@ -11,17 +11,7 @@ public class RoomPanel : UIPageBase
     public Button readyBtn;
     public override void OnLoad()
     {
-        playerList.SetRenderer(ItemRender);
-        leaveBtn.onClick.AddListener(() =>
-        {
-            YOTOFramework.netMgr.StopHost();
-            YOTOFramework.netMgr.LeaveHost();
-            CloseSelf();
-        });
-        readyBtn.onClick.AddListener(() =>
-        {
-            LoginPlugin.Instance.GameStartRequest();
-        });
+
         
     }
 
@@ -34,8 +24,20 @@ public class RoomPanel : UIPageBase
 
     public override void OnShow()
     {
+        playerList.SetRenderer(ItemRender);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList,RefreshRoleList);
         RefreshRoleList();
+
+        leaveBtn.onClick.AddListener(() =>
+        {
+            YOTOFramework.netMgr.StopHost();
+            YOTOFramework.netMgr.LeaveHost();
+            LoginPlugin.Instance.OnNetError();
+        });
+        readyBtn.onClick.AddListener(() =>
+        {
+            LoginPlugin.Instance.GameStartRequest();
+        });
     }
 
     private void RefreshRoleList()
@@ -53,6 +55,8 @@ public class RoomPanel : UIPageBase
 
     public override void OnHide()
     {
-       
+        leaveBtn.onClick.RemoveAllListeners();
+        readyBtn.onClick.RemoveAllListeners();
+        YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList,RefreshRoleList);
     }
 }

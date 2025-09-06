@@ -5,10 +5,11 @@ using YOTO;
 
 public class StagePlugin : LogicPluginBase
 {
-    public List<FoodData> foodList = new List<FoodData>();
-    public Dictionary<int, FoodEntity> foodDict = new Dictionary<int, FoodEntity>();
-    private int playerId = -1;
-    private List<PlayerData> players = new List<PlayerData>();
+    // private List<FoodData> foodList = new List<FoodData>();
+
+    private Dictionary<int, FoodEntity> foodDict = new Dictionary<int, FoodEntity>();
+
+    // private List<PlayerData> players = new List<PlayerData>();
     public bool GameStart = false;
 
     #region 单例，事件注册
@@ -32,26 +33,26 @@ public class StagePlugin : LogicPluginBase
 
     public void OnNetInstall()
     {
-        GameStart = false;
         ClientMessageManager.Instance.RegisterResponseHandler<FoodNotify>(OnFoodGenerateNotify);
+        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
     public void OnNetUninstall()
     {
-        GameStart = false;
         ClientMessageManager.Instance.UnRegisterResponseHandler<FoodNotify>();
+        YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
     #endregion
-    
+
     #region 业务
 
     private void OnFoodGenerateNotify(FoodNotify obj)
     {
-        foodList = obj.foodList;
-        for (var i = 0; i < foodList.Count; i++)
+        // foodList = obj.foodList;
+        for (var i = 0; i < obj.foodList.Count; i++)
         {
-            GenerateFoodsOnMap(foodList[i]);
+            GenerateFoodsOnMap(obj.foodList[i]);
         }
     }
 
@@ -65,45 +66,53 @@ public class StagePlugin : LogicPluginBase
 
     public void RemoveFood(int foodId)
     {
-        for (var i = 0; i < foodList.Count; i++)
+        if (foodDict.ContainsKey(foodId))
         {
-            if (foodList[i].foodId == foodId)
-            {
-                foodList.RemoveAt(i);
-                FoodEntity.pool.RecoverItem(foodDict[foodId]);
+            FoodEntity.pool.RecoverItem(foodDict[foodId]);
 
-                foodDict.Remove(foodId);
-                break;
-            }
+            foodDict.Remove(foodId);
         }
     }
-
+    public void RemoveAllFoods()
+    {
+        foreach (var food in foodDict.Values)
+        {
+            FoodEntity.pool.RecoverItem(food);
+        }
+        foodDict.Clear();
+    }
     public FoodEntity GetFoodEntityById(int foodId)
     {
         if (foodDict.ContainsKey(foodId))
         {
             return foodDict[foodId];
         }
-        
+
         return null;
+    }
+
+    private void OnRefreshRoleList()
+    {
+        PlayerPlugin.Instance.RefreshPlayers(LoginPlugin.Instance.GetPlayerDatas());
     }
 
     #endregion
 
     #region 游戏生命周期
 
-    public void OnGameStart(int playerId, List<PlayerData> playerDatas)
+    public void OnGameStart()
     {
         GameStart = true;
-        YOTOFramework.uIMgr.ClearUI();
-        this.playerId = playerId;
-        players = playerDatas;
-        PlayerPlugin.Instance.GeneratePlayers(players);
+        YOTOFramework.sceneMgr.LoadScene<NormalScene>();
     }
 
     public void OnGameEnd()
     {
+        GameStart = false;
+        YOTOFramework.sceneMgr.LoadScene<StartScene>();
     }
 
     #endregion
+
+  
 }

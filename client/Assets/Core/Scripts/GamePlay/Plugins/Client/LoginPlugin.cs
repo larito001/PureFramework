@@ -67,7 +67,14 @@ public class LoginPlugin : LogicPluginBase
     {
         Debug.Log("游戏开始！");
         
-        StagePlugin.Instance.OnGameStart(_playerId,_playerDatas);
+        StagePlugin.Instance.OnGameStart();
+    }
+
+    public void OnNetError()
+    {
+        YOTOFramework.netMgr.LeaveHost();
+        _playerId = -1;
+        StagePlugin.Instance.OnGameEnd();
     }
     public void LoginRequest()
     {

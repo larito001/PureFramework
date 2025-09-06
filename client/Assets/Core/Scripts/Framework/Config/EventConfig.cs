@@ -12,15 +12,12 @@ namespace YOTO
        Touch,
        TouchPress,
        TouchRelease,
-       TouchMove,
        Scroll,
-       Fire,
        PressLeftMouse,
        FireRelease,
        RefreshMousePos,
-       TryReload,
-       KeyBoardNumClick,
        Look,
+       Space,
        
        //刷新
        RefreshRoleList,

@@ -40,13 +40,14 @@ public class DemoGameClient : GameClientBase
     public override void OnClientDisconnect()
     {
         Debug.Log("🛑 Client disconnected from server");
-        YOTOFramework.netMgr.LeaveHost();
+        LoginPlugin.Instance.OnNetError();
     }
 
     public override void OnClientNotReady()
     {
         Debug.Log("⚠️ Client is not ready");
-        YOTOFramework.netMgr.LeaveHost();
+        LoginPlugin.Instance.OnNetError();
+
     }
 
     public override void OnClientChangeScene()

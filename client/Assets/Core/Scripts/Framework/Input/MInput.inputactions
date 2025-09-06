@@ -33,33 +33,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "79e1342a-3f78-4a83-aeb6-991613f128a6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "UseItem",
-                    "type": "Button",
-                    "id": "9b727559-11db-48c2-b6f4-cbab75c4cfda",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Cooking",
-                    "type": "Button",
-                    "id": "33c29cb5-e73e-476b-943b-66c2d6769cdd",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Touch",
                     "type": "Value",
                     "id": "2b387656-3bd3-4f31-9666-b2bd439c9020",
@@ -87,27 +60,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Reload",
+                    "name": "Space",
                     "type": "Button",
-                    "id": "5ad36394-775c-4322-bc85-eaa8aacefb42",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "One",
-                    "type": "Button",
-                    "id": "29145d21-7fac-46bf-8505-c436509d4985",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Two",
-                    "type": "Button",
-                    "id": "95ab47f0-42d5-44d4-b018-b4e0a540d4cb",
+                    "id": "78dd94b9-bf4e-4f6c-8e8e-3c4486c4cd7f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -194,39 +149,6 @@
                 },
                 {
                     "name": "",
-                    "id": "5d6efeee-1a49-4e8d-bc10-217993ea205e",
-                    "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e6047cec-bb5a-4bde-9dfa-c7d8c375d208",
-                    "path": "<Keyboard>/u",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "UseItem",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "df56a389-482c-48dd-8055-a934df52cc2a",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Cooking",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6912c6d5-96c3-41e5-ab28-bba932e56c47",
                     "path": "<Touchscreen>/position",
                     "interactions": "",
@@ -282,34 +204,12 @@
                 },
                 {
                     "name": "",
-                    "id": "852f2636-3a5f-4cbc-90eb-7740828a86a2",
-                    "path": "<Keyboard>/r",
+                    "id": "9cf975cd-3ceb-4103-b602-e0bf658796ed",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Reload",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "53c502b7-0838-4440-92cd-7236a8980856",
-                    "path": "<Keyboard>/1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "One",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "98e3b021-6678-4489-98ce-ec509a1705dc",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Two",
+                    "action": "Space",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

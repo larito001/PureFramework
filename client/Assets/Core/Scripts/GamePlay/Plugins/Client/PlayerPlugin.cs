@@ -27,6 +27,9 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<EndCatchFoodNotify>(OnEndCatchFoodNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<StartLootNotify>(OnStartLootNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<StopLootNotify>(OnStopLootNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<LootingInputNotify>(OnLootingInputNotify);
+
+         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space,OnSpaceClick);
     
     }
     
@@ -37,6 +40,9 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<EndCatchFoodNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<StartLootNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<StopLootNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<LootingInputNotify>();
+
+        YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space,OnSpaceClick); 
     }
 
     #region 食物操作
@@ -45,6 +51,10 @@ public class PlayerPlugin : LogicPluginBase
     private void OnStartLootNotify(StartLootNotify obj)
     {
         //todo:开抢，对应id进入特殊状态
+        foreach (var objPlayerId in obj.playerIds)
+        {
+            players[objPlayerId].StartLooting(obj.foodId);
+        }
         Debug.Log("开始抢夺");
         
     }
@@ -52,7 +62,17 @@ public class PlayerPlugin : LogicPluginBase
     {
         //todo:抢夺结束，退出特殊状态
         Debug.Log("抢夺结束，player"+obj.winPlayerId+"赢了");
+
+        if (players.ContainsKey(obj.winPlayerId))
+        {
+            players[obj.winPlayerId].EndLooting(true,obj.foodId);
         
+        }
+        for (var i = 0; i < obj.losePlayers.Count; i++)
+        {
+            if(players.ContainsKey(obj.losePlayers[i]))
+                players[obj.losePlayers[i]].EndLooting(false,obj.foodId);
+        } 
     }
 
 
@@ -74,10 +94,34 @@ public class PlayerPlugin : LogicPluginBase
     {
         if (obj.isSuccess)
         {
-            players[obj.playerId].EndCatch();
+            if (players.ContainsKey(obj.playerId))
+            {
+                players[obj.playerId].EndCatch();
+            }
+            else
+            {
+                //处理catch过程中，玩家退出
+                StagePlugin.Instance.RemoveFood(obj.foodId);
+            }
+            
+      
         }
     }
 
+    private void OnSpaceClick()
+    {
+        LootAdd();
+    }
+    private void LootAdd()
+    {
+        LootingInputRequest req = new LootingInputRequest();
+        req.playerId = LoginPlugin.Instance.PlayerId;
+        ClientMessageManager.Instance.SendRequest(req);
+    }
+    private void OnLootingInputNotify(LootingInputNotify obj)
+    {
+        
+    }
     #endregion
 
 
@@ -122,7 +166,7 @@ public class PlayerPlugin : LogicPluginBase
             //todo:旋转眼球
             if (players.ContainsKey(obj.playerId))
             {
-                Debug.Log("Player:"+obj.playerId+" 旋转眼球"+obj.pos);
+                // Debug.Log("Player:"+obj.playerId+" 旋转眼球"+obj.pos);
                 players[obj.playerId].SetEyesMove(obj.pos);
             }
       
@@ -151,10 +195,41 @@ public class PlayerPlugin : LogicPluginBase
         }
 
     }
-    
+    List<int> removeList = new List<int>();
+    public void RefreshPlayers(List<PlayerData> datas)
+    {
+        removeList.Clear();
+        foreach (var id in players.Keys)
+        {
+            bool isHave=false;
+            foreach (var player in datas)
+            {
+                if (player.playerId == id)
+                {
+                    isHave = true;
+                }
+            }
+
+            if (!isHave)
+            {
+                removeList.Add(id);
+            }
+            
+        }
+        foreach (var i in removeList)
+        {
+            PlayerEntity.pool.RecoverItem(players[i]);
+            players.Remove(i);
+        }
+    }
+
     public void RemoveAllPlayers()
     {
-        
+        foreach (var player in players.Values)
+        {
+            PlayerEntity.pool.RecoverItem(player);
+        }
+        players.Clear();
     }
 
     #endregion

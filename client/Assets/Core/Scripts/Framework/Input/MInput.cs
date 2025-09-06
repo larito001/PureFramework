@@ -55,33 +55,6 @@ public partial class @MInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Sprint"",
-                    ""type"": ""Button"",
-                    ""id"": ""79e1342a-3f78-4a83-aeb6-991613f128a6"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""UseItem"",
-                    ""type"": ""Button"",
-                    ""id"": ""9b727559-11db-48c2-b6f4-cbab75c4cfda"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Cooking"",
-                    ""type"": ""Button"",
-                    ""id"": ""33c29cb5-e73e-476b-943b-66c2d6769cdd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Touch"",
                     ""type"": ""Value"",
                     ""id"": ""2b387656-3bd3-4f31-9666-b2bd439c9020"",
@@ -109,27 +82,9 @@ public partial class @MInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Reload"",
+                    ""name"": ""Space"",
                     ""type"": ""Button"",
-                    ""id"": ""5ad36394-775c-4322-bc85-eaa8aacefb42"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""One"",
-                    ""type"": ""Button"",
-                    ""id"": ""29145d21-7fac-46bf-8505-c436509d4985"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Two"",
-                    ""type"": ""Button"",
-                    ""id"": ""95ab47f0-42d5-44d4-b018-b4e0a540d4cb"",
+                    ""id"": ""78dd94b9-bf4e-4f6c-8e8e-3c4486c4cd7f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -216,39 +171,6 @@ public partial class @MInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5d6efeee-1a49-4e8d-bc10-217993ea205e"",
-                    ""path"": ""<Keyboard>/k"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Sprint"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e6047cec-bb5a-4bde-9dfa-c7d8c375d208"",
-                    ""path"": ""<Keyboard>/u"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""UseItem"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""df56a389-482c-48dd-8055-a934df52cc2a"",
-                    ""path"": ""<Keyboard>/j"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Cooking"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""6912c6d5-96c3-41e5-ab28-bba932e56c47"",
                     ""path"": ""<Touchscreen>/position"",
                     ""interactions"": """",
@@ -304,34 +226,12 @@ public partial class @MInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""852f2636-3a5f-4cbc-90eb-7740828a86a2"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""id"": ""9cf975cd-3ceb-4103-b602-e0bf658796ed"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Reload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""53c502b7-0838-4440-92cd-7236a8980856"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""One"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""98e3b021-6678-4489-98ce-ec509a1705dc"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Two"",
+                    ""action"": ""Space"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -878,15 +778,10 @@ public partial class @MInput: IInputActionCollection2, IDisposable
         m_GamePlayAction_Move = m_GamePlayAction.FindAction("Move", throwIfNotFound: true);
         m_GamePlayAction_Look = m_GamePlayAction.FindAction("Look", throwIfNotFound: true);
         m_GamePlayAction_Scroll = m_GamePlayAction.FindAction("Scroll", throwIfNotFound: true);
-        m_GamePlayAction_Sprint = m_GamePlayAction.FindAction("Sprint", throwIfNotFound: true);
-        m_GamePlayAction_UseItem = m_GamePlayAction.FindAction("UseItem", throwIfNotFound: true);
-        m_GamePlayAction_Cooking = m_GamePlayAction.FindAction("Cooking", throwIfNotFound: true);
         m_GamePlayAction_Touch = m_GamePlayAction.FindAction("Touch", throwIfNotFound: true);
         m_GamePlayAction_TouchAddition = m_GamePlayAction.FindAction("TouchAddition", throwIfNotFound: true);
         m_GamePlayAction_Fire = m_GamePlayAction.FindAction("Fire", throwIfNotFound: true);
-        m_GamePlayAction_Reload = m_GamePlayAction.FindAction("Reload", throwIfNotFound: true);
-        m_GamePlayAction_One = m_GamePlayAction.FindAction("One", throwIfNotFound: true);
-        m_GamePlayAction_Two = m_GamePlayAction.FindAction("Two", throwIfNotFound: true);
+        m_GamePlayAction_Space = m_GamePlayAction.FindAction("Space", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -969,15 +864,10 @@ public partial class @MInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlayAction_Move;
     private readonly InputAction m_GamePlayAction_Look;
     private readonly InputAction m_GamePlayAction_Scroll;
-    private readonly InputAction m_GamePlayAction_Sprint;
-    private readonly InputAction m_GamePlayAction_UseItem;
-    private readonly InputAction m_GamePlayAction_Cooking;
     private readonly InputAction m_GamePlayAction_Touch;
     private readonly InputAction m_GamePlayAction_TouchAddition;
     private readonly InputAction m_GamePlayAction_Fire;
-    private readonly InputAction m_GamePlayAction_Reload;
-    private readonly InputAction m_GamePlayAction_One;
-    private readonly InputAction m_GamePlayAction_Two;
+    private readonly InputAction m_GamePlayAction_Space;
     public struct GamePlayActionActions
     {
         private @MInput m_Wrapper;
@@ -985,15 +875,10 @@ public partial class @MInput: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_GamePlayAction_Move;
         public InputAction @Look => m_Wrapper.m_GamePlayAction_Look;
         public InputAction @Scroll => m_Wrapper.m_GamePlayAction_Scroll;
-        public InputAction @Sprint => m_Wrapper.m_GamePlayAction_Sprint;
-        public InputAction @UseItem => m_Wrapper.m_GamePlayAction_UseItem;
-        public InputAction @Cooking => m_Wrapper.m_GamePlayAction_Cooking;
         public InputAction @Touch => m_Wrapper.m_GamePlayAction_Touch;
         public InputAction @TouchAddition => m_Wrapper.m_GamePlayAction_TouchAddition;
         public InputAction @Fire => m_Wrapper.m_GamePlayAction_Fire;
-        public InputAction @Reload => m_Wrapper.m_GamePlayAction_Reload;
-        public InputAction @One => m_Wrapper.m_GamePlayAction_One;
-        public InputAction @Two => m_Wrapper.m_GamePlayAction_Two;
+        public InputAction @Space => m_Wrapper.m_GamePlayAction_Space;
         public InputActionMap Get() { return m_Wrapper.m_GamePlayAction; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1012,15 +897,6 @@ public partial class @MInput: IInputActionCollection2, IDisposable
             @Scroll.started += instance.OnScroll;
             @Scroll.performed += instance.OnScroll;
             @Scroll.canceled += instance.OnScroll;
-            @Sprint.started += instance.OnSprint;
-            @Sprint.performed += instance.OnSprint;
-            @Sprint.canceled += instance.OnSprint;
-            @UseItem.started += instance.OnUseItem;
-            @UseItem.performed += instance.OnUseItem;
-            @UseItem.canceled += instance.OnUseItem;
-            @Cooking.started += instance.OnCooking;
-            @Cooking.performed += instance.OnCooking;
-            @Cooking.canceled += instance.OnCooking;
             @Touch.started += instance.OnTouch;
             @Touch.performed += instance.OnTouch;
             @Touch.canceled += instance.OnTouch;
@@ -1030,15 +906,9 @@ public partial class @MInput: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
-            @Reload.started += instance.OnReload;
-            @Reload.performed += instance.OnReload;
-            @Reload.canceled += instance.OnReload;
-            @One.started += instance.OnOne;
-            @One.performed += instance.OnOne;
-            @One.canceled += instance.OnOne;
-            @Two.started += instance.OnTwo;
-            @Two.performed += instance.OnTwo;
-            @Two.canceled += instance.OnTwo;
+            @Space.started += instance.OnSpace;
+            @Space.performed += instance.OnSpace;
+            @Space.canceled += instance.OnSpace;
         }
 
         private void UnregisterCallbacks(IGamePlayActionActions instance)
@@ -1052,15 +922,6 @@ public partial class @MInput: IInputActionCollection2, IDisposable
             @Scroll.started -= instance.OnScroll;
             @Scroll.performed -= instance.OnScroll;
             @Scroll.canceled -= instance.OnScroll;
-            @Sprint.started -= instance.OnSprint;
-            @Sprint.performed -= instance.OnSprint;
-            @Sprint.canceled -= instance.OnSprint;
-            @UseItem.started -= instance.OnUseItem;
-            @UseItem.performed -= instance.OnUseItem;
-            @UseItem.canceled -= instance.OnUseItem;
-            @Cooking.started -= instance.OnCooking;
-            @Cooking.performed -= instance.OnCooking;
-            @Cooking.canceled -= instance.OnCooking;
             @Touch.started -= instance.OnTouch;
             @Touch.performed -= instance.OnTouch;
             @Touch.canceled -= instance.OnTouch;
@@ -1070,15 +931,9 @@ public partial class @MInput: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
-            @Reload.started -= instance.OnReload;
-            @Reload.performed -= instance.OnReload;
-            @Reload.canceled -= instance.OnReload;
-            @One.started -= instance.OnOne;
-            @One.performed -= instance.OnOne;
-            @One.canceled -= instance.OnOne;
-            @Two.started -= instance.OnTwo;
-            @Two.performed -= instance.OnTwo;
-            @Two.canceled -= instance.OnTwo;
+            @Space.started -= instance.OnSpace;
+            @Space.performed -= instance.OnSpace;
+            @Space.canceled -= instance.OnSpace;
         }
 
         public void RemoveCallbacks(IGamePlayActionActions instance)
@@ -1228,15 +1083,10 @@ public partial class @MInput: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
-        void OnSprint(InputAction.CallbackContext context);
-        void OnUseItem(InputAction.CallbackContext context);
-        void OnCooking(InputAction.CallbackContext context);
         void OnTouch(InputAction.CallbackContext context);
         void OnTouchAddition(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
-        void OnReload(InputAction.CallbackContext context);
-        void OnOne(InputAction.CallbackContext context);
-        void OnTwo(InputAction.CallbackContext context);
+        void OnSpace(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

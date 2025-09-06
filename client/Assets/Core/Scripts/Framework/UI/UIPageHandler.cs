@@ -177,6 +177,5 @@ public class UIPageHandler
     public void Distory()
     {
         OnHide();
-        GameObject.Destroy(uIPageBase.gameObject);
     }
 }

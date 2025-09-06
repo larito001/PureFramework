@@ -10,7 +10,7 @@ public class DemoGameServer : GameServerBase
         Idle,
         Playing,
     }
-    
+
 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
@@ -22,6 +22,7 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<LootingInputRequest>(OnLootingInputRequest);
     }
 
 
@@ -31,6 +32,7 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<HeadPosRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<CatchFoodRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<LootingInputRequest>();
     }
 
     #region 生命周期
@@ -38,7 +40,7 @@ public class DemoGameServer : GameServerBase
     public override void Update(float dt)
     {
         // 可以在这里处理服务器每帧逻辑
-        foreach (var food in ServerDataPlugin.Instance.GetFoodList() )
+        foreach (var food in ServerDataPlugin.Instance.GetFoodList())
         {
             food.Update(dt);
         }
@@ -143,11 +145,16 @@ public class DemoGameServer : GameServerBase
     {
         ServerDataPlugin.Instance.RemovePlayerById(connectionId);
         RefreshPlayerNotify();
+        if (ServerDataPlugin.Instance.GetPlayerList().Count<=1)
+        {
+            OnGameEndNotify();
+        }
+   
     }
 
     private void ClearPlayers()
     {
-        ServerDataPlugin.Instance.RemoveAllPlayers();
+       ServerDataPlugin.Instance.RemoveAllPlayers();
         RefreshPlayerNotify();
     }
 
@@ -168,7 +175,10 @@ public class DemoGameServer : GameServerBase
         GenerateFoods();
         return response;
     }
-
+    public void OnGameEndNotify()
+    {
+        //todo：玩家退回房间选择界面
+    }
     #endregion
 
     #region 游戏gamePlay逻辑
@@ -184,13 +194,14 @@ public class DemoGameServer : GameServerBase
             food.foodId = i;
             food.position = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
             food.Init();
-            ServerDataPlugin.Instance.AddFood(food);;
+            ServerDataPlugin.Instance.AddFood(food);
         }
 
         FoodNotify notify = new FoodNotify();
         notify.foodList = ServerDataPlugin.Instance.GetFoodList().ToList();
         ServerMessageManager.Instance.SendNotify(notify);
     }
+
     /// <summary>
     /// 广播转发角色头的位置
     /// </summary>
@@ -208,7 +219,7 @@ public class DemoGameServer : GameServerBase
 
         return null;
     }
-    
+
     /// <summary>
     /// 抓取食物的请求
     /// </summary>
@@ -217,18 +228,34 @@ public class DemoGameServer : GameServerBase
     /// <returns></returns>
     private IResponse OnCatchFoodRequest(CatchFoodRequest arg1, int arg2)
     {
-        if (ServerDataPlugin.Instance.CheckHaveFood(arg1.foodId) )
+        if (ServerDataPlugin.Instance.CheckHaveFood(arg1.foodId))
         {
-            if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId) )
+            if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId))
             {
-              var food =  ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
-              food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));
+                var food = ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
+                food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));
             }
         }
+
         return null;
     }
-    #endregion
+
+    private IResponse OnLootingInputRequest(LootingInputRequest arg1, int arg2)
+    {
+        var player = ServerDataPlugin.Instance.GetPlayerById(arg1.playerId);
+        if (player.AddLoot())
+        {
+            var food = ServerDataPlugin.Instance.GetFoodById(player.useFoodId);
+            var proDic = food.GetProgress();
+            LootingInputNotify notify = new LootingInputNotify();
+            notify.playerProgress = proDic;
+            ServerMessageManager.Instance.SendNotify(notify);
+        }
+
+        return null;
+    }
     
+    #endregion
 
     #endregion
 }

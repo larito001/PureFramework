@@ -19,11 +19,13 @@ public class StartScene : VirtualSceneBase
     public override void OnInit()
     {
         YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+
         YOTOFramework.uIMgr.Show(UIEnum.StartPanel);
     }
 
     public override void UnLoad()
     {
+        YOTOFramework.uIMgr.ClearUI();
     }
 
     public override void Update(float dt)
