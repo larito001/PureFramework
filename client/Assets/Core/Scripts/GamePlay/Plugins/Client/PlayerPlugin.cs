@@ -50,6 +50,7 @@ public class PlayerPlugin : LogicPluginBase
     
     private void OnStartLootNotify(StartLootNotify obj)
     {
+        YOTOFramework.uIMgr.Show(UIEnum.LootingPanel);
         //todo:开抢，对应id进入特殊状态
         foreach (var objPlayerId in obj.playerIds)
         {
@@ -60,6 +61,7 @@ public class PlayerPlugin : LogicPluginBase
     }
     private void OnStopLootNotify(StopLootNotify obj)
     {
+        YOTOFramework.uIMgr.Hide(UIEnum.LootingPanel);
         //todo:抢夺结束，退出特殊状态
         Debug.Log("抢夺结束，player"+obj.winPlayerId+"赢了");
 
@@ -120,7 +122,11 @@ public class PlayerPlugin : LogicPluginBase
     }
     private void OnLootingInputNotify(LootingInputNotify obj)
     {
-        
+        //todo:刷新玩家的progress
+        foreach (var intKeyFloatValue in obj.playerProgress)
+        {
+            YOTOFramework.eventMgr.TriggerEvent<int,float>(YOTOEventType.RefreshProgress,intKeyFloatValue.key,intKeyFloatValue.value);
+        }
     }
     #endregion
 
@@ -163,7 +169,7 @@ public class PlayerPlugin : LogicPluginBase
         // players.RotatePlayer();
         if (LoginPlugin.Instance.PlayerId!=obj.playerId)
         {
-            //todo:旋转眼球
+            //旋转眼球
             if (players.ContainsKey(obj.playerId))
             {
                 // Debug.Log("Player:"+obj.playerId+" 旋转眼球"+obj.pos);

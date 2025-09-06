@@ -316,7 +316,7 @@ public class FoodData
             var info = ServerDataPlugin.Instance.GetPlayerById(id);
             if (info != null)
             {
-                var progress = info.lootNum / lootNum;
+                float progress = info.lootNum /(float) lootNum;
                 playerProgress.Add(new IntKeyFloatValue(id, progress));
             }
     

@@ -21,6 +21,7 @@ namespace YOTO
        
        //刷新
        RefreshRoleList,
+       RefreshProgress,
     }
 
 

@@ -9,6 +9,7 @@ using YOTO;
 public class CameraCtrl
 {
     private CinemachineVirtualCamera vCamera;
+    private CinemachineVirtualCamera specialCamera;
     private Vector3 moveDirection;
     private Vector3 currentVelocity;
     private float moveSpeed = 1f; // 调整移动速度
@@ -41,6 +42,7 @@ public class CameraCtrl
         });
 
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
+        specialCamera= YOTOFramework.cameraMgr.getVirtualCamera("SpecialCamera");
         cameraDir = GameObject.Find("CameraDir");
         vCamera.transform.position = cameraDir.transform.position;
         vCamera.transform.rotation = cameraDir.transform.rotation;
@@ -82,8 +84,23 @@ public class CameraCtrl
     public void UsePlayerCamera()
     {
         vCamera.Priority = 999;
+        specialCamera.Priority = 0;
     }
+    
+    public void UseSpecialCamera(Transform target)
+    {
+        vCamera.Priority = 0;
+        specialCamera.Priority = 999;
+        // 设置特殊摄像机位置 - 在道具上方，稍微偏向第一人称视角
+        Vector3 cameraOffset = new Vector3(0, 1.5f, -2.5f);
+        specialCamera.transform.position = vCamera.transform.position + cameraOffset;
 
+        // 设置摄像机朝向 - 聚焦在道具上
+        specialCamera.transform.LookAt(target.position); 
+
+        // 提升优先级以激活特殊视角
+        specialCamera.Priority = 9999;
+    }
     private void CameraMove(Vector2 dir, float dt)
     {
         isDragging = true;
