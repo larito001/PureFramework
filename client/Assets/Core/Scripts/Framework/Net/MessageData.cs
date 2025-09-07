@@ -5,6 +5,8 @@ using Mirror;
 using UnityEngine;
 using YOTO;
 
+
+
 #region 基类
 
 // 请求基类
@@ -18,7 +20,6 @@ public interface IResponse : NetworkMessage
 }
 
 #endregion
-
 
 #region 角色
 
@@ -133,7 +134,6 @@ public class FoodData
 
     // private Dictionary<int,PlayerData>playerIds = new Dictionary<int,PlayerData>();
     private float timerTemp = 0;
-    private int lootNum = 10;
 
     public FoodState GetState()
     {
@@ -316,8 +316,7 @@ public class FoodData
             var info = ServerDataPlugin.Instance.GetPlayerById(id);
             if (info != null)
             {
-                float progress = info.lootNum /(float) lootNum;
-                playerProgress.Add(new IntKeyFloatValue(id, progress));
+                playerProgress.Add(new IntKeyFloatValue(id, info.lootNum));
             }
     
         }
@@ -367,9 +366,9 @@ public struct LootingInputRequest : IRequest
 public struct IntKeyFloatValue
 {
     public int key;
-    public float value;
+    public int value;
 
-    public IntKeyFloatValue(int key, float value)
+    public IntKeyFloatValue(int key, int value)
     {
         this.key = key;
         this.value = value;
@@ -444,6 +443,17 @@ public struct HeadPosNotify : IResponse
 {
     public int playerId;
     public Vector3 pos;
+}
+
+#endregion
+
+#region 通用
+
+public struct FlyTextNotify : IResponse
+{
+    public string txt;
+    public List<int> elsePlayers;
+    public FlyTextType flyType;
 }
 
 #endregion

@@ -162,6 +162,19 @@ public class DemoGameServer : GameServerBase
 
     #region 游戏业务
 
+    #region 通用模块
+
+    private void OnFlyTextNotify(string txt,FlyTextType  flyType,List<int>elsePlayers=null)
+    {
+        FlyTextNotify notify = new FlyTextNotify();
+        notify.txt = txt;
+        notify.elsePlayers = elsePlayers;
+        notify.flyType = flyType;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
+    #endregion
+    
     #region 游戏生命周期
 
     private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
@@ -188,11 +201,12 @@ public class DemoGameServer : GameServerBase
     /// </summary>
     private void GenerateFoods()
     {
+
         for (int i = 0; i < 10; i++)
         {
             var food = new FoodData();
             food.foodId = i;
-            food.position = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
             food.Init();
             ServerDataPlugin.Instance.AddFood(food);
         }
@@ -250,6 +264,7 @@ public class DemoGameServer : GameServerBase
             LootingInputNotify notify = new LootingInputNotify();
             notify.playerProgress = proDic;
             ServerMessageManager.Instance.SendNotify(notify);
+            OnFlyTextNotify("!Space!",FlyTextType.Quick);
         }
 
         return null;

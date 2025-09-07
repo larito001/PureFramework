@@ -28,11 +28,11 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<StartLootNotify>(OnStartLootNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<StopLootNotify>(OnStopLootNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<LootingInputNotify>(OnLootingInputNotify);
-
+        ClientMessageManager.Instance.RegisterResponseHandler<FlyTextNotify>(OnFlyTextNotify);
          YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space,OnSpaceClick);
     
     }
-    
+
     public void OnNetUninstall()
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<HeadPosNotify>();
@@ -41,7 +41,7 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<StartLootNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<StopLootNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<LootingInputNotify>();
-
+        ClientMessageManager.Instance.UnRegisterResponseHandler<FlyTextNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space,OnSpaceClick); 
     }
 
@@ -123,10 +123,7 @@ public class PlayerPlugin : LogicPluginBase
     private void OnLootingInputNotify(LootingInputNotify obj)
     {
         //todo:刷新玩家的progress
-        foreach (var intKeyFloatValue in obj.playerProgress)
-        {
-            YOTOFramework.eventMgr.TriggerEvent<int,float>(YOTOEventType.RefreshProgress,intKeyFloatValue.key,intKeyFloatValue.value);
-        }
+        YOTOFramework.eventMgr.TriggerEvent<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,obj.playerProgress);
     }
     #endregion
 
@@ -153,7 +150,7 @@ public class PlayerPlugin : LogicPluginBase
     {
         var pid = LoginPlugin.Instance.PlayerId;
         var mgr = ClientMessageManager.Instance;
-        Debug.Log("RotateRequest");
+        // Debug.Log("RotateRequest");
         mgr.SendRequest(new HeadPosRequest()
         {
             playerId =pid,
@@ -241,4 +238,12 @@ public class PlayerPlugin : LogicPluginBase
     #endregion
 
     
+    private void OnFlyTextNotify(FlyTextNotify obj)
+    {
+        // 将屏幕中心的世界坐标转换为屏幕坐标
+        Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
+        
+        // 如果FlyTextMgr使用的是屏幕坐标
+        FlyTextMgr.Instance.AddText(obj.txt, screenCenter,obj.flyType,TextPosType.Screen);
+    }
 }

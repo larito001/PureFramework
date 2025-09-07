@@ -39,30 +39,30 @@ public class FlyTextCtrl : ObjectBase, PoolItem<Transform>
         {
             tmp.color = Color.white;
 
-            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad);
+            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad,false);
         }
         else if (data.flyTextType == FlyTextType.Quick)
         {
             tmp.color = Color.red;
-            StartAnim(0.3f, 1.5f, 1.5f, 0.3f, 0.1f, 0.6f, 0.2f, Ease.OutElastic, Ease.OutBack);
+            StartAnim(0.3f, 1.5f, 1.5f, 0.3f, 0.1f, 0.6f, 0.2f, Ease.OutElastic, Ease.OutBack,true);
         }
 
         if (data.flyTextType == FlyTextType.PlayerHurt)
         {
             tmp.color = Color.yellow;
 
-            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad);
+            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad,true);
         }
 
         if (data.flyTextType == FlyTextType.WoodRes)
         {
             tmp.color = new Color(101/255.0f, 67/255.0f, 33/255.0f,1);
-            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad);  
+            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad,true);  
         }
         if (data.flyTextType == FlyTextType.IronRes)
         {
             tmp.color =new Color(192/255.0f, 192/255.0f, 192/255.0f,1);
-            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad);
+            StartAnim(0.5f, 1.2f, 1.0f, 0.4f, 0.1f, 1, 1, Ease.OutQuad, Ease.InOutQuad,true);
         }
     }
 
@@ -78,7 +78,7 @@ public class FlyTextCtrl : ObjectBase, PoolItem<Transform>
     public void StartAnim(float startScale, float MaxScale, float lastScale,
         float toMaxDuration, float toLastDuration,
         float upTime, float fadeTime,
-        Ease upAnim, Ease downAnim)
+        Ease upAnim, Ease downAnim,bool uesBurst)
     {
         rct.transform.position = currentPos;
         rct.localScale = Vector3.one * startScale;
@@ -96,10 +96,16 @@ public class FlyTextCtrl : ObjectBase, PoolItem<Transform>
 
         Sequence seq = DOTween.Sequence();
 
+    
         // 🔥 生成随机爆发方向偏移
         Vector2 burstDir = Random.insideUnitCircle.normalized;
         burstDir.y = Mathf.Abs(burstDir.y); // 保证向上
-        Vector3 burstOffset = new Vector3(burstDir.x, burstDir.y, 0) * Random.Range(40f, 80f);
+        Vector3 burstOffset =Vector3.zero;
+        if (uesBurst)
+        {
+             burstOffset = new Vector3(burstDir.x, burstDir.y, 0) * Random.Range(40f, 80f); 
+        }
+
         Vector3 burstTarget = currentPos + burstOffset;
 
         // 🔥 最终位置（在爆发基础上再往上漂）
@@ -168,7 +174,7 @@ public class FlyTextCtrl : ObjectBase, PoolItem<Transform>
     public void SetData(Transform serverData)
     {
         SetInVision(true);
-        SetPrefabBundlePath("Assets/HotUpdate/prefabs/FlyTextPrefab.prefab");
+        SetPrefabBundlePath("prefabs/UI/FlyTextPrefab");
         root = serverData;
     }
 }

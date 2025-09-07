@@ -60,7 +60,8 @@ public class StagePlugin : LogicPluginBase
     {
         var food = FoodEntity.pool.GetItem(foodData);
         foodDict.Add(foodData.foodId, food);
-        food.Location = foodData.position;
+        var orgPos =GameObject.Find("FoodGeneratePos");
+        food.Location = orgPos.transform.position+foodData.position;
         food.InstanceGObj();
     }
 

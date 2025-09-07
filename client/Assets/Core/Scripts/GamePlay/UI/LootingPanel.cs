@@ -6,8 +6,7 @@ using YOTO;
 
 public class LootingPanel : UIPageBase
 {
-    public Scrollbar self;
-    public Scrollbar other;
+    public Scrollbar line;
     public override void OnLoad()
     {
         
@@ -15,24 +14,43 @@ public class LootingPanel : UIPageBase
 
     public override void OnShow()
     {
-        YOTOFramework.eventMgr.AddEventListener<int,float>(YOTOEventType.RefreshProgress,OnRefreshProgress);
+        YOTOFramework.eventMgr.AddEventListener<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,OnRefreshProgress);
     }
 
-    private void OnRefreshProgress(int id,float value)
+    private void OnRefreshProgress(List<IntKeyFloatValue> list)
     {
-         if (id == LoginPlugin.Instance.PlayerId)
+        float selfValue = 0;
+        float otherValue = 0;
+        foreach (var info in list)
         {
-            self.value = value;
+            if (info.key == LoginPlugin.Instance.PlayerId)
+            {
+                selfValue = info.value;
+            }
+            else
+            {
+                otherValue += info.value;
+            }
         }
-        else 
+    
+        // 处理特殊情况：当两者都为0时，显示平衡状态（0.5）
+        if (selfValue == 0 && otherValue == 0)
         {
-            other.value = value;
+            line.value = 0.5f;
+            return;
         }
+    
+        // 计算总值
+        float total = selfValue + otherValue;
+    
+        // 计算selfValue的比例，并将其映射到拔河效果
+        // 当selfValue占比为0.5时，line.value为0.5
+        // selfValue越大，line.value越接近1；otherValue越大，line.value越接近0
+        line.value = selfValue / total;
     }
-
     public override void OnHide()
     {
-        YOTOFramework.eventMgr.RemoveEventListener<int,float>(YOTOEventType.RefreshProgress,OnRefreshProgress);
+        YOTOFramework.eventMgr.RemoveEventListener<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,OnRefreshProgress);
         
     }
 }
