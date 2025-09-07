@@ -6,9 +6,8 @@ using YOTO;
 public class PlayerPlugin : LogicPluginBase
 {
     public static PlayerPlugin Instance;
-    private Dictionary<int, PlayerEntity> players = new Dictionary<int, PlayerEntity>();
-    public bool leftHandDoing = false;
-    public bool rightHandDoing = false;
+    public Dictionary<int, PlayerEntity> players = new Dictionary<int, PlayerEntity>();
+
 
 
     public PlayerPlugin()
@@ -83,19 +82,36 @@ public class PlayerPlugin : LogicPluginBase
     }
 
 
-    public void CatchFood(int fId)
+    public void CatchFood(FoodBase food)
     {
-        if (PlayerPlugin.Instance.leftHandDoing)
+        
+        if (players[LoginPlugin.Instance.PlayerId].leftHandDoing)
         {
             return;
         }
+        //todo:检测距离是否足够，足够才能catch
+        var selfTrans = players[LoginPlugin.Instance.PlayerId].ObjTrans;
+        if (selfTrans!=null)
+        {
+            float distance =(food.transform.position - selfTrans.position).magnitude;
+            if (distance > 3f)
+            {
+                // 将屏幕中心的世界坐标转换为屏幕坐标
+                Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
 
+                // 如果FlyTextMgr使用的是屏幕坐标
+                FlyTextMgr.Instance.AddText("Distanc Over", screenCenter, FlyTextType.Normal, TextPosType.Screen);
+                return;
+            }
+        }
+
+        
         var mgr = ClientMessageManager.Instance;
         Debug.Log("CatchFood");
         mgr.SendRequest(new CatchFoodRequest()
         {
             playerId = LoginPlugin.Instance.PlayerId,
-            foodId = fId
+            foodId = food.foodId
         });
     }
 
@@ -257,4 +273,5 @@ public class PlayerPlugin : LogicPluginBase
         // 如果FlyTextMgr使用的是屏幕坐标
         FlyTextMgr.Instance.AddText(obj.txt, screenCenter, obj.flyType, TextPosType.Screen);
     }
+    
 }

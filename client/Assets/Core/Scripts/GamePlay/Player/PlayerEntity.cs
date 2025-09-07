@@ -9,7 +9,8 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         new DataObjPool<PlayerEntity, PlayerData>("PlayerEntity", 4);
 
     private PlayerData data;
-
+    public bool leftHandDoing = false;
+    public bool rightHandDoing = false;
     public bool isSelf { get; private set; }
 
     private EyesCtrl eyesCtrl;
@@ -40,7 +41,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void CatchFood(int foodId, bool success)
     {
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-        handCtrl.ExtendLeftHand(food, success);
+        if (success)
+        {
+            handCtrl.ExtendLeftHand(food);  
+        }
+
     }
 
     public void EndCatch()
@@ -51,32 +56,33 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void StartLooting(int foodId)
     {
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-        handCtrl.ExtendLeftHand(food, true);
+        handCtrl.ExtendLeftHand(food);
 
         if (isSelf)
         {
             YOTOFramework.sceneMgr.cameraCtrl.UseSpecialCamera(food.ObjTrans);
 
         }
-        else
-        {
-        }
     }
 
     public void EndLooting(bool win, int foodId)
     {
+        
         if (win)
         {
             var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-            handCtrl.ExtendLeftHand(food, true);
+            handCtrl.ExtendLeftHand(food);
+            handCtrl.RetractLeftHand();
         }
-
+        else
+        {
+            handCtrl.RetractLeftHand();
+        }
+     
         if (isSelf)
         {
             YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         }
-
-        handCtrl.RetractLeftHand();
     }
 
     public override void YOTONetUpdate()

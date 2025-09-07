@@ -261,6 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveDuration: 0.5
   moveEase: 27
+  leftHand: {fileID: 5249740994664686355}
+  rightHand: {fileID: 877217819867334219}
 --- !u!1 &6499794234960952087
 GameObject:
   m_ObjectHideFlags: 0

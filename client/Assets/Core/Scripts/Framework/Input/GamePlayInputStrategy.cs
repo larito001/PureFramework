@@ -7,19 +7,8 @@ namespace YOTO
 {
     public class GamePlayInputStrategy : MInput.IGamePlayActionActions
     {
-
-        private bool isAming = false;
-        public void OnScroll(InputAction.CallbackContext context)
-        {
-            if (context.phase == InputActionPhase.Performed)
-            {
-                YOTOFramework.eventMgr.TriggerEvent<float>(YOTO.YOTOEventType.Scroll, context.ReadValue<Vector2>().y);
-            }
-
-        }
-
-      
-
+        
+        
         public void OnLook(InputAction.CallbackContext context)
         {
             // Debug.Log("look");
@@ -53,30 +42,18 @@ namespace YOTO
          
          }
 
-        public void OnTouchAddition(InputAction.CallbackContext context)
+        public void OnMouseLeft(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
             {
-                 YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.TouchPress);
-
-            }else if (context.phase == InputActionPhase.Canceled) // 松开触发事件
-            {
-
-                YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.TouchRelease);
-            }
-        }
-
-        public void OnFire(InputAction.CallbackContext context)
-        {
-             if (context.phase == InputActionPhase.Performed)
-            {
                 YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.PressLeftMouse);
             }
-             else if (context.phase == InputActionPhase.Canceled) // 松开触发事件
-             {
-                 YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.FireRelease);
-             }
+            else if (context.phase == InputActionPhase.Canceled) // 松开触发事件
+            {
+                YOTOFramework.eventMgr.TriggerEvent(YOTO.YOTOEventType.FireRelease);
+            }
         }
+        
 
         public void OnSpace(InputAction.CallbackContext context)
         {

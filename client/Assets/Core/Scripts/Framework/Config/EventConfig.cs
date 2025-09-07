@@ -10,9 +10,6 @@ namespace YOTO
        //input :
        Move,
        Touch,
-       TouchPress,
-       TouchRelease,
-       Scroll,
        PressLeftMouse,
        FireRelease,
        RefreshMousePos,

@@ -60,6 +60,7 @@ public class PlayerData
     {
         if (State == PlayerState.Idle)
         {
+            lootNum = 0;
             State = PlayerState.Looting;
             useFoodId = foodid;
             return true;
@@ -255,7 +256,7 @@ public class FoodData
         }
 
 
-        List<int> loseids = new List<int>();
+         List<int> loseids = new List<int>();
         foreach (var id in playerIds)
         {
             var data = ServerDataPlugin.Instance.GetPlayerById(id);
@@ -297,7 +298,7 @@ public class FoodData
         if (state == FoodState.Looting)
         {
             timerTemp += dt;
-            if (timerTemp >= 20)
+            if (timerTemp >= 5)
             {
                 timerTemp = 0;
                 EndLoot();

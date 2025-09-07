@@ -22,8 +22,8 @@ public class CameraCtrl
     private float xRotation = 0f;
     private float yRotation = 0f;
 
-    public float verticalClamp = 45f;
-    public float horizontalClamp = 45f;
+    public float verticalClamp = 4f;
+    public float horizontalClamp = 4f;
     public float sensitivity = 10f;
     public float smoothTime = 0.5f; // 平滑时间
 
@@ -135,7 +135,7 @@ public class CameraCtrl
                 Debug.Log("点击到了食物"+hitInfo.transform.gameObject.name);
                 if (hitInfo.transform.TryGetComponent<FoodBase>(out FoodBase food))
                 {
-                    PlayerPlugin.Instance.CatchFood(food.foodId);
+                    PlayerPlugin.Instance.CatchFood(food);
                 }
             }
         }

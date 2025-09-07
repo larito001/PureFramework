@@ -8,14 +8,16 @@ public class DemoGameServer : GameServerBase
     public enum GameState
     {
         Idle,
+        Ready,
         Playing,
     }
 
 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
-
-
+    private float stateTimer = 5;
+    private float delayTimer = 1;
+    private int delayIndex = 5;
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
@@ -43,6 +45,28 @@ public class DemoGameServer : GameServerBase
         foreach (var food in ServerDataPlugin.Instance.GetFoodList())
         {
             food.Update(dt);
+        }
+
+        if (gameState ==GameState.Ready)
+        {
+            stateTimer -= dt;
+            delayTimer -= dt;
+            if (delayTimer <= 0)
+            {
+                OnFlyTextNotify("Ready!",FlyTextType.Normal);
+                delayIndex--;
+                delayTimer = 1f; // 重置为1秒
+            }
+            if (stateTimer <=0)
+            {
+                gameState = GameState.Playing;
+                OnFlyTextNotify("Go!",FlyTextType.Normal);
+                GenerateFoods();
+                stateTimer = 0;
+            }
+            //todo:倒计时，每个1调一次OnDelayTime
+            // 倒计时，每秒调用一次OnDelayTime
+          
         }
     }
 
@@ -184,8 +208,7 @@ public class DemoGameServer : GameServerBase
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        gameState = GameState.Playing;
-        GenerateFoods();
+        gameState = GameState.Ready;
         return response;
     }
     public void OnGameEndNotify()

@@ -9,8 +9,8 @@ public class HandCtrl : MonoBehaviour
     [SerializeField] private Ease moveEase = Ease.OutBack; // 缓动类型
 
     private PlayerEntity playerEntity;
-    private Transform leftHand;
-    private Transform rightHand;
+    public Transform leftHand;
+    public Transform rightHand;
 
     private Vector3 leftHandOriginalPos;
     private Quaternion leftHandOriginalRot;
@@ -19,19 +19,17 @@ public class HandCtrl : MonoBehaviour
 
     private FoodEntity leftTarget;
     private FoodEntity rightTarget;
+
     public void Init(PlayerEntity playerEntity)
     {
-      
-   
         this.playerEntity = playerEntity;
-        leftHand = this.transform.Find("LeftHand_L");
-        rightHand = this.transform.Find("RightHand_R");
 
         if (leftHand != null)
         {
             leftHandOriginalPos = leftHand.position;
             leftHandOriginalRot = leftHand.rotation;
         }
+
         if (rightHand != null)
         {
             rightHandOriginalPos = rightHand.position;
@@ -42,27 +40,25 @@ public class HandCtrl : MonoBehaviour
     /// <summary>
     /// 左手伸出去抓目标
     /// </summary>
-    public void ExtendLeftHand(FoodEntity target,bool success)
+    public void ExtendLeftHand(FoodEntity target)
     {
         if (leftHand == null || target == null) return;
-        PlayerPlugin.Instance.leftHandDoing = true;
+
+        playerEntity.leftHandDoing = true;
         leftTarget = target;
-        
+
+        // Kill 旧的 tween，并强制触发 OnComplete 避免丢失回调
+        leftHand.DOKill(true);
+        Debug.Log("调用回收左手" + playerEntity.isSelf);
         leftHand.DOMove(leftTarget.ObjTrans.position, moveDuration)
-                .SetEase(moveEase)
-                .OnComplete(() =>
-                {
-                    if (success)
-                    {
-                        leftTarget.OnCatch();
-                        leftTarget.ObjTrans.SetParent(leftHand);
-                    }
-                    else
-                    {
-                        RetractLeftHand();
-                    }
-           
-                });
+            .SetEase(moveEase)
+            .OnKill(() => Debug.Log("LeftHand tween killed"))
+            .OnComplete(() =>
+            {
+                Debug.Log("LeftHand tween complete" + playerEntity.isSelf);
+                leftTarget.OnCatch();
+                leftTarget.ObjTrans.SetParent(leftHand);
+            });
     }
 
     /// <summary>
@@ -71,41 +67,53 @@ public class HandCtrl : MonoBehaviour
     public void ExtendRightHand(FoodEntity target)
     {
         if (rightHand == null || target == null) return;
-        PlayerPlugin.Instance.rightHandDoing = true;
-        rightTarget = target;
-        rightHand.DOMove(rightTarget.ObjTrans.position, moveDuration)
-                 .SetEase(moveEase)
-                 .OnComplete(() =>
-                 {
-                     rightTarget.OnCatch();
-                     rightTarget.ObjTrans.SetParent(rightHand);
 
-                 });
+        playerEntity.rightHandDoing = true;
+        rightTarget = target;
+
+        rightHand.DOKill(true);
+
+        rightHand.DOMove(rightTarget.ObjTrans.position, moveDuration)
+            .SetEase(moveEase)
+            .OnKill(() => Debug.Log("RightHand tween killed"))
+            .OnComplete(() =>
+            {
+                Debug.Log("RightHand tween complete");
+                rightTarget.OnCatch();
+                rightTarget.ObjTrans.SetParent(rightHand);
+            });
     }
 
     /// <summary>
     /// 左手收回
     /// </summary>
-    /// 左手收回
-    /// </summary>
     public void RetractLeftHand()
     {
         if (leftHand == null) return;
-        leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase);
-        leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase)
-            .OnComplete(() => {
-                if (leftTarget != null)
-                {
-                    // 销毁物体
-                    leftTarget.StopCatch();
-                    var food =leftTarget.ObjTrans.GetComponent<FoodBase>();
-                    StagePlugin.Instance.RemoveFood(food.foodId);
-                }
-                PlayerPlugin.Instance.leftHandDoing=false;
-     
-            });
+
+        leftHand.DOKill(true);
+        Debug.Log("开始收" + playerEntity.isSelf);
+        Sequence seq = DOTween.Sequence();
+        seq.Join(leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase));
+        seq.Join(leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase));
+        seq.OnComplete(() =>
+        {
+            Debug.Log("完成收回" + playerEntity.isSelf);
+            playerEntity.leftHandDoing = false;
+            if (leftTarget != null&&leftTarget.ObjTrans!=null)
+            {
+                leftTarget.StopCatch();
+                var food = leftTarget.ObjTrans.GetComponent<FoodBase>();
+                StagePlugin.Instance.RemoveFood(food.foodId);
+            }
+            leftTarget = null;
+        });
     }
 
+
+    /// <summary>
+    /// 右手收回
+    /// </summary>
     /// <summary>
     /// 右手收回
     /// </summary>
@@ -113,18 +121,24 @@ public class HandCtrl : MonoBehaviour
     {
         if (rightHand == null) return;
 
-        rightHand.DOMove(rightHandOriginalPos, moveDuration).SetEase(moveEase);
-        rightHand.DORotateQuaternion(rightHandOriginalRot, moveDuration).SetEase(moveEase).OnComplete(() => {
-            if (rightTarget != null)
+        rightHand.DOKill(true);
+
+        Sequence seq = DOTween.Sequence();
+        seq.Join(rightHand.DOMove(rightHandOriginalPos, moveDuration).SetEase(moveEase));
+        seq.Join(rightHand.DORotateQuaternion(rightHandOriginalRot, moveDuration).SetEase(moveEase));
+        seq.OnComplete(() =>
+        {
+            playerEntity.rightHandDoing = false;
+            if (rightTarget != null&&rightTarget.ObjTrans!=null)
             {
-                // 销毁物体
                 rightTarget.StopCatch();
-                var food =rightTarget.ObjTrans.GetComponent<FoodBase>();
+                var food = rightTarget.ObjTrans.GetComponent<FoodBase>();
                 StagePlugin.Instance.RemoveFood(food.foodId);
+          
             }
-            PlayerPlugin.Instance.rightHandDoing=false;
-     
+           
+            rightTarget = null;
+    
         });
-        
     }
 }
