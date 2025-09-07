@@ -6,20 +6,26 @@ using YOTO;
 public class PlayerPlugin : LogicPluginBase
 {
     public static PlayerPlugin Instance;
-    private Dictionary<int,PlayerEntity> players = new Dictionary<int,PlayerEntity>();
+    private Dictionary<int, PlayerEntity> players = new Dictionary<int, PlayerEntity>();
+    public bool leftHandDoing = false;
+    public bool rightHandDoing = false;
+
+
     public PlayerPlugin()
     {
         Instance = this;
     }
+
     protected override void OnInstall()
     {
         base.OnInstall();
     }
-    
+
     protected override void OnUninstall()
     {
         base.OnUninstall();
     }
+
     public void OnNetInstall()
     {
         ClientMessageManager.Instance.RegisterResponseHandler<HeadPosNotify>(OnHeadPosNotify);
@@ -29,8 +35,7 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<StopLootNotify>(OnStopLootNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<LootingInputNotify>(OnLootingInputNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<FlyTextNotify>(OnFlyTextNotify);
-         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space,OnSpaceClick);
-    
+        YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
     public void OnNetUninstall()
@@ -42,12 +47,11 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<StopLootNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<LootingInputNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<FlyTextNotify>();
-        YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space,OnSpaceClick); 
+        YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
     #region 食物操作
-    
-    
+
     private void OnStartLootNotify(StartLootNotify obj)
     {
         YOTOFramework.uIMgr.Show(UIEnum.LootingPanel);
@@ -56,42 +60,50 @@ public class PlayerPlugin : LogicPluginBase
         {
             players[objPlayerId].StartLooting(obj.foodId);
         }
+
         Debug.Log("开始抢夺");
-        
     }
+
     private void OnStopLootNotify(StopLootNotify obj)
     {
         YOTOFramework.uIMgr.Hide(UIEnum.LootingPanel);
         //todo:抢夺结束，退出特殊状态
-        Debug.Log("抢夺结束，player"+obj.winPlayerId+"赢了");
+        Debug.Log("抢夺结束，player" + obj.winPlayerId + "赢了");
 
         if (players.ContainsKey(obj.winPlayerId))
         {
-            players[obj.winPlayerId].EndLooting(true,obj.foodId);
-        
+            players[obj.winPlayerId].EndLooting(true, obj.foodId);
         }
+
         for (var i = 0; i < obj.losePlayers.Count; i++)
         {
-            if(players.ContainsKey(obj.losePlayers[i]))
-                players[obj.losePlayers[i]].EndLooting(false,obj.foodId);
-        } 
+            if (players.ContainsKey(obj.losePlayers[i]))
+                players[obj.losePlayers[i]].EndLooting(false, obj.foodId);
+        }
     }
 
 
     public void CatchFood(int fId)
     {
+        if (PlayerPlugin.Instance.leftHandDoing)
+        {
+            return;
+        }
+
         var mgr = ClientMessageManager.Instance;
         Debug.Log("CatchFood");
         mgr.SendRequest(new CatchFoodRequest()
         {
-            playerId =LoginPlugin.Instance.PlayerId,
-            foodId=fId
+            playerId = LoginPlugin.Instance.PlayerId,
+            foodId = fId
         });
     }
+
     private void OnCatchFoodNotify(CatchFoodNotify obj)
     {
-        players[obj.playerId].CatchFood(obj.foodId,obj.isSuccess);
+        players[obj.playerId].CatchFood(obj.foodId, obj.isSuccess);
     }
+
     private void OnEndCatchFoodNotify(EndCatchFoodNotify obj)
     {
         if (obj.isSuccess)
@@ -105,8 +117,6 @@ public class PlayerPlugin : LogicPluginBase
                 //处理catch过程中，玩家退出
                 StagePlugin.Instance.RemoveFood(obj.foodId);
             }
-            
-      
         }
     }
 
@@ -114,22 +124,24 @@ public class PlayerPlugin : LogicPluginBase
     {
         LootAdd();
     }
+
     private void LootAdd()
     {
         LootingInputRequest req = new LootingInputRequest();
         req.playerId = LoginPlugin.Instance.PlayerId;
         ClientMessageManager.Instance.SendRequest(req);
     }
+
     private void OnLootingInputNotify(LootingInputNotify obj)
     {
         //todo:刷新玩家的progress
-        YOTOFramework.eventMgr.TriggerEvent<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,obj.playerProgress);
+        YOTOFramework.eventMgr.TriggerEvent<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress, obj.playerProgress);
     }
+
     #endregion
 
-
-
     #region 旋转头
+
     /// <summary>
     /// 输入，摄像机调用
     /// </summary>
@@ -138,25 +150,26 @@ public class PlayerPlugin : LogicPluginBase
     {
         if (players.ContainsKey(LoginPlugin.Instance.PlayerId))
         {
-            players[LoginPlugin.Instance.PlayerId].SetEyesMove(input); 
+            players[LoginPlugin.Instance.PlayerId].SetEyesMove(input);
         }
-    
     }
+
     /// <summary>
     /// 发送请求
     /// </summary>
     /// <param name="pos"></param>
-    public void RotatePlayerRequest(Vector3  pos)
+    public void RotatePlayerRequest(Vector3 pos)
     {
         var pid = LoginPlugin.Instance.PlayerId;
         var mgr = ClientMessageManager.Instance;
         // Debug.Log("RotateRequest");
         mgr.SendRequest(new HeadPosRequest()
         {
-            playerId =pid,
+            playerId = pid,
             pos = pos
         });
     }
+
     /// <summary>
     /// 头部旋转实际，自己的客户端负责控制（或者压根不控制）
     /// </summary>
@@ -164,7 +177,7 @@ public class PlayerPlugin : LogicPluginBase
     private void OnHeadPosNotify(HeadPosNotify obj)
     {
         // players.RotatePlayer();
-        if (LoginPlugin.Instance.PlayerId!=obj.playerId)
+        if (LoginPlugin.Instance.PlayerId != obj.playerId)
         {
             //旋转眼球
             if (players.ContainsKey(obj.playerId))
@@ -172,39 +185,37 @@ public class PlayerPlugin : LogicPluginBase
                 // Debug.Log("Player:"+obj.playerId+" 旋转眼球"+obj.pos);
                 players[obj.playerId].SetEyesMove(obj.pos);
             }
-      
         }
     }
-    #endregion
 
+    #endregion
 
     #region 生成、移除player
 
     public void GeneratePlayers(List<PlayerData> playerDatas)
     {
-      
         for (var i = 0; i < playerDatas.Count; i++)
         {
             // playerDatas[i]
-            var pp = GameObject.Find("p"+(i+1).ToString());
+            var pp = GameObject.Find("p" + (i + 1).ToString());
             if (pp != null)
             {
-                var p= PlayerEntity.pool.GetItem(playerDatas[i]);
+                var p = PlayerEntity.pool.GetItem(playerDatas[i]);
                 p.Location = pp.transform.position;
                 p.InstanceGObj();
-                players.Add(playerDatas[i].playerId,p);
+                players.Add(playerDatas[i].playerId, p);
             }
-          
         }
-
     }
+
     List<int> removeList = new List<int>();
+
     public void RefreshPlayers(List<PlayerData> datas)
     {
         removeList.Clear();
         foreach (var id in players.Keys)
         {
-            bool isHave=false;
+            bool isHave = false;
             foreach (var player in datas)
             {
                 if (player.playerId == id)
@@ -217,8 +228,8 @@ public class PlayerPlugin : LogicPluginBase
             {
                 removeList.Add(id);
             }
-            
         }
+
         foreach (var i in removeList)
         {
             PlayerEntity.pool.RecoverItem(players[i]);
@@ -232,18 +243,18 @@ public class PlayerPlugin : LogicPluginBase
         {
             PlayerEntity.pool.RecoverItem(player);
         }
+
         players.Clear();
     }
 
     #endregion
 
-    
     private void OnFlyTextNotify(FlyTextNotify obj)
     {
         // 将屏幕中心的世界坐标转换为屏幕坐标
         Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
-        
+
         // 如果FlyTextMgr使用的是屏幕坐标
-        FlyTextMgr.Instance.AddText(obj.txt, screenCenter,obj.flyType,TextPosType.Screen);
+        FlyTextMgr.Instance.AddText(obj.txt, screenCenter, obj.flyType, TextPosType.Screen);
     }
 }

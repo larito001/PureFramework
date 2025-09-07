@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class FoodEntity :ObjectBase,PoolItem<FoodData>
@@ -63,5 +64,31 @@ public class FoodEntity :ObjectBase,PoolItem<FoodData>
         this.data=serverData;
         SetInVision(true);
         SetPrefabBundlePath("Foods/TestFood");
+    }
+
+    private Tweener shakeTween; // 保存抖动动画的引用
+
+    public void OnCatch()
+    {
+        // 停止之前的抖动动画（如果有）
+        if (shakeTween != null && shakeTween.IsActive())
+        {
+            shakeTween.Kill();
+        }
+    
+        // 使用DOTween实现以z轴为中心的旋转抖动
+        shakeTween = objTrans.DOShakeRotation(1f, strength: 15f, vibrato: 10, randomness: 90f, fadeOut: true)
+            .SetEase(Ease.OutQuad).SetLoops(3, LoopType.Restart);
+    }
+
+    public void StopCatch()
+    {
+        // 停止抖动动画
+        if (shakeTween != null && shakeTween.IsActive())
+        {
+            shakeTween.Kill();
+            // 可选：重置对象旋转到原始状态
+            objTrans.DOLocalRotate(Vector3.zero, 0.1f);
+        }
     }
 }

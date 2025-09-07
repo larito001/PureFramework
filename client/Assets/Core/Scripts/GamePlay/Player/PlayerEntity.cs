@@ -40,7 +40,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void CatchFood(int foodId, bool success)
     {
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-        handCtrl.ExtendLeftHand(food.ObjTrans, success);
+        handCtrl.ExtendLeftHand(food, success);
     }
 
     public void EndCatch()
@@ -51,7 +51,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void StartLooting(int foodId)
     {
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-        handCtrl.ExtendLeftHand(food.ObjTrans, true);
+        handCtrl.ExtendLeftHand(food, true);
 
         if (isSelf)
         {
@@ -68,7 +68,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (win)
         {
             var food = StagePlugin.Instance.GetFoodEntityById(foodId);
-            handCtrl.ExtendLeftHand(food.ObjTrans, true);
+            handCtrl.ExtendLeftHand(food, true);
         }
 
         if (isSelf)

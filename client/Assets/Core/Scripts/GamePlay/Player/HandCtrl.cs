@@ -17,11 +17,12 @@ public class HandCtrl : MonoBehaviour
     private Vector3 rightHandOriginalPos;
     private Quaternion rightHandOriginalRot;
 
-    private Transform leftTarget;
-    private Transform rightTarget;
-
+    private FoodEntity leftTarget;
+    private FoodEntity rightTarget;
     public void Init(PlayerEntity playerEntity)
     {
+      
+   
         this.playerEntity = playerEntity;
         leftHand = this.transform.Find("LeftHand_L");
         rightHand = this.transform.Find("RightHand_R");
@@ -41,21 +42,20 @@ public class HandCtrl : MonoBehaviour
     /// <summary>
     /// 左手伸出去抓目标
     /// </summary>
-    public void ExtendLeftHand(Transform target,bool success)
+    public void ExtendLeftHand(FoodEntity target,bool success)
     {
         if (leftHand == null || target == null) return;
-
+        PlayerPlugin.Instance.leftHandDoing = true;
         leftTarget = target;
-
-        leftHand.DOMove(target.position, moveDuration)
+        
+        leftHand.DOMove(leftTarget.ObjTrans.position, moveDuration)
                 .SetEase(moveEase)
                 .OnComplete(() =>
                 {
                     if (success)
                     {
-                        target.SetParent(leftHand);
-                        target.localPosition = Vector3.zero;
-                        target.localRotation = Quaternion.identity;
+                        leftTarget.OnCatch();
+                        leftTarget.ObjTrans.SetParent(leftHand);
                     }
                     else
                     {
@@ -68,19 +68,18 @@ public class HandCtrl : MonoBehaviour
     /// <summary>
     /// 右手伸出去抓目标
     /// </summary>
-    public void ExtendRightHand(Transform target)
+    public void ExtendRightHand(FoodEntity target)
     {
         if (rightHand == null || target == null) return;
-
+        PlayerPlugin.Instance.rightHandDoing = true;
         rightTarget = target;
-
-        rightHand.DOMove(target.position, moveDuration)
+        rightHand.DOMove(rightTarget.ObjTrans.position, moveDuration)
                  .SetEase(moveEase)
                  .OnComplete(() =>
                  {
-                     target.SetParent(rightHand);
-                     target.localPosition = Vector3.zero;
-                     target.localRotation = Quaternion.identity;
+                     rightTarget.OnCatch();
+                     rightTarget.ObjTrans.SetParent(rightHand);
+
                  });
     }
 
@@ -92,16 +91,18 @@ public class HandCtrl : MonoBehaviour
     public void RetractLeftHand()
     {
         if (leftHand == null) return;
-
         leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase);
         leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase)
             .OnComplete(() => {
                 if (leftTarget != null)
                 {
                     // 销毁物体
-                    var food =leftTarget.GetComponent<FoodBase>();
+                    leftTarget.StopCatch();
+                    var food =leftTarget.ObjTrans.GetComponent<FoodBase>();
                     StagePlugin.Instance.RemoveFood(food.foodId);
                 }
+                PlayerPlugin.Instance.leftHandDoing=false;
+     
             });
     }
 
@@ -113,12 +114,17 @@ public class HandCtrl : MonoBehaviour
         if (rightHand == null) return;
 
         rightHand.DOMove(rightHandOriginalPos, moveDuration).SetEase(moveEase);
-        rightHand.DORotateQuaternion(rightHandOriginalRot, moveDuration).SetEase(moveEase);
-
-        if (releaseTarget && rightTarget != null)
-        {
-            rightTarget.SetParent(null);
-            rightTarget = null;
-        }
+        rightHand.DORotateQuaternion(rightHandOriginalRot, moveDuration).SetEase(moveEase).OnComplete(() => {
+            if (rightTarget != null)
+            {
+                // 销毁物体
+                rightTarget.StopCatch();
+                var food =rightTarget.ObjTrans.GetComponent<FoodBase>();
+                StagePlugin.Instance.RemoveFood(food.foodId);
+            }
+            PlayerPlugin.Instance.rightHandDoing=false;
+     
+        });
+        
     }
 }
