@@ -5,9 +5,10 @@ using YOTO;
 
 public class PlayerPlugin : LogicPluginBase
 {
+    #region 单例、生命周期
+
     public static PlayerPlugin Instance;
     public Dictionary<int, PlayerEntity> players = new Dictionary<int, PlayerEntity>();
-
 
 
     public PlayerPlugin()
@@ -34,6 +35,7 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<StopLootNotify>(OnStopLootNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<LootingInputNotify>(OnLootingInputNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<FlyTextNotify>(OnFlyTextNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<PlayerPropertyNotify>(OnPlayerPropertyNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
@@ -46,9 +48,18 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<StopLootNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<LootingInputNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<FlyTextNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerPropertyNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
+    #endregion
+
+
+    public PlayerEntity GetSelf()
+    {
+        return players[LoginPlugin.Instance.PlayerId];
+    }
+    
     #region 食物操作
 
     private void OnStartLootNotify(StartLootNotify obj)
@@ -84,16 +95,16 @@ public class PlayerPlugin : LogicPluginBase
 
     public void CatchFood(FoodBase food)
     {
-        
         if (players[LoginPlugin.Instance.PlayerId].leftHandDoing)
         {
             return;
         }
+
         //todo:检测距离是否足够，足够才能catch
         var selfTrans = players[LoginPlugin.Instance.PlayerId].ObjTrans;
-        if (selfTrans!=null)
+        if (selfTrans != null)
         {
-            float distance =(food.transform.position - selfTrans.position).magnitude;
+            float distance = (food.transform.position - selfTrans.position).magnitude;
             if (distance > 3f)
             {
                 // 将屏幕中心的世界坐标转换为屏幕坐标
@@ -105,7 +116,7 @@ public class PlayerPlugin : LogicPluginBase
             }
         }
 
-        
+
         var mgr = ClientMessageManager.Instance;
         Debug.Log("CatchFood");
         mgr.SendRequest(new CatchFoodRequest()
@@ -224,6 +235,14 @@ public class PlayerPlugin : LogicPluginBase
         }
     }
 
+    private void OnPlayerPropertyNotify(PlayerPropertyNotify obj)
+    {
+        if (players.ContainsKey(obj.playerId))
+        {
+            players[obj.playerId].RefreshPlayerProperty(obj.satiety, obj.satisfaction);
+        }
+    }
+
     List<int> removeList = new List<int>();
 
     public void RefreshPlayers(List<PlayerData> datas)
@@ -273,5 +292,4 @@ public class PlayerPlugin : LogicPluginBase
         // 如果FlyTextMgr使用的是屏幕坐标
         FlyTextMgr.Instance.AddText(obj.txt, screenCenter, obj.flyType, TextPosType.Screen);
     }
-    
 }

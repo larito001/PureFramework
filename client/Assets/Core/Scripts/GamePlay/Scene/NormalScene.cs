@@ -23,7 +23,9 @@ public class NormalScene : VirtualSceneBase
     //
     public override void Onload(SceneParam param)
     {
+      
         YOTOFramework.uIMgr.ClearUI();
+        YOTOFramework.uIMgr.Show(UIEnum.GameMainPanel);
         PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas());
     }
     

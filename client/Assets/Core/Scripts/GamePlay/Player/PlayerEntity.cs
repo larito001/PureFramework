@@ -8,13 +8,15 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public static DataObjPool<PlayerEntity, PlayerData> pool =
         new DataObjPool<PlayerEntity, PlayerData>("PlayerEntity", 4);
 
-    private PlayerData data;
+    private PlayerData staticData;
     public bool leftHandDoing = false;
     public bool rightHandDoing = false;
     public bool isSelf { get; private set; }
-
+    
     private EyesCtrl eyesCtrl;
     private HandCtrl handCtrl;
+    public int SatietyValue;
+    public int SatisfactionValue;
 
     protected override void YOTOOnload()
     {
@@ -102,9 +104,15 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         RecoverObject();
     }
 
+    public void RefreshPlayerProperty(int satiety, int satisfaction)
+    {
+        SatietyValue = satiety;
+        SatisfactionValue = satisfaction;
+        YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.RefreshPlayerProperty);
+    }
     public void SetData(PlayerData data)
     {
-        this.data = data;
+        this.staticData = data;
         isSelf = data.playerId == LoginPlugin.Instance.PlayerId;
         SetInVision(true);
         SetPrefabBundlePath("Player/Player");

@@ -62,6 +62,7 @@ public class DemoGameServer : GameServerBase
                 gameState = GameState.Playing;
                 OnFlyTextNotify("Go!",FlyTextType.Normal);
                 GenerateFoods();
+                RefreshAllPlayerProperty();
                 stateTimer = 0;
             }
             //todo:倒计时，每个1调一次OnDelayTime
@@ -219,6 +220,14 @@ public class DemoGameServer : GameServerBase
 
     #region 游戏gamePlay逻辑
 
+    private void RefreshAllPlayerProperty()
+    {
+        var tempList = ServerDataPlugin.Instance.GetPlayerList();
+        foreach (var player in tempList)
+        {
+            player.RefreshPlayerProperty();
+        }
+    }
     /// <summary>
     /// 广播生成食物
     /// </summary>

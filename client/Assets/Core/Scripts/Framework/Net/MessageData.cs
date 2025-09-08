@@ -36,6 +36,8 @@ public class PlayerData
     public int playerId;
     public string playerName;
     private PlayerState State = PlayerState.Idle;
+    public int SatietyValue = 0;//饱腹值
+    public int SatisfactionValue = 0;//满意度
     public int lootNum = 0;
     public int useFoodId = -1;
 
@@ -102,6 +104,24 @@ public class PlayerData
         }
     }
 
+    public void EatFood(int satiety,int  satisfaction)
+    {
+        SatietyValue+=satiety;
+        SatisfactionValue+=satisfaction;
+        RefreshPlayerProperty();
+    }
+
+    public void RefreshPlayerProperty()
+    {
+        PlayerPropertyNotify notify = new PlayerPropertyNotify()
+        {
+            playerId = playerId,
+            satiety = SatietyValue,
+            satisfaction = SatisfactionValue
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
     public void OnLootFoodEnd()
     {
         if (State == PlayerState.Looting)
@@ -112,6 +132,13 @@ public class PlayerData
     }
 }
 
+
+public struct PlayerPropertyNotify:IResponse
+{
+    public int playerId;
+    public int satiety;
+    public int satisfaction;
+}
 #endregion
 
 #region 食物
@@ -130,7 +157,8 @@ public class FoodData
     public int foodId;
     public Vector3 position;
     private FoodState state;
-
+    public int SatietyValue = 2;//饱腹值
+    public int SatisfactionValue = 3;//满意度
     List<int> playerIds = new List<int>();
 
     // private Dictionary<int,PlayerData>playerIds = new Dictionary<int,PlayerData>();
@@ -222,6 +250,7 @@ public class FoodData
             if (info != null)
             {
                 info.OnCatchFoodEnd();
+                info.EatFood(SatietyValue,SatisfactionValue);
             }
         }
 
@@ -273,6 +302,8 @@ public class FoodData
         }
 
         loseids.Remove(maxId);
+        var windata = ServerDataPlugin.Instance.GetPlayerById(maxId);
+        windata.EatFood(SatietyValue,SatisfactionValue);
         StopLootNotify notify = new StopLootNotify()
         {
             foodId = foodId,
