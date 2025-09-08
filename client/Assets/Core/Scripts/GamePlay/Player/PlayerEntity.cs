@@ -18,6 +18,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public int SatietyValue;
     public int SatisfactionValue;
 
+    public bool CheckCanCatch()
+    {
+        bool isEnd = SatietyValue >= 10;
+        return !leftHandDoing&&!isEnd;
+    }
     protected override void YOTOOnload()
     {
     }

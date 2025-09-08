@@ -47,7 +47,7 @@ public class FoodEntity :ObjectBase,PoolItem<FoodData>
 
     public void AfterIntoObjectPool()
     {
-        if (objTrans.TryGetComponent<FoodBase>(out FoodBase food))
+        if (objTrans!=null&&objTrans.TryGetComponent<FoodBase>(out FoodBase food))
         {
             food.foodId=-1;
       

@@ -95,7 +95,8 @@ public class PlayerPlugin : LogicPluginBase
 
     public void CatchFood(FoodBase food)
     {
-        if (players[LoginPlugin.Instance.PlayerId].leftHandDoing)
+        
+        if (!players[LoginPlugin.Instance.PlayerId].CheckCanCatch())
         {
             return;
         }

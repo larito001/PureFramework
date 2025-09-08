@@ -18,10 +18,11 @@ public class DemoGameServer : GameServerBase
     private float stateTimer = 5;
     private float delayTimer = 1;
     private int delayIndex = 5;
+    private float gameTimer = 0;
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameStartRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameReadyRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<LootingInputRequest>(OnLootingInputRequest);
@@ -59,16 +60,23 @@ public class DemoGameServer : GameServerBase
             }
             if (stateTimer <=0)
             {
-                gameState = GameState.Playing;
-                OnFlyTextNotify("Go!",FlyTextType.Normal);
-                GenerateFoods();
-                RefreshAllPlayerProperty();
-                stateTimer = 0;
+                OnGameStart();
+                delayIndex = 5;
+                stateTimer = 5;
             }
-            //todo:倒计时，每个1调一次OnDelayTime
-            // 倒计时，每秒调用一次OnDelayTime
-          
+            
         }
+
+        if (gameState == GameState.Playing)
+        {
+            gameTimer += dt;
+            if (gameTimer>=10)
+            {
+                gameTimer = 0;
+                OnGameEndNotify();
+            }
+        }
+        
     }
 
     #region host
@@ -202,18 +210,29 @@ public class DemoGameServer : GameServerBase
     
     #region 游戏生命周期
 
-    private IResponse OnGameStartRequest(GameStartRequest arg1, int arg2)
+    private IResponse OnGameReadyRequest(GameStartRequest arg1, int arg2)
     {
-        var response = new GameStartResponse();
-        response.isSuccess = true;
+        if (gameState != GameState.Idle) return null;
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
         gameState = GameState.Ready;
-        return response;
+        return null;
+    }
+    
+    private void OnGameStart()
+    {
+        gameState = GameState.Playing;
+        OnFlyTextNotify("Go!",FlyTextType.Normal);
+        ServerDataPlugin.Instance.OnGameReStart();
+        GenerateFoods();
+        RefreshAllPlayerProperty();
     }
     public void OnGameEndNotify()
     {
+        gameState = GameState.Idle;
+        GameEndNotify notify = new GameEndNotify();
+        ServerMessageManager.Instance.SendNotify(notify);
         //todo：玩家退回房间选择界面
     }
     #endregion
@@ -225,6 +244,7 @@ public class DemoGameServer : GameServerBase
         var tempList = ServerDataPlugin.Instance.GetPlayerList();
         foreach (var player in tempList)
         {
+            player.ClearProperty();
             player.RefreshPlayerProperty();
         }
     }

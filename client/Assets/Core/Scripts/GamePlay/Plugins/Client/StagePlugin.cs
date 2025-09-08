@@ -107,10 +107,18 @@ public class StagePlugin : LogicPluginBase
         YOTOFramework.sceneMgr.LoadScene<NormalScene>();
     }
 
-    public void OnGameEnd()
+    public void OnGameError()
     {
         GameStart = false;
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
+    }
+
+    public void OnGameEnd()
+    {
+        GameStart = false;
+
+        YOTOFramework.sceneMgr.LoadScene<StartScene>();
+        YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
     }
 
     #endregion

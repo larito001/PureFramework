@@ -130,6 +130,13 @@ public class PlayerData
             useFoodId = -1;
         }
     }
+
+    public void ClearProperty()
+    {
+        SatietyValue = 0;
+        SatisfactionValue = 0;
+
+    }
 }
 
 
@@ -444,16 +451,16 @@ public struct GameStartRequest : IRequest
     public bool isSuccess;
 }
 
-public struct GameStartResponse : IResponse
-{
-    public bool isSuccess;
-}
 
 public struct GameStartNotify : IResponse
 {
     public bool isSuccess;
 }
 
+public struct GameEndNotify : IResponse
+{
+    
+}
 // 例子：移动响应
 public struct LoginResponse : IResponse
 {

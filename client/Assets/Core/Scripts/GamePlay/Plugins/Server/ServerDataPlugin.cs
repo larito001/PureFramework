@@ -22,6 +22,11 @@ public class ServerDataPlugin : LogicPluginBase
         return foods.Values;
     }
 
+    public void OnGameReStart()
+    {
+        // players.Clear();
+        RemoveAllFoods();
+    }
     public PlayerData GetPlayerById(int id)
     {
         if (players.ContainsKey(id))

@@ -37,16 +37,17 @@ public class LoginPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
         ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameStartNotify>(OnGameStartNotify);
-        
-        ClientMessageManager.Instance.RegisterResponseHandler<GameStartResponse>(OnGameStartResponse);
+        ClientMessageManager.Instance.RegisterResponseHandler<GameEndNotify>(OnGameEndNotify);  
     }
-    
+
+
+
     public void OnNetUninstall()
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<LoginResponse>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<LoginNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameStartNotify>();
-        ClientMessageManager.Instance.UnRegisterResponseHandler<GameStartResponse>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<GameEndNotify>();
     }
 
     public void GameStartRequest()
@@ -58,9 +59,9 @@ public class LoginPlugin : LogicPluginBase
             isSuccess = true,
         });
     }
-    private void OnGameStartResponse(GameStartResponse obj)
+    private void OnGameEndNotify(GameEndNotify obj)
     {
-        
+        StagePlugin.Instance.OnGameEnd();
     }
 
     private void OnGameStartNotify(GameStartNotify obj)
@@ -74,7 +75,7 @@ public class LoginPlugin : LogicPluginBase
     {
         YOTOFramework.netMgr.LeaveHost();
         _playerId = -1;
-        StagePlugin.Instance.OnGameEnd();
+        StagePlugin.Instance.OnGameError();
     }
     public void LoginRequest()
     {
