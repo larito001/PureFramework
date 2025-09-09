@@ -135,7 +135,7 @@ public class PlayerData
     {
         SatietyValue = 0;
         SatisfactionValue = 0;
-
+        State = PlayerState.Idle;
     }
 }
 

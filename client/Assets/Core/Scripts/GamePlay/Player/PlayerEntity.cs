@@ -106,6 +106,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void AfterIntoObjectPool()
     {
+        handCtrl.OnUnLoad();
         RecoverObject();
     }
 
@@ -126,6 +127,8 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     protected override void AfterInstanceGObj()
     {
+        leftHandDoing = false;
+        rightHandDoing = false;
         objTrans.gameObject.SetActive(true);
         eyesCtrl = objTrans.GetComponent<EyesCtrl>();
         handCtrl = objTrans.GetComponent<HandCtrl>();

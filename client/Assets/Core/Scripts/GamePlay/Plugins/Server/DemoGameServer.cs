@@ -15,9 +15,9 @@ public class DemoGameServer : GameServerBase
 
     private readonly int playerMaxNum = 3;
     private GameState gameState = GameState.Idle;
-    private float stateTimer = 5;
+    private float stateTimer = 2;
     private float delayTimer = 1;
-    private int delayIndex = 5;
+    private int delayIndex = 2;
     private float gameTimer = 0;
     private void AddEvent()
     {
@@ -61,8 +61,9 @@ public class DemoGameServer : GameServerBase
             if (stateTimer <=0)
             {
                 OnGameStart();
-                delayIndex = 5;
-                stateTimer = 5;
+                delayIndex = 2;
+                stateTimer = 2;
+                delayTimer = 1;
             }
             
         }

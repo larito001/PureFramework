@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -56,8 +57,12 @@ public class HandCtrl : MonoBehaviour
             .OnComplete(() =>
             {
                 Debug.Log("LeftHand tween complete" + playerEntity.isSelf);
-                leftTarget.OnCatch();
-                leftTarget.ObjTrans.SetParent(leftHand);
+                if (leftTarget!=null&&leftTarget.ObjTrans!=null)
+                {
+                    leftTarget.OnCatch();
+                    leftTarget.ObjTrans.SetParent(leftHand);   
+                }
+        
             });
     }
 
@@ -78,9 +83,13 @@ public class HandCtrl : MonoBehaviour
             .OnKill(() => Debug.Log("RightHand tween killed"))
             .OnComplete(() =>
             {
-                Debug.Log("RightHand tween complete");
-                rightTarget.OnCatch();
-                rightTarget.ObjTrans.SetParent(rightHand);
+                if (rightTarget != null&&rightTarget.ObjTrans!=null)
+                {
+                    Debug.Log("RightHand tween complete");
+                    rightTarget.OnCatch();
+                    rightTarget.ObjTrans.SetParent(rightHand); 
+                }
+             
             });
     }
 
@@ -140,5 +149,22 @@ public class HandCtrl : MonoBehaviour
             rightTarget = null;
     
         });
+    }
+
+    public void OnUnLoad()
+    {
+        if (leftHand!=null)
+        {
+            leftHand.position = leftHandOriginalPos;
+            leftHand.rotation = leftHandOriginalRot;
+            leftHand.DOKill();
+        }
+
+        if (rightHand != null)
+        {
+            rightHand.position = rightHandOriginalPos;
+            rightHand.rotation = rightHandOriginalRot;
+            rightHand.DOKill();
+        }  
     }
 }
