@@ -169,6 +169,21 @@ public enum Quality
     Red
     
 }
+
+
+public class FoodDropStage
+{
+    public float startTime;
+    public float endTime;
+    public float randomTime;//
+    public int dropCount;
+    public Dictionary<Quality, float> gradeWeight; // 品质权重（0~1）
+}
+public class FoodDropPattern
+{
+    public string patternName;
+    public List<FoodDropStage> stages;
+}
 public class FoodData
 {
     public static int idIndex = 1000;

@@ -12,9 +12,10 @@ public class DemoGameServer : GameServerBase
         Playing,
     }
 
-    private const float orgGameTime = 100;//游戏总时长
+    private const float orgGameTime = 30; //游戏总时长
     private readonly int playerMaxNum = 4;
     private const float orgStateTimer = 2;
+
 
     private GameState gameState = GameState.Idle;
     private float stateTimer = orgStateTimer;
@@ -22,15 +23,8 @@ public class DemoGameServer : GameServerBase
     private int delayIndex = (int)orgStateTimer;
     private float gameTimer = 0;
 
-    //套路1：早期疯狂发低等级食物，晚期突然红包雨，发高级食物
-    //套路2：早期发中高级食物，后期发超高级食物
-    //套路3：..
-    private List<float> foodDropTimerList = new List<float>()
-    {
-        1, 6, 8, 15
-    };
-    private Queue<float> timeQueue = new Queue<float>();
-
+    Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>();
+    
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
@@ -82,13 +76,13 @@ public class DemoGameServer : GameServerBase
 
         if (gameState == GameState.Playing)
         {
-            if (timeQueue.Count>0&&gameTimer>=timeQueue.Peek())
+            if (stageQueue.Count > 0 && gameTimer >= stageQueue.Peek().randomTime)
             {
-                timeQueue.Dequeue();
-                GenerateFoods();
+                var foodStage = stageQueue.Dequeue();
+                GenerateFoods(foodStage);
             }
-  
-            
+
+
             gameTimer += dt;
             if (gameTimer >= orgGameTime)
             {
@@ -243,11 +237,19 @@ public class DemoGameServer : GameServerBase
         gameState = GameState.Playing;
         OnFlyTextNotify("Go!", FlyTextType.Normal);
         ServerDataPlugin.Instance.OnGameReStart();
-        timeQueue.Clear();
-        for (var i = 0; i < foodDropTimerList.Count; i++)
+        ServerDataPlugin.Instance.SetRandomPattern();
+        stageQueue.Clear();
+        var stages = ServerDataPlugin.Instance.CurrentPattern.stages;
+        for (var i = 0; i < stages.Count; i++)
         {
-            timeQueue.Enqueue(foodDropTimerList[i]);
+            var start = stages[i].startTime;
+            var end = stages[i].endTime;
+            var randomDropTime = UnityEngine.Random.Range(start, end);
+
+            stages[i].randomTime = randomDropTime;
+            stageQueue.Enqueue(stages[i]);
         }
+
         RefreshAllPlayerProperty();
     }
 
@@ -276,20 +278,19 @@ public class DemoGameServer : GameServerBase
     /// <summary>
     /// 广播生成食物
     /// </summary>
-    private void GenerateFoods()
+    private void GenerateFoods(FoodDropStage stage)
     {
-        int foodNumRandom = UnityEngine.Random.Range(0, 10); 
         List<FoodData> foods = new List<FoodData>();
-        for (int i = 0; i < foodNumRandom; i++)
+        for (int i = 0; i < stage.dropCount; i++)
         {
-            int qualityRandom = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(Quality)).Length);
+            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
             var food = new FoodData();
             food.foodId = FoodData.idIndex++;
             food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
-            food.quality = (Quality)qualityRandom;
+            food.quality = qualityRandom;
             food.Init();
             ServerDataPlugin.Instance.AddFood(food);
-            foods.Add( food);
+            foods.Add(food);
         }
 
         FoodNotify notify = new FoodNotify();
