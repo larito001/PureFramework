@@ -159,13 +159,25 @@ public enum FoodState
     Eat //吃掉
 }
 
+public enum Quality
+{
+    Normal=0,
+    Green,
+    Blue,
+    Purple,
+    Glod,
+    Red
+    
+}
 public class FoodData
 {
+    public static int idIndex = 1000;
     public int foodId;
     public Vector3 position;
     private FoodState state;
     public int SatietyValue = 2;//饱腹值
     public int SatisfactionValue = 3;//满意度
+    public Quality quality;
     List<int> playerIds = new List<int>();
 
     // private Dictionary<int,PlayerData>playerIds = new Dictionary<int,PlayerData>();

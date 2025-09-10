@@ -3,68 +3,74 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class FoodEntity :ObjectBase,PoolItem<FoodData>
+public class FoodEntity : ObjectBase, PoolItem<FoodData>
 {
-    public static  DataObjPool<FoodEntity,FoodData> pool=new DataObjPool<FoodEntity, FoodData>("FoodEntity", 10);
+    public static DataObjPool<FoodEntity, FoodData> pool = new DataObjPool<FoodEntity, FoodData>("FoodEntity", 10);
     private FoodData data;
     private Rigidbody rigidbody;
+    private OutLineCtrl outLineCtrl;
+
     protected override void YOTOOnload()
     {
-        
     }
 
     public override void YOTOStart()
     {
-        
     }
 
     public override void YOTOUpdate(float deltaTime)
     {
-        
     }
 
     public override void YOTONetUpdate()
     {
-        
     }
 
     public override void YOTOFixedUpdate(float deltaTime)
     {
-        
     }
 
     public override void YOTOOnHide()
     {
-        
+    }
+
+    public void SetQuality(Quality quality)
+    {
+        if (outLineCtrl != null)
+            outLineCtrl.SetQuality(quality);
     }
 
     protected override void AfterInstanceGObj()
     {
-        rigidbody=objTrans.GetComponent<Rigidbody>();
+        rigidbody = objTrans.GetComponent<Rigidbody>();
         rigidbody.isKinematic = false;
+        outLineCtrl = objTrans.GetComponent<OutLineCtrl>();
+        SetQuality(data.quality);
         if (objTrans.TryGetComponent<FoodBase>(out FoodBase food))
         {
-            food.foodId=data.foodId;
+            food.foodId = data.foodId;
         }
     }
 
     public void AfterIntoObjectPool()
     {
-        if (objTrans!=null&&objTrans.TryGetComponent<FoodBase>(out FoodBase food))
+        if (objTrans != null && objTrans.TryGetComponent<FoodBase>(out FoodBase food))
         {
-            food.foodId=-1;
+            food.foodId = -1;
         }
-        rigidbody.isKinematic=true;
+
+        rigidbody.isKinematic = true;
         RecoverObject();
     }
 
     public void RefreshState(FoodData newdata)
     {
-        data=newdata;
+        data = newdata;
     }
+
     public void SetData(FoodData serverData)
     {
-        this.data=serverData;
+        this.data = serverData;
         SetInVision(true);
         SetPrefabBundlePath("Foods/TestFood");
     }
@@ -78,7 +84,7 @@ public class FoodEntity :ObjectBase,PoolItem<FoodData>
         {
             shakeTween.Kill();
         }
-    
+
         // 使用DOTween实现以z轴为中心的旋转抖动
         shakeTween = objTrans.DOShakeRotation(1f, strength: 15f, vibrato: 10, randomness: 90f, fadeOut: true)
             .SetEase(Ease.OutQuad).SetLoops(3, LoopType.Restart);
