@@ -16,7 +16,13 @@ public class ServerDataPlugin : LogicPluginBase
     private Dictionary<int, FoodData> foods = new Dictionary<int, FoodData>();
 
     private FoodDropPattern _currentPattern;
+    private GameRule _currentRule;
 
+    public GameRule CurrentRule
+    {
+        get { return _currentRule; }
+        private set { _currentRule = value; }
+    }
     public FoodDropPattern CurrentPattern
     {
         get { return _currentPattern; }
@@ -570,6 +576,35 @@ public class ServerDataPlugin : LogicPluginBase
 
     #endregion
 
+    #region 可选规则
+
+    private List<GameRule> rules = new List<GameRule>()
+    {
+        new GameRule()
+        {
+            ruleId = 1,
+            roleName = "规则名称",
+            roleDetail = "规则详细"
+        }
+    };
+
+    public void  SetCurrentRule(int id)
+    {
+        _currentRule = rules.First(x => x.ruleId == id);
+        Debug.Log("设置规则"+ _currentRule.roleName);
+    }
+
+    public void SetRandomRule()
+    {
+        SetCurrentRule(rules[UnityEngine.Random.Range(0, rules.Count)].ruleId);
+    }
+
+    #endregion
+
+    public int GetRandomPlayer()
+    {
+        return players.Keys.ToList()[UnityEngine.Random.Range(0, players.Count)];
+    }
     public Quality RandomFood(FoodDropStage stage)
     {
         float rand = UnityEngine.Random.value; // 0~1

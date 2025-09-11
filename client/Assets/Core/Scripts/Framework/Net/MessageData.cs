@@ -6,7 +6,6 @@ using UnityEngine;
 using YOTO;
 
 
-
 #region 基类
 
 // 请求基类
@@ -36,8 +35,8 @@ public class PlayerData
     public int playerId;
     public string playerName;
     private PlayerState State = PlayerState.Idle;
-    public int SatietyValue = 0;//饱腹值
-    public int SatisfactionValue = 0;//满意度
+    public int SatietyValue = 0; //饱腹值
+    public int SatisfactionValue = 0; //满意度
     public int lootNum = 0;
     public int useFoodId = -1;
 
@@ -104,10 +103,10 @@ public class PlayerData
         }
     }
 
-    public void EatFood(int satiety,int  satisfaction)
+    public void EatFood(int satiety, int satisfaction)
     {
-        SatietyValue+=satiety;
-        SatisfactionValue+=satisfaction;
+        SatietyValue += satiety;
+        SatisfactionValue += satisfaction;
         RefreshPlayerProperty();
     }
 
@@ -140,12 +139,13 @@ public class PlayerData
 }
 
 
-public struct PlayerPropertyNotify:IResponse
+public struct PlayerPropertyNotify : IResponse
 {
     public int playerId;
     public int satiety;
     public int satisfaction;
 }
+
 #endregion
 
 #region 食物
@@ -161,13 +161,12 @@ public enum FoodState
 
 public enum Quality
 {
-    Normal=0,
+    Normal = 0,
     Green,
     Blue,
     Purple,
     Glod,
     Red
-    
 }
 
 
@@ -175,23 +174,25 @@ public class FoodDropStage
 {
     public float startTime;
     public float endTime;
-    public float randomTime;//
+    public float randomTime; //
     public int dropCount;
     public Dictionary<Quality, float> gradeWeight; // 品质权重（0~1）
 }
+
 public class FoodDropPattern
 {
     public string patternName;
     public List<FoodDropStage> stages;
 }
+
 public class FoodData
 {
     public static int idIndex = 1000;
     public int foodId;
     public Vector3 position;
     private FoodState state;
-    public int SatietyValue = 2;//饱腹值
-    public int SatisfactionValue = 3;//满意度
+    public int SatietyValue = 2; //饱腹值
+    public int SatisfactionValue = 3; //满意度
     public Quality quality;
     List<int> playerIds = new List<int>();
 
@@ -211,13 +212,12 @@ public class FoodData
 
     private void CheckPlayerIsAlive()
     {
-        for (var i =  playerIds.Count-1; i >=0; i--)
+        for (var i = playerIds.Count - 1; i >= 0; i--)
         {
             if (!ServerDataPlugin.Instance.CheckHavePlayer(playerIds[i]))
             {
-                playerIds.RemoveAt(i); 
+                playerIds.RemoveAt(i);
             }
-       
         }
     }
 
@@ -284,7 +284,7 @@ public class FoodData
             if (info != null)
             {
                 info.OnCatchFoodEnd();
-                info.EatFood(SatietyValue,SatisfactionValue);
+                info.EatFood(SatietyValue, SatisfactionValue);
             }
         }
 
@@ -293,6 +293,7 @@ public class FoodData
         {
             tempId = playerIds.First();
         }
+
         EndCatchFoodNotify notify = new EndCatchFoodNotify()
         {
             foodId = foodId,
@@ -319,7 +320,7 @@ public class FoodData
         }
 
 
-         List<int> loseids = new List<int>();
+        List<int> loseids = new List<int>();
         foreach (var id in playerIds)
         {
             var data = ServerDataPlugin.Instance.GetPlayerById(id);
@@ -337,7 +338,7 @@ public class FoodData
 
         loseids.Remove(maxId);
         var windata = ServerDataPlugin.Instance.GetPlayerById(maxId);
-        windata.EatFood(SatietyValue,SatisfactionValue);
+        windata.EatFood(SatietyValue, SatisfactionValue);
         StopLootNotify notify = new StopLootNotify()
         {
             foodId = foodId,
@@ -384,7 +385,6 @@ public class FoodData
             {
                 playerProgress.Add(new IntKeyFloatValue(id, info.lootNum));
             }
-    
         }
 
         return playerProgress;
@@ -461,6 +461,17 @@ public struct FoodNotify : IResponse
 
 #endregion
 
+#region 随机事件（翻牌）
+
+public class GameRule
+{
+    public int ruleId;
+    public string roleName;
+    public string roleDetail;
+}
+
+#endregion
+
 #region 登录
 
 public struct LoginRequest : IRequest
@@ -486,8 +497,8 @@ public struct GameStartNotify : IResponse
 
 public struct GameEndNotify : IResponse
 {
-    
 }
+
 // 例子：移动响应
 public struct LoginResponse : IResponse
 {

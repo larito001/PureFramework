@@ -5,26 +5,29 @@ using UnityEngine;
 
 public class DemoGameServer : GameServerBase
 {
-    public enum GameState
-    {
-        Idle,
-        Ready,
-        Playing,
-    }
+    #region  配置属性
 
     private const float orgGameTime = 30; //游戏总时长
     private readonly int playerMaxNum = 4;
     private const float orgStateTimer = 2;
+    private const float orgSelectingTimer = 5;
 
-
+    #endregion
+    
+    #region 暂存属性
+    
     private GameState gameState = GameState.Idle;
-    private float stateTimer = orgStateTimer;
+    private float readyTimer = orgStateTimer;
+    private float selectingTimer = orgSelectingTimer;
     private float delayTimer = 1;
     private int delayIndex = (int)orgStateTimer;
     private float gameTimer = 0;
-
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>();
     
+    #endregion
+
+    #region 生命周期
+
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
@@ -44,8 +47,6 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.UnRegisterRequestHandler<LootingInputRequest>();
     }
 
-    #region 生命周期
-
     public override void Update(float dt)
     {
         // 可以在这里处理服务器每帧逻辑
@@ -54,9 +55,18 @@ public class DemoGameServer : GameServerBase
             food.Update(dt);
         }
 
+        if (gameState == GameState.Selecting)
+        {
+            selectingTimer -= dt;
+            if (selectingTimer <= 0)
+            {
+                OnRoleSelectRequest(null);
+            }
+        }
+
         if (gameState == GameState.Ready)
         {
-            stateTimer -= dt;
+            readyTimer -= dt;
             delayTimer -= dt;
             if (delayTimer <= 0)
             {
@@ -65,17 +75,16 @@ public class DemoGameServer : GameServerBase
                 delayTimer = 1f; // 重置为1秒
             }
 
-            if (stateTimer <= 0)
+            if (readyTimer <= 0)
             {
                 OnGameStart();
-                delayIndex = (int)orgStateTimer;
-                stateTimer = orgStateTimer;
-                delayTimer = 1;
+                ReSetTimers();
             }
         }
 
         if (gameState == GameState.Playing)
         {
+            //生成食物
             if (stageQueue.Count > 0 && gameTimer >= stageQueue.Peek().randomTime)
             {
                 var foodStage = stageQueue.Dequeue();
@@ -90,6 +99,14 @@ public class DemoGameServer : GameServerBase
                 OnGameEndNotify();
             }
         }
+    }
+
+    private void ReSetTimers()
+    {
+        delayIndex = (int)orgStateTimer;
+        readyTimer = orgStateTimer;
+        selectingTimer = orgSelectingTimer;
+        delayTimer = 1;
     }
 
     #region host
@@ -228,9 +245,11 @@ public class DemoGameServer : GameServerBase
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        gameState = GameState.Ready;
+        OnSelectHostPlayer();
+
         return null;
     }
+
 
     private void OnGameStart()
     {
@@ -256,15 +275,70 @@ public class DemoGameServer : GameServerBase
     public void OnGameEndNotify()
     {
         gameState = GameState.Idle;
-        GameEndNotify notify = new GameEndNotify();
+
+        GameEndNotify notify = OnFinishUseRule();
         ServerMessageManager.Instance.SendNotify(notify);
-        //todo：玩家退回房间选择界面
     }
 
     #endregion
 
     #region 游戏gamePlay逻辑
 
+    #region 规则系统
+
+    /// <summary>
+    /// 游戏开始选择规则制定者
+    /// </summary>
+    private void OnSelectHostPlayer()
+    {
+        //todo:选择主玩家，给主玩家发送可选项，制定游戏规则
+        var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
+        gameState = GameState.Selecting;
+    }
+
+    /// <summary>
+    /// 接收玩家选择的rule
+    /// </summary>
+    /// <param name="param"></param>
+    private void OnRoleSelectRequest(object param)
+    {
+        if (param == null)
+        {
+            ServerDataPlugin.Instance.SetRandomRule();
+        }
+        else
+        {
+            int id = 1;
+            ServerDataPlugin.Instance.SetCurrentRule(id);
+        }
+
+        gameState = GameState.Ready;
+    }
+
+    /// <summary>
+    /// 规则结算
+    /// </summary>
+    /// <returns></returns>
+    private GameEndNotify OnFinishUseRule()
+    {
+        var notify = new GameEndNotify();
+        var rule = ServerDataPlugin.Instance.CurrentRule;
+        if (rule.ruleId == 1)
+        {
+            //todo:读取数据，根据规则发放数据
+        }
+
+        return notify;
+    }
+
+    #endregion
+
+
+    #region 基础玩法
+
+    /// <summary>
+    /// 刷新所有玩家的属性
+    /// </summary>
     private void RefreshAllPlayerProperty()
     {
         var tempList = ServerDataPlugin.Instance.GetPlayerList();
@@ -337,6 +411,12 @@ public class DemoGameServer : GameServerBase
         return null;
     }
 
+    /// <summary>
+    /// 键盘输入抢夺
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
+    /// <returns></returns>
     private IResponse OnLootingInputRequest(LootingInputRequest arg1, int arg2)
     {
         var player = ServerDataPlugin.Instance.GetPlayerById(arg1.playerId);
@@ -356,4 +436,14 @@ public class DemoGameServer : GameServerBase
     #endregion
 
     #endregion
+
+    #endregion
+    
+    public enum GameState
+    {
+        Idle, //未开始
+        Selecting, //等待选择规则
+        Ready, //ready
+        Playing,//游戏开始
+    }
 }
