@@ -13,7 +13,7 @@ public class EyesCtrl : MonoBehaviour
     private Vector3 EyesOrgPos; // 初始位置，需要在 Start 或 Awake 中保存
     private float timerTemp = 0;
     
-    private Vector2 forward;
+    private Vector3 forward;
 
     private void Update()
     {

@@ -261,7 +261,7 @@ public class FoodData
             Debug.Log("开抢");
             timerTemp = 0;
         }
-        else if (playerInfo.GetState() == PlayerState.Idle)
+        else
         {
             Debug.Log("抓取失败");
             CatchFoodNotify notify = new CatchFoodNotify()

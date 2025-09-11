@@ -64,10 +64,15 @@ public class PlayerPlugin : LogicPluginBase
 
     private void OnStartLootNotify(StartLootNotify obj)
     {
-        YOTOFramework.uIMgr.Show(UIEnum.LootingPanel);
+     
         //todo:开抢，对应id进入特殊状态
         foreach (var objPlayerId in obj.playerIds)
         {
+            if (objPlayerId == LoginPlugin.Instance.PlayerId)
+            {
+                YOTOFramework.uIMgr.Show(UIEnum.LootingPanel);
+            }
+            
             players[objPlayerId].StartLooting(obj.foodId);
         }
 
