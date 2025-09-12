@@ -14,11 +14,16 @@ public class ServerDataPlugin : LogicPluginBase
 
     private Dictionary<int, PlayerData> players = new Dictionary<int, PlayerData>();
     private Dictionary<int, FoodData> foods = new Dictionary<int, FoodData>();
-
+    
     private FoodDropPattern _currentPattern;//当前套路
     private GameRule _currentRule;//当前规则
     private int _rulePlayerId = -1;//当前host玩家id
 
+    public int RulePlayerId
+    {
+        get { return _rulePlayerId; }
+        private  set { _rulePlayerId = value; }
+    }
     public GameRule CurrentRule
     {
         get { return _currentRule; }

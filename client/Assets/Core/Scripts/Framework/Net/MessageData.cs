@@ -479,6 +479,25 @@ public struct MainPlayerRuleSelectRequest: IRequest
 {
     public int ruleId;
 }
+public  struct SomeOneFindHostPlayerRequest:IRequest
+{
+    public int playerId;
+}
+public  struct SomeOneFindHostPlayerNotifyt:IResponse
+{
+    public int playerId;
+}
+
+public struct VotRequest : IRequest
+{
+    public int playerId;
+    public int votePlayerId;
+}
+
+public struct VotEndNotify : IResponse
+{
+    
+}
 #endregion
 
 #region 登录

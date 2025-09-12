@@ -125,6 +125,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         Debug.LogError("生成player：" + data.playerName);
     }
 
+    public int GetPlayerId()
+    {
+        return staticData.playerId;
+    }
+
     protected override void AfterInstanceGObj()
     {
         leftHandDoing = false;

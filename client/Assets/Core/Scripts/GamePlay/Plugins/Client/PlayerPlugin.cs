@@ -36,8 +36,13 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<LootingInputNotify>(OnLootingInputNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<FlyTextNotify>(OnFlyTextNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<PlayerPropertyNotify>(OnPlayerPropertyNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<SomeOneFindHostPlayerNotifyt>(OnSomeOneFindHostPlayerNotifyt);
+        ClientMessageManager.Instance.RegisterResponseHandler<VotEndNotify>(OnVotEndNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
+
+
+
 
     public void OnNetUninstall()
     {
@@ -49,6 +54,8 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<LootingInputNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<FlyTextNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerPropertyNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<SomeOneFindHostPlayerNotifyt>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<VotEndNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
@@ -290,6 +297,9 @@ public class PlayerPlugin : LogicPluginBase
 
     #endregion
 
+    
+
+    
     private void OnFlyTextNotify(FlyTextNotify obj)
     {
         // 将屏幕中心的世界坐标转换为屏幕坐标
@@ -297,5 +307,28 @@ public class PlayerPlugin : LogicPluginBase
 
         // 如果FlyTextMgr使用的是屏幕坐标
         FlyTextMgr.Instance.AddText(obj.txt, screenCenter, obj.flyType, TextPosType.Screen);
+    }
+
+    public void OnFindHostPlayerClick()
+    {
+        SomeOneFindHostPlayerRequest req = new SomeOneFindHostPlayerRequest();
+        req.playerId = LoginPlugin.Instance.PlayerId;
+        ClientMessageManager.Instance.SendRequest(req);
+    }
+    private void OnSomeOneFindHostPlayerNotifyt(SomeOneFindHostPlayerNotifyt obj)
+    {
+        YOTOFramework.uIMgr.Show(UIEnum.VotingPanel);
+    }
+    private void OnVotEndNotify(VotEndNotify obj)
+    {
+        YOTOFramework.uIMgr.Hide(UIEnum.VotingPanel);
+    }
+
+    public void OnVotClick(int playerId)
+    {
+        VotRequest req = new VotRequest();
+        req.playerId = LoginPlugin.Instance.PlayerId;
+        req.votePlayerId = playerId;
+        ClientMessageManager.Instance.SendRequest(req);
     }
 }
