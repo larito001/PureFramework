@@ -25,9 +25,9 @@ public class VotButtonItem : YOTOScrollViewItem
         btn.onClick.RemoveAllListeners();
     }
 
-    public void SetData(int pid)
+    public void SetData(int pid,string playerName)
     {
         playerId = pid;
-        nameText.text = pid.ToString();
+        nameText.text = playerName;
     }
 }

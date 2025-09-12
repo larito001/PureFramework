@@ -6,6 +6,7 @@ using YOTO;
 public class LoginPlugin : LogicPluginBase
 {
     public static LoginPlugin Instance;
+
     public LoginPlugin()
     {
         Instance = this;
@@ -17,29 +18,29 @@ public class LoginPlugin : LogicPluginBase
     public int PlayerId
     {
         get { return _playerId; }
-        
+
         private set { _playerId = value; }
     }
-    private List<PlayerData> _playerDatas= new List<PlayerData>();
+
+    private List<PlayerData> _playerDatas = new List<PlayerData>();
+
     protected override void OnInstall()
     {
         base.OnInstall();
-    
     }
 
     protected override void OnUninstall()
     {
-   
         base.OnUninstall();
     }
+
     public void OnNetInstall()
     {
         ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
         ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameStartNotify>(OnGameStartNotify);
-        ClientMessageManager.Instance.RegisterResponseHandler<GameEndNotify>(OnGameEndNotify);  
+        ClientMessageManager.Instance.RegisterResponseHandler<GameEndNotify>(OnGameEndNotify);
     }
-
 
 
     public void OnNetUninstall()
@@ -59,15 +60,17 @@ public class LoginPlugin : LogicPluginBase
             isSuccess = true,
         });
     }
+
     private void OnGameEndNotify(GameEndNotify obj)
     {
-        StagePlugin.Instance.OnGameEnd();
+        YOTOFramework.timeMgr.DelayCall(StagePlugin.Instance.OnGameEnd, 3);
+        ;
     }
 
     private void OnGameStartNotify(GameStartNotify obj)
     {
         Debug.Log("游戏开始！");
-        
+
         StagePlugin.Instance.OnGameStart();
     }
 
@@ -77,6 +80,7 @@ public class LoginPlugin : LogicPluginBase
         _playerId = -1;
         StagePlugin.Instance.OnGameError();
     }
+
     public void LoginRequest()
     {
         var mgr = ClientMessageManager.Instance;
@@ -86,20 +90,21 @@ public class LoginPlugin : LogicPluginBase
             playerName = Name,
         });
     }
+
     private void LoginNotify(LoginNotify obj)
     {
         Debug.Log($"当前人数:{obj.playerDatas.Count}");
         _playerDatas = obj.playerDatas;
         YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.RefreshRoleList);
     }
-    
+
     private void LoginResponse(LoginResponse obj)
     {
         Debug.Log($"Login:{obj.isSuccess}");
         if (obj.isSuccess)
         {
             Debug.Log($"Login:{obj.playerData.playerId}");
-            _playerId= obj.playerData.playerId;
+            _playerId = obj.playerData.playerId;
             YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         }
     }

@@ -17,10 +17,16 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     private HandCtrl handCtrl;
     public int SatietyValue;
     public int SatisfactionValue;
-
+    public const int maxStatiety = 20;//最高饱腹值
     public bool CheckCanCatch()
     {
-        bool isEnd = SatietyValue >= 10;
+        bool isEnd = SatietyValue >= maxStatiety;
+        if (isEnd)
+        {
+            // 将屏幕中心的世界坐标转换为屏幕坐标
+            Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
+            FlyTextMgr.Instance.AddText("Satiety Over", screenCenter, FlyTextType.Normal, TextPosType.Screen);
+        }
         return !leftHandDoing&&!isEnd;
     }
     protected override void YOTOOnload()
@@ -125,9 +131,9 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         Debug.LogError("生成player：" + data.playerName);
     }
 
-    public int GetPlayerId()
+    public PlayerData GetPlayerDta()
     {
-        return staticData.playerId;
+        return staticData;
     }
 
     protected override void AfterInstanceGObj()

@@ -7,11 +7,11 @@ public class DemoGameServer : GameServerBase
 {
     #region 配置属性
 
-    private const float orgGameTime = 30; //游戏总时长
+    private const float orgGameTime = 100; //游戏总时长
     private readonly int playerMaxNum = 4; //最大玩家数
     private const float orgReadyTimer = 2; //ready倒计时
-    private const float orgSelectingTimer = 5; //选择规则时间
-    private const float orgvotingTimer = 10;
+    private const float orgSelectingTimer = 10; //选择规则时间
+    private const float orgvotingTimer = 10; //投票时间
 
     #endregion
 
@@ -39,11 +39,13 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<LootingInputRequest>(OnLootingInputRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<MainPlayerRuleSelectRequest>(OnMainPlayerRuleSelectRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<SomeOneFindHostPlayerRequest>(OnSomeOneFindHostPlayerRequest);
+        ServerMessageManager.Instance
+            .RegisterRequestHandler<MainPlayerRuleSelectRequest>(OnMainPlayerRuleSelectRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<SomeOneFindHostPlayerRequest>(
+            OnSomeOneFindHostPlayerRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<VotRequest>(OnVotRequest);
     }
-    
+
 
     private void RemoveEvent()
     {
@@ -121,6 +123,7 @@ public class DemoGameServer : GameServerBase
                 votDelayIndex--;
                 delayTimer = 1f; // 重置为1秒
             }
+
             if (votingTimer <= 0)
             {
                 votingTimer = orgvotingTimer;
@@ -315,6 +318,7 @@ public class DemoGameServer : GameServerBase
     #region 规则系统
 
     private bool GameHasVoted = false;
+
     /// <summary>
     /// 有人想开始投票
     /// </summary>
@@ -324,7 +328,7 @@ public class DemoGameServer : GameServerBase
     private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
     {
         playerVotNum.Clear();
-        if (!GameHasVoted&&gameState == GameState.Playing)
+        if (!GameHasVoted && gameState == GameState.Playing)
         {
             GameHasVoted = true;
             gameState = GameState.Voting;
@@ -399,7 +403,7 @@ public class DemoGameServer : GameServerBase
     /// </summary>
     private void OnSelectHostPlayer()
     {
-        //todo:选择主玩家，给主玩家发送可选项，制定游戏规则
+        //选择主玩家，给主玩家发送可选项，制定游戏规则
         var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
         ServerDataPlugin.Instance.SetRulePlayerId(playerId);
         var rules = ServerDataPlugin.Instance.getRandomRules(3);
@@ -443,10 +447,37 @@ public class DemoGameServer : GameServerBase
         var notify = new GameEndNotify();
         var rule = ServerDataPlugin.Instance.CurrentRule;
         notify.rule = rule;
+        var players = ServerDataPlugin.Instance.GetPlayerList();
+        int winId = 0;
+
         if (rule.ruleId == 1)
         {
             //todo:读取数据，根据规则发放数据
+
+            int maxNum = 0;
+            foreach (var player in players)
+            {
+                if (player.SatisfactionValue >= maxNum)
+                {
+                    winId = player.playerId;
+                    maxNum = player.lootNum;
+                }
+            }
         }
+        else if (rule.ruleId == 2)
+        {
+            int minNum = 999999;
+            foreach (var player in players)
+            {
+                if (player.SatisfactionValue <= minNum)
+                {
+                    winId = player.playerId;
+                    minNum = player.lootNum;
+                }
+            }
+        }
+
+        OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId).playerName, FlyTextType.Normal);
 
         Debug.Log("结算时规则：" + rule.roleName);
 

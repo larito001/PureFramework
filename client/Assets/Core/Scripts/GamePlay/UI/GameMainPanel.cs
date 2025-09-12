@@ -28,7 +28,7 @@ public class GameMainPanel : UIPageBase
     private void RefreshPlayerProperty()
     {
         var self = PlayerPlugin.Instance.GetSelf();
-        txt_satiety.text ="satiety:" +self.SatietyValue;
+        txt_satiety.text ="satiety:" +self.SatietyValue+"/"+PlayerEntity.maxStatiety;
         txt_satisfaction.text ="satisfaction:" +self.SatisfactionValue;
         
     }

@@ -23,7 +23,8 @@ public class VotingPanel : UIPageBase
     private void ItemRender(YOTOScrollViewItem item, int index)
     {
         var it = item as VotButtonItem;
-        it.SetData(tempPlayers[index].GetPlayerId());
+        var p = tempPlayers[index].GetPlayerDta();
+        it.SetData(p.playerId,p.playerName);
     }
 
     public override void OnHide()
