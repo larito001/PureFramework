@@ -27,6 +27,7 @@ public class DemoGameServer : GameServerBase
     private float votingTimer = orgvotingTimer;
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
+    private bool hosterIsLose = false;
 
     #endregion
 
@@ -307,6 +308,7 @@ public class DemoGameServer : GameServerBase
     {
         gameState = GameState.Idle;
         GameHasVoted = false;
+        hosterIsLose = false;
         GameEndNotify notify = OnFinishUseRule();
         ServerMessageManager.Instance.SendNotify(notify);
     }
@@ -377,10 +379,12 @@ public class DemoGameServer : GameServerBase
                 }
             }
 
-            if (ServerDataPlugin.Instance.RulePlayerId == maxId)
+            var hostId = ServerDataPlugin.Instance.RulePlayerId;
+            if (hostId== maxId)
             {
                 //todo:投票成功
-                OnFlyTextNotify("bingo!", FlyTextType.Normal);
+                OnFlyTextNotify("bingo! hoster is "+ ServerDataPlugin.Instance.GetPlayerById(hostId).playerName , FlyTextType.Normal);
+                hosterIsLose = true;
             }
             else
             {
@@ -457,11 +461,15 @@ public class DemoGameServer : GameServerBase
             int maxNum = 0;
             foreach (var player in players)
             {
-                if (player.SatisfactionValue >= maxNum)
+                if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
                 {
-                    winId = player.playerId;
-                    maxNum = player.lootNum;
+                    if (player.SatisfactionValue >= maxNum)
+                    {
+                        winId = player.playerId;
+                        maxNum = player.lootNum;
+                    }  
                 }
+             
             }
         }
         else if (rule.ruleId == 2)
@@ -469,13 +477,17 @@ public class DemoGameServer : GameServerBase
             int minNum = 999999;
             foreach (var player in players)
             {
-                if (player.SatisfactionValue <= minNum)
+                if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
                 {
-                    winId = player.playerId;
-                    minNum = player.lootNum;
-                }
+                    if (player.SatisfactionValue <= minNum)
+                    {
+                        winId = player.playerId;
+                        minNum = player.lootNum;
+                    }
+                } 
             }
         }
+
 
         OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId).playerName, FlyTextType.Normal);
 
