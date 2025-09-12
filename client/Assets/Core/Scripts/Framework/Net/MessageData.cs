@@ -470,6 +470,15 @@ public class GameRule
     public string roleDetail;
 }
 
+public struct RuleSelectNotify : IResponse
+{
+    public int playerId;
+    public List<GameRule> rules;
+}
+public struct MainPlayerRuleSelectRequest: IRequest
+{
+    public int ruleId;
+}
 #endregion
 
 #region 登录
@@ -497,6 +506,9 @@ public struct GameStartNotify : IResponse
 
 public struct GameEndNotify : IResponse
 {
+   public GameRule rule;
+   public List<PlayerData> winPlayersDatas;
+   public List<PlayerData> losePlayersDatas;
 }
 
 // 例子：移动响应

@@ -15,14 +15,16 @@ public class ServerDataPlugin : LogicPluginBase
     private Dictionary<int, PlayerData> players = new Dictionary<int, PlayerData>();
     private Dictionary<int, FoodData> foods = new Dictionary<int, FoodData>();
 
-    private FoodDropPattern _currentPattern;
-    private GameRule _currentRule;
+    private FoodDropPattern _currentPattern;//当前套路
+    private GameRule _currentRule;//当前规则
+    private int _rulePlayerId = -1;//当前host玩家id
 
     public GameRule CurrentRule
     {
         get { return _currentRule; }
         private set { _currentRule = value; }
     }
+
     public FoodDropPattern CurrentPattern
     {
         get { return _currentPattern; }
@@ -583,20 +585,37 @@ public class ServerDataPlugin : LogicPluginBase
         new GameRule()
         {
             ruleId = 1,
-            roleName = "规则名称",
-            roleDetail = "规则详细"
-        }
+            roleName = "rule1",
+            roleDetail = "ruledetail"
+        },
+        new GameRule()
+        {
+            ruleId = 2,
+            roleName = "rule2",
+            roleDetail = "ruledetail"
+        },
+        new GameRule()
+        {
+            ruleId = 3,
+            roleName = "rule3",
+            roleDetail = "ruledetail"
+        },
     };
 
-    public void  SetCurrentRule(int id)
+    public void SetCurrentRule(int id)
     {
         _currentRule = rules.First(x => x.ruleId == id);
-        Debug.Log("设置规则"+ _currentRule.roleName);
+        Debug.Log("设置规则" + _currentRule.roleName);
     }
 
     public void SetRandomRule()
     {
         SetCurrentRule(rules[UnityEngine.Random.Range(0, rules.Count)].ruleId);
+    }
+
+    public List<GameRule> getRandomRules(int num)
+    {
+        return rules.OrderBy(x => UnityEngine.Random.value).Take(num).ToList();
     }
 
     #endregion
@@ -605,6 +624,7 @@ public class ServerDataPlugin : LogicPluginBase
     {
         return players.Keys.ToList()[UnityEngine.Random.Range(0, players.Count)];
     }
+
     public Quality RandomFood(FoodDropStage stage)
     {
         float rand = UnityEngine.Random.value; // 0~1
@@ -622,7 +642,7 @@ public class ServerDataPlugin : LogicPluginBase
     public void SetRandomPattern()
     {
         _currentPattern = allPatterns[UnityEngine.Random.Range(0, allPatterns.Count)];
-        Debug.Log("当前套路："+ _currentPattern.patternName);
+        Debug.Log("当前套路：" + _currentPattern.patternName);
     }
 
     public Dictionary<int, PlayerData>.ValueCollection GetPlayerList()
@@ -705,5 +725,11 @@ public class ServerDataPlugin : LogicPluginBase
     public void RemoveAllFoods()
     {
         foods.Clear();
+    }
+
+
+    public void SetRulePlayerId(int playerId)
+    {
+        _rulePlayerId = playerId;
     }
 }

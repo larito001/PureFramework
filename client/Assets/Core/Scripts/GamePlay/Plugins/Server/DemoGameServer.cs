@@ -35,7 +35,10 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<LootingInputRequest>(OnLootingInputRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<MainPlayerRuleSelectRequest>(OnMainPlayerRuleSelectRequest);
     }
+
+
 
 
     private void RemoveEvent()
@@ -45,6 +48,7 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.UnRegisterRequestHandler<HeadPosRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<CatchFoodRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<LootingInputRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<MainPlayerRuleSelectRequest>();
     }
 
     public override void Update(float dt)
@@ -60,7 +64,7 @@ public class DemoGameServer : GameServerBase
             selectingTimer -= dt;
             if (selectingTimer <= 0)
             {
-                OnRoleSelectRequest(null);
+                SetRandomRule();
             }
         }
 
@@ -268,7 +272,7 @@ public class DemoGameServer : GameServerBase
             stages[i].randomTime = randomDropTime;
             stageQueue.Enqueue(stages[i]);
         }
-
+        
         RefreshAllPlayerProperty();
     }
 
@@ -293,6 +297,14 @@ public class DemoGameServer : GameServerBase
     {
         //todo:选择主玩家，给主玩家发送可选项，制定游戏规则
         var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
+        ServerDataPlugin.Instance.SetRulePlayerId(playerId);
+        var rules= ServerDataPlugin.Instance.getRandomRules(3);
+        RuleSelectNotify notify = new RuleSelectNotify
+        {
+            rules = rules,
+            playerId = playerId
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
         gameState = GameState.Selecting;
     }
 
@@ -300,18 +312,21 @@ public class DemoGameServer : GameServerBase
     /// 接收玩家选择的rule
     /// </summary>
     /// <param name="param"></param>
-    private void OnRoleSelectRequest(object param)
+    private IResponse OnMainPlayerRuleSelectRequest(MainPlayerRuleSelectRequest  param,int playerId)
     {
-        if (param == null)
+        if (gameState == GameState.Selecting)
         {
-            ServerDataPlugin.Instance.SetRandomRule();
-        }
-        else
-        {
-            int id = 1;
+            int id = param.ruleId;
             ServerDataPlugin.Instance.SetCurrentRule(id);
+            gameState = GameState.Ready;
         }
+ 
+        return null;
+    }
 
+    public void SetRandomRule()
+    {
+        ServerDataPlugin.Instance.SetRandomRule();
         gameState = GameState.Ready;
     }
 
@@ -323,16 +338,17 @@ public class DemoGameServer : GameServerBase
     {
         var notify = new GameEndNotify();
         var rule = ServerDataPlugin.Instance.CurrentRule;
+        notify.rule = rule;
         if (rule.ruleId == 1)
         {
             //todo:读取数据，根据规则发放数据
         }
+        Debug.Log("结算时规则："+rule.roleName);
 
         return notify;
     }
 
     #endregion
-
 
     #region 基础玩法
 

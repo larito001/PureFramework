@@ -10,8 +10,9 @@ public class StagePlugin : LogicPluginBase
     private Dictionary<int, FoodEntity> foodDict = new Dictionary<int, FoodEntity>();
 
     // private List<PlayerData> players = new List<PlayerData>();
+    private List<GameRule> rulesTemp ;
     public bool GameStart = false;
-
+    
     #region 单例，事件注册
 
     public static StagePlugin Instance;
@@ -34,12 +35,16 @@ public class StagePlugin : LogicPluginBase
     public void OnNetInstall()
     {
         ClientMessageManager.Instance.RegisterResponseHandler<FoodNotify>(OnFoodGenerateNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<RuleSelectNotify>(OnRuleSelectNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
+
+
 
     public void OnNetUninstall()
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<FoodNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<RuleSelectNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
@@ -47,6 +52,10 @@ public class StagePlugin : LogicPluginBase
 
     #region 业务
 
+    public List<GameRule> GetRules()
+    {
+        return rulesTemp;
+    }
     private void OnFoodGenerateNotify(FoodNotify obj)
     {
         // foodList = obj.foodList;
@@ -96,7 +105,21 @@ public class StagePlugin : LogicPluginBase
     {
         PlayerPlugin.Instance.RefreshPlayers(LoginPlugin.Instance.GetPlayerDatas());
     }
-
+    
+    private void OnRuleSelectNotify(RuleSelectNotify obj)
+    {
+        if (obj.playerId==LoginPlugin.Instance.PlayerId)
+        {
+            rulesTemp = obj.rules;
+            YOTOFramework.uIMgr.Show(UIEnum.RuleSelectPanel);
+        }
+    }
+    public void SetRule(int ruleRuleId)
+    {
+        MainPlayerRuleSelectRequest request = new MainPlayerRuleSelectRequest();
+        request.ruleId = ruleRuleId;
+        ClientMessageManager.Instance.SendRequest(request);
+    }
     #endregion
 
     #region 游戏生命周期
@@ -123,5 +146,6 @@ public class StagePlugin : LogicPluginBase
 
     #endregion
 
-  
+
+
 }

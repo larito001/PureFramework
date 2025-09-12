@@ -42,6 +42,7 @@ public enum UIEnum
     RoomPanel,
     LootingPanel,
     GameMainPanel,
+    RuleSelectPanel,
 }
 
 public class UIConfig
@@ -51,7 +52,8 @@ public class UIConfig
         new UIInfo(UIEnum.StartPanel, UILayerEnum.Normal, "prefabs/UI/StartPanel"),
         new UIInfo(UIEnum.RoomPanel, UILayerEnum.Normal, "prefabs/UI/RoomPanel"),
         new UIInfo(UIEnum.LootingPanel, UILayerEnum.Normal, "prefabs/UI/LootingPanel"),
-        new UIInfo(UIEnum.GameMainPanel, UILayerEnum.Normal, "prefabs/UI/GameMainPanel")
+        new UIInfo(UIEnum.GameMainPanel, UILayerEnum.Normal, "prefabs/UI/GameMainPanel"),
+        new UIInfo(UIEnum.RuleSelectPanel, UILayerEnum.Normal, "prefabs/UI/RuleSelectPanel"),
     };
 
     #region  对外
