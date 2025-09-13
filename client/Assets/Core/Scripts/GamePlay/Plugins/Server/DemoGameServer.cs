@@ -450,49 +450,47 @@ public class DemoGameServer : GameServerBase
     {
         var notify = new GameEndNotify();
         var rule = ServerDataPlugin.Instance.CurrentRule;
-        notify.rule = rule;
-        var players = ServerDataPlugin.Instance.GetPlayerList();
-        int winId = 0;
-
-        if (rule.ruleId == 1)
+        if (rule != null)
         {
-            //todo:读取数据，根据规则发放数据
+            notify.rule = rule;
+            var players = ServerDataPlugin.Instance.GetPlayerList();
+            int winId = 0;
+            if (rule.ruleId == 1)
+            {
+                //todo:读取数据，根据规则发放数据
 
-            int maxNum = 0;
-            foreach (var player in players)
-            {
-                if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
+                int maxNum = 0;
+                foreach (var player in players)
                 {
-                    if (player.SatisfactionValue >= maxNum)
+                    if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
                     {
-                        winId = player.playerId;
-                        maxNum = player.lootNum;
-                    }  
-                }
-             
-            }
-        }
-        else if (rule.ruleId == 2)
-        {
-            int minNum = 999999;
-            foreach (var player in players)
-            {
-                if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
-                {
-                    if (player.SatisfactionValue <= minNum)
-                    {
-                        winId = player.playerId;
-                        minNum = player.lootNum;
+                        if (player.SatisfactionValue >= maxNum)
+                        {
+                            winId = player.playerId;
+                            maxNum = player.lootNum;
+                        }  
                     }
-                } 
+             
+                }
             }
+            else if (rule.ruleId == 2)
+            {
+                int minNum = 999999;
+                foreach (var player in players)
+                {
+                    if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
+                    {
+                        if (player.SatisfactionValue <= minNum)
+                        {
+                            winId = player.playerId;
+                            minNum = player.lootNum;
+                        }
+                    } 
+                }
+            }
+            OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId).playerName, FlyTextType.Normal);
+            Debug.Log("结算时规则：" + rule.roleName);
         }
-
-
-        OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId).playerName, FlyTextType.Normal);
-
-        Debug.Log("结算时规则：" + rule.roleName);
-
         return notify;
     }
 

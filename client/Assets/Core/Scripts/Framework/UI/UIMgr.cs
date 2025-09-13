@@ -76,9 +76,8 @@ public class UILayer
     {
         foreach (var uiPageHandler in handlers)
         {
-            uiPageHandler.Value.Distory();
+            uiPageHandler.Value.OnHide();
         }
-        handlers.Clear();
     }
 }
 
