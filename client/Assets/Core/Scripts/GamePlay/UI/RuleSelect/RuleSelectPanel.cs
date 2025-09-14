@@ -10,19 +10,20 @@ public class RuleSelectPanel : UIPageBase
     public CardCtrl card3Ctrl;
     public override void OnLoad()
     {
-        
+        card1Ctrl.transform.localScale=new Vector3();
+        card2Ctrl.transform.localScale=new Vector3();
+        card3Ctrl.transform.localScale=new Vector3();
     }
 
     public override void OnShow()
     {
-        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.CardFinsh,OnCardFinsh);
        var rules = StagePlugin.Instance.GetRules();
        card1Ctrl.SetCard(rules[0]);
        card2Ctrl.SetCard(rules[1]);
        card3Ctrl.SetCard(rules[2]);
        card1Ctrl.PlayEntranceAnimation(0 ); 
-       card2Ctrl.PlayEntranceAnimation(0.1f);
-       card3Ctrl.PlayEntranceAnimation(0.2f );
+       card2Ctrl.PlayEntranceAnimation(0);
+       card3Ctrl.PlayEntranceAnimation(0 );
        YOTOFramework.timeMgr.DelayCall(CloseSelf,5f);
     }
 
@@ -35,6 +36,6 @@ public class RuleSelectPanel : UIPageBase
 
     public override void OnHide()
     {
-        YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.CardFinsh,OnCardFinsh);
+        OnCardFinsh();
     }
 }

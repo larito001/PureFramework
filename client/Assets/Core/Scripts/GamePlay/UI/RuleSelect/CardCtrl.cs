@@ -151,7 +151,7 @@ public class CardCtrl : MonoBehaviour
         
         // 第一步：淡入并开始旋转
         entranceSequence.Append(cardCanvasGroup.DOFade(1f, 0.3f));
-        entranceSequence.Join(cardTransform.DORotate(new Vector3(0, 45f, 0), 0.3f));
+        // entranceSequence.Join(cardTransform.DORotate(new Vector3(0, 45f, 0), 0.3f));
         
         // 第二步：完成旋转并恢复正常比例
         entranceSequence.Append(cardTransform.DORotate(new Vector3(0, 0, 0), 0.4f));
@@ -203,7 +203,6 @@ public class CardCtrl : MonoBehaviour
         // 延迟执行原来的点击逻辑
         DOVirtual.DelayedCall(0.3f, () =>
         {
-            YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.CardFinsh);
             // 动画完成后的回调
             StagePlugin.Instance.SetRule(_rule.ruleId);
             YOTOFramework.uIMgr.Hide(UIEnum.RuleSelectPanel);

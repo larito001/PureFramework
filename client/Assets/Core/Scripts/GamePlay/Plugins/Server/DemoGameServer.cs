@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using YOTO;
 
 public class DemoGameServer : GameServerBase
 {
@@ -10,7 +11,7 @@ public class DemoGameServer : GameServerBase
     private const float orgGameTime = 100; //游戏总时长
     private readonly int playerMaxNum = 4; //最大玩家数
     private const float orgReadyTimer = 2; //ready倒计时
-    private const float orgSelectingTimer = 10; //选择规则时间
+    private const float orgSelectingTimer = 5; //选择规则时间
     private const float orgvotingTimer = 10; //投票时间
 
     #endregion
@@ -74,6 +75,7 @@ public class DemoGameServer : GameServerBase
             selectingTimer -= dt;
             if (selectingTimer <= 0)
             {
+                selectingTimer=orgSelectingTimer;
                 SetRandomRule();
             }
         }
@@ -277,7 +279,7 @@ public class DemoGameServer : GameServerBase
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        OnSelectHostPlayer();
+        YOTOFramework.timeMgr.DelayCall( OnSelectHostPlayer,2);
 
         return null;
     }
@@ -488,7 +490,7 @@ public class DemoGameServer : GameServerBase
                     } 
                 }
             }
-            OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId).playerName, FlyTextType.Normal);
+            OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId)?.playerName, FlyTextType.Normal);
             Debug.Log("结算时规则：" + rule.roleName);
         }
         return notify;

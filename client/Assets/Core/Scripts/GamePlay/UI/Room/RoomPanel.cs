@@ -13,7 +13,7 @@ public class RoomPanel : UIPageBase
     public RectTransform bg;
     public RectTransform leftBtnGroup;
     private float duration =1f;
-    private float startXOffset = 1500f;
+    private float startXOffset = 2000f;
     private float btnstartXOffset = 500f;
     // 保存原始位置
     private Vector2 bgOriginalPos;
@@ -34,6 +34,7 @@ public class RoomPanel : UIPageBase
 
     public override void OnShow()
     {
+        YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
         // 设置起始位置
         // 背景从右侧开始（向右偏移）
         bg.anchoredPosition = new Vector2(bgOriginalPos.x + startXOffset, bgOriginalPos.y);
@@ -58,6 +59,7 @@ public class RoomPanel : UIPageBase
         })
         .OnComplete(() => 
         {
+           
             Debug.Log("入场动画完成");
             SetUIElementsInteractable(true);
         });
@@ -68,11 +70,15 @@ public class RoomPanel : UIPageBase
 
         leaveBtn.onClick.AddListener(() =>
         {
+            
             YOTOFramework.netMgr.StopHost();
             YOTOFramework.netMgr.LeaveHost();
             LoginPlugin.Instance.OnNetError();
         });
-        readyBtn.onClick.AddListener(() => { LoginPlugin.Instance.GameStartRequest(); });
+        readyBtn.onClick.AddListener(() =>
+        {
+            LoginPlugin.Instance.GameStartRequest();
+        });
     }
 
     private void SetUIElementsInteractable(bool interactable)
@@ -108,6 +114,7 @@ public class RoomPanel : UIPageBase
         })
         .OnComplete(() => 
         {
+           
             Debug.Log("出场动画完成");
             // 重置位置以便下次正确显示
             bg.anchoredPosition = bgOriginalPos;

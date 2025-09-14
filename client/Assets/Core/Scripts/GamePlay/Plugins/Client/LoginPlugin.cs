@@ -64,7 +64,6 @@ public class LoginPlugin : LogicPluginBase
     private void OnGameEndNotify(GameEndNotify obj)
     {
         YOTOFramework.timeMgr.DelayCall(StagePlugin.Instance.OnGameEnd, 3);
-        ;
     }
 
     private void OnGameStartNotify(GameStartNotify obj)
