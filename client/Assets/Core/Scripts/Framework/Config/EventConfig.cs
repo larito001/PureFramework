@@ -20,6 +20,7 @@ namespace YOTO
        RefreshRoleList,
        RefreshProgress,
        RefreshPlayerProperty,
+       CardFinsh,
     }
 
 

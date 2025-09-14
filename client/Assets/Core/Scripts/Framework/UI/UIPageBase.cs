@@ -34,7 +34,7 @@ public abstract class UIPageBase : MonoBehaviour
                             canvasGroup.alpha = x;
                     },
                     1f,
-                    0.5f
+                    1f
                 ).SetEase(Ease.OutQuad)
                 .SetTarget(this); // 绑定 tween，方便管理
 
@@ -68,7 +68,7 @@ public abstract class UIPageBase : MonoBehaviour
                                 canvasGroup.alpha = x;
                         },
                         0f,
-                        0.5f
+                        1f
                     ).SetEase(Ease.OutQuad)
                     .SetTarget(this); // 推荐加上，方便 Kill 或管理
             }

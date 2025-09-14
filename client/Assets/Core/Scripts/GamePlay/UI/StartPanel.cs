@@ -43,8 +43,8 @@ public class StartPanel : UIPageBase
     
             // 同时执行移动和渐显动画
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(bg.transform.DOMove(originalPosition, 1f).SetEase(Ease.OutBack))
-                .Join(bg.DOFade(1f, 1f).SetEase(Ease.OutQuad));
+            sequence.Append(bg.transform.DOMove(originalPosition, 0.5f).SetEase(Ease.OutQuint))
+                .Join(bg.DOFade(1f, 0.5f).SetEase(Ease.OutQuad));
             bg.blocksRaycasts = true;
             startBtn.gameObject.SetActive(false);
         });
