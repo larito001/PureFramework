@@ -24,9 +24,9 @@ public class CameraCtrl
     private float xRotation = 0f;
     private float yRotation = 0f;
 
-    public float verticalClamp = 4f;
-    public float horizontalClamp = 4f;
-    public float sensitivity = 10f;
+    public float verticalClamp = 30f;
+    public float horizontalClamp = 30f;
+    public float sensitivity = 5f;
     public float smoothTime = 0.5f; // 平滑时间
 
     private Vector2 lookInput = Vector2.zero;
@@ -54,7 +54,7 @@ public class CameraCtrl
         startCamera.transform.rotation = startCameraDir.transform.rotation;
         
         
-        vCamera.m_Lens.FieldOfView = 30;
+        vCamera.m_Lens.FieldOfView = 45;
         vCamera.m_Lens.OrthographicSize = 40;
         startCamera.m_Lens.FieldOfView = 30;
         startCamera.m_Lens.OrthographicSize = 40;

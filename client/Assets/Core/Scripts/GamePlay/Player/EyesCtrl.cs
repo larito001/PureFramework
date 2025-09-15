@@ -8,11 +8,11 @@ public class EyesCtrl : MonoBehaviour
 {
     private PlayerEntity playerEntity;
     
-    Transform eyes = null;
+    public Transform eyes = null;
     private Vector3 targetEyesPos;
     private Vector3 EyesOrgPos; // 初始位置，需要在 Start 或 Awake 中保存
     private float timerTemp = 0;
-    
+    public Transform headGameObject;
     private Vector3 forward;
 
     private void Update()
@@ -26,17 +26,21 @@ public class EyesCtrl : MonoBehaviour
         if (playerEntity.isSelf)
         {
             timerTemp+=Time.deltaTime;
-            if (timerTemp > 0.2f)
+            if (timerTemp > 0.1f)
             {
                 if (eyes!=null)
                 {
                     PlayerPlugin.Instance.RotatePlayerRequest(eyes.localPosition);
                 }
-                timerTemp-=0.2f;
+                timerTemp-=0.1f;
             }
         }
     }
 
+    public void SetIsSelf(bool isSelf)
+    {
+        headGameObject.gameObject.SetActive(!isSelf);
+    }
     public void ForceMove(Vector3 pos)
     {
         if (eyes != null)
@@ -48,7 +52,7 @@ public class EyesCtrl : MonoBehaviour
     {
         if (eyes != null)
         {
-            float moveRange = 0.05f;
+            float moveRange = 0.5f;
 
             // 在当前 localPosition 上叠加偏移
             Vector3 newPos = eyes.localPosition + new Vector3(input.x * 0.01f, input.y * 0.01f, 0); // 调整速度
@@ -65,23 +69,27 @@ public class EyesCtrl : MonoBehaviour
     {
         this.playerEntity=playerEntity;
         var t = GameObject.Find("table");
-        eyes=  this.transform.Find("Eyes");
         forward = t.transform.position - transform.position;
         transform.forward = forward;
         if (playerEntity.isSelf)
         { 
+            SetIsSelf(true);
             //相机跟随
             var camera=   YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
-            camera.gameObject.transform.position = transform.position+new Vector3(0,0.5f,0);
+     
             //forward = 当前位置到t的位置
 
             transform.forward = forward;
-     
+            camera.gameObject.transform.position =transform.forward*0.2f+transform.position+new Vector3(0,0.5f,0);
             EyesOrgPos=eyes.localPosition;
             if (playerEntity.isSelf)
             {
                 YOTOFramework.sceneMgr.cameraCtrl.cameraDir.transform.forward=transform.forward;
             }
+        }
+        else
+        {
+            SetIsSelf(false);
         }
     }
 }
