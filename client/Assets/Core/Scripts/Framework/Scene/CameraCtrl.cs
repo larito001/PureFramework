@@ -9,6 +9,7 @@ using YOTO;
 public class CameraCtrl
 {
     private CinemachineVirtualCamera vCamera;
+    private CinemachineVirtualCamera startCamera;
     private CinemachineVirtualCamera specialCamera;
     private Vector3 moveDirection;
     private Vector3 currentVelocity;
@@ -19,6 +20,7 @@ public class CameraCtrl
     private PointerEventData pointerEventData;
     private Vector3 touchPosition;
     public GameObject cameraDir;
+    public GameObject startCameraDir;
     private float xRotation = 0f;
     private float yRotation = 0f;
 
@@ -42,13 +44,21 @@ public class CameraCtrl
         });
 
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
+        startCamera= YOTOFramework.cameraMgr.getVirtualCamera("StartCameraVirtual");
         specialCamera= YOTOFramework.cameraMgr.getVirtualCamera("SpecialCamera");
         cameraDir = GameObject.Find("CameraDir");
+        startCameraDir= GameObject.Find("StartCameraDir");
         vCamera.transform.position = cameraDir.transform.position;
         vCamera.transform.rotation = cameraDir.transform.rotation;
-
+        startCamera.transform.position = startCameraDir.transform.position;
+        startCamera.transform.rotation = startCameraDir.transform.rotation;
+        
+        
         vCamera.m_Lens.FieldOfView = 30;
         vCamera.m_Lens.OrthographicSize = 40;
+        startCamera.m_Lens.FieldOfView = 30;
+        startCamera.m_Lens.OrthographicSize = 40;
+        
 
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Touch, Touch);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.PressLeftMouse, Press);
@@ -85,6 +95,14 @@ public class CameraCtrl
     {
         vCamera.Priority = 999;
         specialCamera.Priority = 0;
+    }
+
+    public void UseStarCamera()
+    {
+        startCamera.Priority = 999;
+        vCamera.Priority = 0;
+        specialCamera.Priority = 0;
+        
     }
     
     public void UseSpecialCamera(Transform target)

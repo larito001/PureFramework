@@ -18,8 +18,8 @@ public class StartScene : VirtualSceneBase
 
     public override void OnInit()
     {
-        YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
-
+        YOTOFramework.sceneMgr.cameraCtrl.UseStarCamera();
+        
         YOTOFramework.uIMgr.Show(UIEnum.StartPanel);
     }
 
