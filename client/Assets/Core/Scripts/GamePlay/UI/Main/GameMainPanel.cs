@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -17,7 +18,8 @@ public class GameMainPanel : UIPageBase
     private Vector2 btnOriginalPosition;
     private RectTransform findBtnRect;
     private Vector3 btnOriginalScale;
-    
+    public List<MainPlayerInfoCtrl> playerInfoCtrls = new List<MainPlayerInfoCtrl>();
+    // private 
     public override void OnLoad()
     {
         topOriginalPosition = topInfoBg.anchoredPosition;
@@ -44,7 +46,23 @@ public class GameMainPanel : UIPageBase
         
         sequence.OnStart(() => { Debug.Log("入场动画开始"); })
                 .OnComplete(() => { Debug.Log("入场动画完成"); });
+        for (var i = 0; i < playerInfoCtrls.Count; i++)
+        {
+            playerInfoCtrls[i].Reset();
+        }
+
+        int index = 0;
+        foreach (var player in PlayerPlugin.Instance.players.Values)
+        {
+            if (!player.isSelf)
+            {
+                playerInfoCtrls[index++].SetPlayer(player);
+            }
+        }
+        
     }
+
+
 
     private void AddButtonHoverEffect()
     {
@@ -102,7 +120,10 @@ public class GameMainPanel : UIPageBase
     {
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         findBtn.onClick.RemoveAllListeners();
-        
+        for (var i = 0; i < playerInfoCtrls.Count; i++)
+        {
+            playerInfoCtrls[i].Reset();
+        }
         // 移除事件触发器
         EventTrigger trigger = findBtn.gameObject.GetComponent<EventTrigger>();
         if (trigger != null)

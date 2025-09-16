@@ -58,7 +58,7 @@ public class CameraCtrl
         vCamera.m_Lens.OrthographicSize = 40;
         startCamera.m_Lens.FieldOfView = 30;
         startCamera.m_Lens.OrthographicSize = 40;
-        
+        specialCamera.m_Lens.FieldOfView = 10;
 
         YOTOFramework.eventMgr.AddEventListener<Vector2>(YOTO.YOTOEventType.Touch, Touch);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.PressLeftMouse, Press);
