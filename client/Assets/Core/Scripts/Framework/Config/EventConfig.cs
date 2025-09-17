@@ -20,7 +20,8 @@ namespace YOTO
        RefreshRoleList,
        RefreshProgress,
        RefreshPlayerProperty,
-       GameTimerNotify
+       GameTimerNotify,
+       LootTimerNotify
     }
 
 

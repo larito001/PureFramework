@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using YOTO;
 
 public class LootingPanel : UIPageBase
 {
+    public TextMeshProUGUI timer;
     public Scrollbar line;
     public override void OnLoad()
     {
@@ -15,6 +17,12 @@ public class LootingPanel : UIPageBase
     public override void OnShow()
     {
         YOTOFramework.eventMgr.AddEventListener<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,OnRefreshProgress);
+        YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.LootTimerNotify, OnLootTimerNotify);
+    }
+
+    private void OnLootTimerNotify(int index)
+    {
+        timer.text=index.ToString();
     }
 
     private void OnRefreshProgress(List<IntKeyFloatValue> list)
@@ -51,6 +59,7 @@ public class LootingPanel : UIPageBase
     public override void OnHide()
     {
         YOTOFramework.eventMgr.RemoveEventListener<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,OnRefreshProgress);
+        YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.LootTimerNotify, OnLootTimerNotify);
         
     }
 }

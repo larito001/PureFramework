@@ -195,6 +195,7 @@ public class FoodData
     public int SatisfactionValue = 3; //满意度
     public Quality quality;
     List<int> playerIds = new List<int>();
+    private const float LootOrgTimer = 5;
 
     // private Dictionary<int,PlayerData>playerIds = new Dictionary<int,PlayerData>();
     private float timerTemp = 0;
@@ -306,6 +307,7 @@ public class FoodData
 
     private void EndLoot()
     {
+        LootIndex = (int)LootOrgTimer;
         CheckPlayerIsAlive();
         state = FoodState.Eat;
         int maxId = -1;
@@ -349,6 +351,10 @@ public class FoodData
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
+    private int LootDelay = 1;
+    private float lootTimer = 1;
+    private int LootIndex = (int)LootOrgTimer;
+
     public void Update(float dt)
     {
         if (state == FoodState.Catching)
@@ -364,7 +370,19 @@ public class FoodData
         if (state == FoodState.Looting)
         {
             timerTemp += dt;
-            if (timerTemp >= 5)
+            lootTimer -= dt;
+            if (lootTimer <= 0)
+            {
+                lootTimer = 1;
+                LootIndex--;
+                FoodLootTimerNotify notify = new FoodLootTimerNotify()
+                {
+                    index = LootIndex
+                };
+                ServerMessageManager.Instance.SendNotify(notify);
+            }
+
+            if (timerTemp >= LootOrgTimer)
             {
                 timerTemp = 0;
                 EndLoot();
@@ -454,6 +472,11 @@ public struct StopLootNotify : IResponse
     public List<int> losePlayers;
 }
 
+public struct FoodLootTimerNotify : IResponse
+{
+    public int index;
+}
+
 public struct FoodNotify : IResponse
 {
     public List<FoodData> foodList;
@@ -475,15 +498,18 @@ public struct RuleSelectNotify : IResponse
     public int playerId;
     public List<GameRule> rules;
 }
-public struct MainPlayerRuleSelectRequest: IRequest
+
+public struct MainPlayerRuleSelectRequest : IRequest
 {
     public int ruleId;
 }
-public  struct SomeOneFindHostPlayerRequest:IRequest
+
+public struct SomeOneFindHostPlayerRequest : IRequest
 {
     public int playerId;
 }
-public  struct SomeOneFindHostPlayerNotifyt:IResponse
+
+public struct SomeOneFindHostPlayerNotifyt : IResponse
 {
     public int playerId;
 }
@@ -496,8 +522,8 @@ public struct VotRequest : IRequest
 
 public struct VotEndNotify : IResponse
 {
-    
 }
+
 #endregion
 
 #region 登录
@@ -525,11 +551,12 @@ public struct GameStartNotify : IResponse
 
 public struct GameEndNotify : IResponse
 {
-   public GameRule rule;
-   public List<PlayerData> winPlayersDatas;
-   public List<PlayerData> losePlayersDatas;
+    public GameRule rule;
+    public List<PlayerData> winPlayersDatas;
+    public List<PlayerData> losePlayersDatas;
 }
-public struct GameTimerNotify:IResponse
+
+public struct GameTimerNotify : IResponse
 {
     public int index;
 }

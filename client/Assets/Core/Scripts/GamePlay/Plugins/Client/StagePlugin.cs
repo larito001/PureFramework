@@ -37,6 +37,7 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<FoodNotify>(OnFoodGenerateNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<RuleSelectNotify>(OnRuleSelectNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameTimerNotify>(OnGameTimerNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<FoodLootTimerNotify>(OnFoodLootTimerNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
@@ -48,6 +49,7 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<FoodNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<RuleSelectNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameTimerNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<FoodLootTimerNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
@@ -149,6 +151,10 @@ public class StagePlugin : LogicPluginBase
     private void OnGameTimerNotify(GameTimerNotify obj)
     {
         YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.GameTimerNotify, obj.index);
+    }
+    private void OnFoodLootTimerNotify(FoodLootTimerNotify obj)
+    {
+        YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.LootTimerNotify, obj.index);
     }
     #endregion
 
