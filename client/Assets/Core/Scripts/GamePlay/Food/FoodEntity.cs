@@ -87,7 +87,7 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
 
         // 使用DOTween实现以z轴为中心的旋转抖动
         shakeTween = objTrans.DOShakeRotation(1f, strength: 15f, vibrato: 10, randomness: 90f, fadeOut: true)
-            .SetEase(Ease.OutQuad).SetLoops(3, LoopType.Restart);
+            .SetEase(Ease.OutQuad).SetLoops(-1, LoopType.Restart);
     }
 
     public void StopCatch()

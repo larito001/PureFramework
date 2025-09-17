@@ -43,11 +43,13 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void SetEyesMove(Vector2 input)
     {
-        eyesCtrl?.SetEyesMove(input);
+        if(eyesCtrl!=null)
+        eyesCtrl.SetEyesMove(input);
     }
 
     public void SetEyesMove(Vector3 pos)
     {
+        if(eyesCtrl!=null)
         eyesCtrl.ForceMove(pos);
     }
 

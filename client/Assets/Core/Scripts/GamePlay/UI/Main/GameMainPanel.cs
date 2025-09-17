@@ -12,6 +12,7 @@ public class GameMainPanel : UIPageBase
 {
     public TextMeshProUGUI txt_satiety;
     public TextMeshProUGUI txt_satisfaction;
+    public TextMeshProUGUI txt_timer;
     public Button findBtn;
     public RectTransform topInfoBg;
     private Vector2 topOriginalPosition;
@@ -30,6 +31,7 @@ public class GameMainPanel : UIPageBase
 
     public override void OnShow()
     {
+        YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         findBtn.onClick.AddListener(OnClickFindBtn);
         
@@ -62,6 +64,10 @@ public class GameMainPanel : UIPageBase
         
     }
 
+    private void OnTimerNotify(int index )
+    {
+        txt_timer.text = index.ToString();
+    }
 
 
     private void AddButtonHoverEffect()
@@ -118,6 +124,7 @@ public class GameMainPanel : UIPageBase
 
     public override void OnHide()
     {
+        YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         findBtn.onClick.RemoveAllListeners();
         for (var i = 0; i < playerInfoCtrls.Count; i++)

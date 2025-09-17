@@ -529,6 +529,10 @@ public struct GameEndNotify : IResponse
    public List<PlayerData> winPlayersDatas;
    public List<PlayerData> losePlayersDatas;
 }
+public struct GameTimerNotify:IResponse
+{
+    public int index;
+}
 
 // 例子：移动响应
 public struct LoginResponse : IResponse

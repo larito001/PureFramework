@@ -26,8 +26,9 @@ public class NormalScene : VirtualSceneBase
       
         YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         YOTOFramework.uIMgr.ClearUI();
-        YOTOFramework.uIMgr.Show(UIEnum.GameMainPanel);
+
         PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas());
+        YOTOFramework.uIMgr.Show(UIEnum.GameMainPanel);
     }
     
 

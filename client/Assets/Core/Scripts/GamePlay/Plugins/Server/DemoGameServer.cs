@@ -25,6 +25,8 @@ public class DemoGameServer : GameServerBase
     private int delayIndex = (int)orgReadyTimer; //ready倒计时索引
     private int votDelayIndex = (int)orgvotingTimer;
     private float gameTimer = 0; //游戏总时间计时器
+    private float gamedelayTimer = 1; //倒计时一次的时间
+    private int gameIndex = (int)orgGameTime;
     private float votingTimer = orgvotingTimer;
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
@@ -109,6 +111,14 @@ public class DemoGameServer : GameServerBase
 
 
             gameTimer += dt;
+            gamedelayTimer -= dt;
+            if (gamedelayTimer <=0)
+            {
+                gameIndex--;
+                gamedelayTimer = 1;
+                GameTimerNotify(gameIndex);
+            }
+            
             if (gameTimer >= orgGameTime)
             {
                 gameTimer = 0;
@@ -134,6 +144,8 @@ public class DemoGameServer : GameServerBase
             }
         }
     }
+
+
 
     private void ReSetTimers()
     {
@@ -312,6 +324,12 @@ public class DemoGameServer : GameServerBase
         GameHasVoted = false;
         hosterIsLose = false;
         GameEndNotify notify = OnFinishUseRule();
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+    private void GameTimerNotify(int i)
+    {
+        GameTimerNotify notify = new GameTimerNotify();
+        notify.index = i;
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
