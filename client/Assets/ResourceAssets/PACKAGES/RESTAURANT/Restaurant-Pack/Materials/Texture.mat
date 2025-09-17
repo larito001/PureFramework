@@ -114,14 +114,14 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OutlineWidth: 0.01
+    - _OutlineWidth: 0.96
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RimMax: 1
-    - _RimMin: 0.772
+    - _RimMin: 0.836
     - _RimSmooth: 0.716
-    - _ShadowRange: 0.492
+    - _ShadowRange: 0.509
     - _ShadowSmooth: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
