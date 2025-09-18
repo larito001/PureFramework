@@ -56,7 +56,7 @@ public class CameraCtrl
         
         vCamera.m_Lens.FieldOfView = 45;
         vCamera.m_Lens.OrthographicSize = 40;
-        startCamera.m_Lens.FieldOfView = 30;
+        startCamera.m_Lens.FieldOfView = 50;
         startCamera.m_Lens.OrthographicSize = 40;
         specialCamera.m_Lens.FieldOfView = 10;
 

@@ -21,7 +21,8 @@ namespace YOTO
        RefreshProgress,
        RefreshPlayerProperty,
        GameTimerNotify,
-       LootTimerNotify
+       LootTimerNotify,
+       VotEndNotify,
     }
 
 

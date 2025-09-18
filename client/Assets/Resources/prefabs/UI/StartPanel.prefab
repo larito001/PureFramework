@@ -1402,7 +1402,6 @@ GameObject:
   - component: {fileID: 7062041124848133019}
   - component: {fileID: 436435799714189475}
   - component: {fileID: 3508677402777604586}
-  - component: {fileID: 4102602005511963620}
   m_Layer: 5
   m_Name: StartPanel
   m_TagString: Untagged
@@ -1475,36 +1474,6 @@ MonoBehaviour:
   bg: {fileID: 7982142910776058096}
   leftBg: {fileID: 7302537383204679270}
   startBtn: {fileID: 1483796991142174934}
---- !u!114 &4102602005511963620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5388902251058778781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.4490565, g: 0.4490565, b: 0.4490565, a: 0.2784314}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5458169089817023119
 GameObject:
   m_ObjectHideFlags: 0

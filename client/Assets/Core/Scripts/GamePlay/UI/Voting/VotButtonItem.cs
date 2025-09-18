@@ -11,13 +11,13 @@ public class VotButtonItem : YOTOScrollViewItem
     public Button btn;
     private int playerId;
     public TextMeshProUGUI nameText;
-    private void Start()
+    public TextMeshProUGUI votNumText;
+
+    private void OnClick()
     {
-        btn.onClick.AddListener(() =>
-        {
-            PlayerPlugin.Instance.OnVotClick(playerId);
-            YOTOFramework.uIMgr.Hide(UIEnum.VotingPanel);
-        });
+        PlayerPlugin.Instance.OnVotClick(playerId);
+        btn.onClick.RemoveAllListeners();
+        // YOTOFramework.uIMgr.Hide(UIEnum.VotingPanel);
     }
 
     private void OnDestroy()
@@ -25,9 +25,19 @@ public class VotButtonItem : YOTOScrollViewItem
         btn.onClick.RemoveAllListeners();
     }
 
-    public void SetData(int pid,string playerName)
+    public void SetData(int pid,string playerName,int votNum )
     {
         playerId = pid;
         nameText.text = playerName;
+        if (votNum != 0)
+        {
+            votNumText.text = votNum.ToString();
+        }
+        else
+        {
+            votNumText.text = "";
+        }
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(OnClick);
     }
 }

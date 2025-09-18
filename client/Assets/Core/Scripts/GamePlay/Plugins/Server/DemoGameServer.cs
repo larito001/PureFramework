@@ -31,7 +31,7 @@ public class DemoGameServer : GameServerBase
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
     private bool hosterIsLose = false;
-
+    HashSet<int> playerVotHash = new HashSet<int>();//是否投过票
     #endregion
 
     #region 生命周期
@@ -320,6 +320,7 @@ public class DemoGameServer : GameServerBase
 
     public void OnGameEndNotify()
     {
+        gameIndex = (int)orgGameTime;
         gameState = GameState.Idle;
         GameHasVoted = false;
         hosterIsLose = false;
@@ -349,9 +350,12 @@ public class DemoGameServer : GameServerBase
     /// <returns></returns>
     private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
     {
-        playerVotNum.Clear();
+      
+
         if (!GameHasVoted && gameState == GameState.Playing)
         {
+            playerVotNum.Clear();
+            playerVotHash.Clear();
             GameHasVoted = true;
             gameState = GameState.Voting;
             SomeOneFindHostPlayerNotifyt notify = new SomeOneFindHostPlayerNotifyt
@@ -369,14 +373,19 @@ public class DemoGameServer : GameServerBase
     /// </summary>
     private IResponse OnVotRequest(VotRequest arg1, int playerId)
     {
-        if (playerVotNum.ContainsKey(playerId))
+        if (!playerVotHash.Contains(arg1.playerId))
         {
-            playerVotNum[playerId]++;
+            playerVotHash.Add(arg1.playerId);
+            if (playerVotNum.ContainsKey(playerId))
+            {
+                playerVotNum[playerId]++;
+            }
+            else
+            {
+                playerVotNum.Add(playerId, 1);
+            }
         }
-        else
-        {
-            playerVotNum.Add(playerId, 1);
-        }
+   
 
         return null;
     }
@@ -386,12 +395,16 @@ public class DemoGameServer : GameServerBase
     /// </summary>
     private void VotingEnd()
     {
+        VotEndNotify notify = new VotEndNotify();
+        notify.pidAndvots = new List<Vector2Int>();
+        notify.isSuccess = false;
         if (playerVotNum.Count > 0)
         {
             int maxNum = 0;
             int maxId = 0;
             foreach (var keyValuePair in playerVotNum)
             {
+                notify.pidAndvots.Add(new Vector2Int(keyValuePair.Key, keyValuePair.Value));
                 if (keyValuePair.Value > maxNum)
                 {
                     maxNum = keyValuePair.Value;
@@ -404,6 +417,7 @@ public class DemoGameServer : GameServerBase
             {
                 //todo:投票成功
                 OnFlyTextNotify("bingo! hoster is "+ ServerDataPlugin.Instance.GetPlayerById(hostId).playerName , FlyTextType.Normal);
+                notify.isSuccess = true;
                 hosterIsLose = true;
             }
             else
@@ -415,8 +429,7 @@ public class DemoGameServer : GameServerBase
         {
             OnFlyTextNotify("what? are you sure?", FlyTextType.Normal);
         }
-
-        VotEndNotify notify = new VotEndNotify();
+        
         ServerMessageManager.Instance.SendNotify(notify);
         gameState = GameState.Playing;
     }

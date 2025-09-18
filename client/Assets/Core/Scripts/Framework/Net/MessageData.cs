@@ -522,6 +522,8 @@ public struct VotRequest : IRequest
 
 public struct VotEndNotify : IResponse
 {
+    public List<Vector2Int> pidAndvots;
+    public bool isSuccess;
 }
 
 #endregion

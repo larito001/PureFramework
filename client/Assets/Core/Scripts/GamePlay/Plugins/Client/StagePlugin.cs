@@ -133,6 +133,8 @@ public class StagePlugin : LogicPluginBase
     {
         GameStart = true;
         YOTOFramework.sceneMgr.LoadScene<NormalScene>();
+        var foods = GameObject.Find("foods");
+        GameObject.Destroy(foods);
     }
 
     public void OnGameError()

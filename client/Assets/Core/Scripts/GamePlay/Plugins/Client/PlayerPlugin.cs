@@ -321,7 +321,7 @@ public class PlayerPlugin : LogicPluginBase
     }
     private void OnVotEndNotify(VotEndNotify obj)
     {
-        YOTOFramework.uIMgr.Hide(UIEnum.VotingPanel);
+        YOTOFramework.eventMgr.TriggerEvent<VotEndNotify>(YOTOEventType.VotEndNotify,obj);
     }
 
     public void OnVotClick(int playerId)

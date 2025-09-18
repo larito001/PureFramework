@@ -16,6 +16,7 @@ public class LootingPanel : UIPageBase
 
     public override void OnShow()
     {
+        line.value = 0.5f;
         YOTOFramework.eventMgr.AddEventListener<List<IntKeyFloatValue>>(YOTOEventType.RefreshProgress,OnRefreshProgress);
         YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.LootTimerNotify, OnLootTimerNotify);
     }
