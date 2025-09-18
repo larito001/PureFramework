@@ -8,7 +8,7 @@ public class DemoGameServer : GameServerBase
 {
     #region 配置属性
 
-    private const float orgGameTime = 100; //游戏总时长
+    private const float orgGameTime = 40; //游戏总时长
     private readonly int playerMaxNum = 4; //最大玩家数
     private const float orgReadyTimer = 2; //ready倒计时
     private const float orgSelectingTimer = 5; //选择规则时间
@@ -31,7 +31,8 @@ public class DemoGameServer : GameServerBase
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
     private bool hosterIsLose = false;
-    HashSet<int> playerVotHash = new HashSet<int>();//是否投过票
+    HashSet<int> playerVotHash = new HashSet<int>(); //是否投过票
+
     #endregion
 
     #region 生命周期
@@ -77,7 +78,7 @@ public class DemoGameServer : GameServerBase
             selectingTimer -= dt;
             if (selectingTimer <= 0)
             {
-                selectingTimer=orgSelectingTimer;
+                selectingTimer = orgSelectingTimer;
                 SetRandomRule();
             }
         }
@@ -112,17 +113,17 @@ public class DemoGameServer : GameServerBase
 
             gameTimer += dt;
             gamedelayTimer -= dt;
-            if (gamedelayTimer <=0)
+            if (gamedelayTimer <= 0)
             {
                 gameIndex--;
                 gamedelayTimer = 1;
                 GameTimerNotify(gameIndex);
             }
-            
+
             if (gameTimer >= orgGameTime)
             {
                 gameTimer = 0;
-                OnGameEndNotify();
+                GotoRest();
             }
         }
 
@@ -145,6 +146,46 @@ public class DemoGameServer : GameServerBase
         }
     }
 
+    private void GotoRest()
+    {
+        gameIndex = (int)orgGameTime;
+        gameState = GameState.Rest;
+        GotoRestNotify notify = new GotoRestNotify();
+        var losePlayer = OnFinishUseRule();
+        int loseNum = 0;
+        foreach (var i in losePlayer)
+        {
+            var p = ServerDataPlugin.Instance.GetPlayerById(i);
+            if (p != null)
+            {
+                p.PlayerLose();
+            }
+        }
+        OnFlyTextNotify("Have a Rest!", FlyTextType.Normal);
+        var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
+        var allCount = pList.Count;
+        foreach (var playerData in pList)
+        {
+            if (playerData.GetState() == PlayerState.Dead)
+            {
+                loseNum++;
+            }
+        }
+        GameHasVoted = false;
+        hosterIsLose = false;
+        if ((allCount - loseNum) <= 1)
+        {
+            OnGameEndNotify();
+        }
+        else
+        {
+            YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer,3);   
+        }
+    
+      
+
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
 
 
     private void ReSetTimers()
@@ -291,7 +332,7 @@ public class DemoGameServer : GameServerBase
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        YOTOFramework.timeMgr.DelayCall( OnSelectHostPlayer,2);
+        YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer, 2);
 
         return null;
     }
@@ -320,13 +361,38 @@ public class DemoGameServer : GameServerBase
 
     public void OnGameEndNotify()
     {
-        gameIndex = (int)orgGameTime;
+
         gameState = GameState.Idle;
-        GameHasVoted = false;
-        hosterIsLose = false;
-        GameEndNotify notify = OnFinishUseRule();
+
+        GameEndNotify notify = new GameEndNotify();
+        //判定最终赢家
+        var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
+        notify.rule = ServerDataPlugin.Instance.CurrentRule;
+        notify.winPlayersDatas = new List<PlayerData>();
+        notify.losePlayersDatas = new List<PlayerData>();
+        if (pList.Count == 1)
+        {
+            notify.winPlayersDatas = pList;
+        }
+        else
+        {
+            foreach (var playerData in pList)
+            {
+                if (playerData.GetState() != PlayerState.Dead)
+                {
+                    notify.winPlayersDatas.Add(playerData);
+                }
+                else
+                {
+                    notify.losePlayersDatas.Add(playerData);
+                }
+            }
+        }
+
+
         ServerMessageManager.Instance.SendNotify(notify);
     }
+
     private void GameTimerNotify(int i)
     {
         GameTimerNotify notify = new GameTimerNotify();
@@ -350,8 +416,6 @@ public class DemoGameServer : GameServerBase
     /// <returns></returns>
     private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
     {
-      
-
         if (!GameHasVoted && gameState == GameState.Playing)
         {
             playerVotNum.Clear();
@@ -385,7 +449,7 @@ public class DemoGameServer : GameServerBase
                 playerVotNum.Add(playerId, 1);
             }
         }
-   
+
 
         return null;
     }
@@ -413,10 +477,11 @@ public class DemoGameServer : GameServerBase
             }
 
             var hostId = ServerDataPlugin.Instance.RulePlayerId;
-            if (hostId== maxId)
+            if (hostId == maxId)
             {
                 //todo:投票成功
-                OnFlyTextNotify("bingo! hoster is "+ ServerDataPlugin.Instance.GetPlayerById(hostId).playerName , FlyTextType.Normal);
+                OnFlyTextNotify("bingo! hoster is " + ServerDataPlugin.Instance.GetPlayerById(hostId).playerName,
+                    FlyTextType.Normal);
                 notify.isSuccess = true;
                 hosterIsLose = true;
             }
@@ -429,7 +494,7 @@ public class DemoGameServer : GameServerBase
         {
             OnFlyTextNotify("what? are you sure?", FlyTextType.Normal);
         }
-        
+
         ServerMessageManager.Instance.SendNotify(notify);
         gameState = GameState.Playing;
     }
@@ -479,13 +544,14 @@ public class DemoGameServer : GameServerBase
     /// 规则结算
     /// </summary>
     /// <returns></returns>
-    private GameEndNotify OnFinishUseRule()
+    private List<int> OnFinishUseRule()
     {
-        var notify = new GameEndNotify();
+        // var notify = new GameEndNotify();
+        List<int> losePlayers = new List<int>();
         var rule = ServerDataPlugin.Instance.CurrentRule;
         if (rule != null)
         {
-            notify.rule = rule;
+            // notify.rule = rule;
             var players = ServerDataPlugin.Instance.GetPlayerList();
             int winId = 0;
             if (rule.ruleId == 1)
@@ -495,15 +561,23 @@ public class DemoGameServer : GameServerBase
                 int maxNum = 0;
                 foreach (var player in players)
                 {
-                    if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
+                    // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
+                    if (!hosterIsLose)
                     {
                         if (player.SatisfactionValue >= maxNum)
                         {
                             winId = player.playerId;
                             maxNum = player.lootNum;
-                        }  
+                        }
+                        else
+                        {
+                            losePlayers.Add(player.playerId);
+                        }
                     }
-             
+                    else
+                    {
+                        losePlayers.Add(player.playerId);
+                    }
                 }
             }
             else if (rule.ruleId == 2)
@@ -511,20 +585,31 @@ public class DemoGameServer : GameServerBase
                 int minNum = 999999;
                 foreach (var player in players)
                 {
-                    if (!hosterIsLose && player.playerId != ServerDataPlugin.Instance.RulePlayerId)
+                    //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
+                    if (!hosterIsLose )
                     {
                         if (player.SatisfactionValue <= minNum)
                         {
                             winId = player.playerId;
                             minNum = player.lootNum;
                         }
-                    } 
+                        else
+                        {
+                            losePlayers.Add(player.playerId);
+                        }
+                    }
+                    else
+                    {
+                        losePlayers.Add(player.playerId);
+                    }
                 }
             }
-            OnFlyTextNotify("winner is "+ServerDataPlugin.Instance.GetPlayerById(winId)?.playerName, FlyTextType.Normal);
+            
             Debug.Log("结算时规则：" + rule.roleName);
         }
-        return notify;
+
+        return losePlayers;
+        // return notify;
     }
 
     #endregion
@@ -641,5 +726,6 @@ public class DemoGameServer : GameServerBase
         Ready, //ready
         Playing, //游戏开始
         Voting, //正在投票
+        Rest //中场休息
     }
 }

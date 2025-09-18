@@ -12,9 +12,9 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public bool leftHandDoing = false;
     public bool rightHandDoing = false;
     public bool isSelf { get; private set; }
-    
     private EyesCtrl eyesCtrl;
     private HandCtrl handCtrl;
+    private AnimatorCtrl animCtrl;
     public int SatietyValue;
     public int SatisfactionValue;
     public const int maxStatiety = 20;//最高饱腹值
@@ -33,6 +33,14 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     {
     }
 
+    public void Drink()
+    {
+        animCtrl.OnDrink();
+    }
+    public void Dead()
+    {
+        
+    }
     public override void YOTOStart()
     {
     }
@@ -145,6 +153,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         objTrans.gameObject.SetActive(true);
         eyesCtrl = objTrans.GetComponent<EyesCtrl>();
         handCtrl = objTrans.GetComponent<HandCtrl>();
+        animCtrl = objTrans.GetComponent<AnimatorCtrl>();
         eyesCtrl.Init(this);
         handCtrl.Init(this);
     }

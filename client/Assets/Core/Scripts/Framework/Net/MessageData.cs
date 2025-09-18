@@ -28,6 +28,7 @@ public enum PlayerState
     Catching, //抓取中
     Looting, //抢夺中
     Backing, //返回中
+    Dead, //死亡
 }
 
 public class PlayerData
@@ -39,6 +40,28 @@ public class PlayerData
     public int SatisfactionValue = 0; //满意度
     public int lootNum = 0;
     public int useFoodId = -1;
+    public int currentAlcohol = 0;
+
+    public void PlayerLose()
+    {
+        if (State != PlayerState.Dead)
+        {
+            PlayerNeedDrinkNotify drinkNotify = new PlayerNeedDrinkNotify();
+            drinkNotify.playerId = playerId;
+            currentAlcohol += 10;
+            ServerMessageManager.Instance.SendNotify(drinkNotify);
+
+            if (currentAlcohol >= 20)
+            {
+                State = PlayerState.Dead;
+                //todo:广播角色死亡
+                PlayerDeadNotify notify = new PlayerDeadNotify();
+                notify.playerId = playerId;
+                ServerMessageManager.Instance.SendNotify(notify);
+            }
+        }
+     
+    }
 
     public PlayerState GetState()
     {
@@ -144,6 +167,15 @@ public struct PlayerPropertyNotify : IResponse
     public int playerId;
     public int satiety;
     public int satisfaction;
+}
+
+public struct PlayerDeadNotify : IResponse
+{
+    public int playerId;
+}
+public struct PlayerNeedDrinkNotify:IResponse
+{
+    public int playerId;
 }
 
 #endregion
@@ -568,6 +600,10 @@ public struct LoginResponse : IResponse
 {
     public PlayerData playerData;
     public bool isSuccess;
+}
+
+public struct GotoRestNotify : IResponse
+{
 }
 
 #endregion

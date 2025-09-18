@@ -38,10 +38,11 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<RuleSelectNotify>(OnRuleSelectNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameTimerNotify>(OnGameTimerNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<FoodLootTimerNotify>(OnFoodLootTimerNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<GotoRestNotify>(OnGotoRestNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
-
+ 
 
 
     public void OnNetUninstall()
@@ -50,6 +51,7 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<RuleSelectNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameTimerNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<FoodLootTimerNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<GotoRestNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
@@ -142,7 +144,11 @@ public class StagePlugin : LogicPluginBase
         GameStart = false;
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
     }
-
+    private void OnGotoRestNotify(GotoRestNotify obj)
+    {
+        //清除食物
+        RemoveAllFoods();
+    }
     public void OnGameEnd()
     {
         GameStart = false;

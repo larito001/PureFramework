@@ -38,10 +38,28 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<PlayerPropertyNotify>(OnPlayerPropertyNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<SomeOneFindHostPlayerNotifyt>(OnSomeOneFindHostPlayerNotifyt);
         ClientMessageManager.Instance.RegisterResponseHandler<VotEndNotify>(OnVotEndNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<PlayerDeadNotify>(OnPlayerDeadNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<PlayerNeedDrinkNotify>(OnPlayerNeedDrinkNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
+    private void OnPlayerNeedDrinkNotify(PlayerNeedDrinkNotify obj)
+    {
+        Debug.LogError("玩家"+obj.playerId+"喝酒了");
+        if (players.ContainsKey(obj.playerId))
+        {
+            players[obj.playerId].Drink();
+        }
+    }
 
+    private void OnPlayerDeadNotify(PlayerDeadNotify obj)
+    {
+        Debug.LogError("玩家"+obj.playerId+"似了");
+        if (players.ContainsKey(obj.playerId))
+        {
+            players[obj.playerId].Dead();
+        }
+    }
 
 
     public void OnNetUninstall()
@@ -56,6 +74,8 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerPropertyNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<SomeOneFindHostPlayerNotifyt>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<VotEndNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerDeadNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerNeedDrinkNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 
