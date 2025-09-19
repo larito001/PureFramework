@@ -8,7 +8,7 @@ public class DemoGameServer : GameServerBase
 {
     #region 配置属性
 
-    private const float orgGameTime = 40; //游戏总时长
+    private const float orgGameTime = 20; //游戏总时长
     private readonly int playerMaxNum = 4; //最大玩家数
     private const float orgReadyTimer = 2; //ready倒计时
     private const float orgSelectingTimer = 5; //选择规则时间
@@ -175,11 +175,11 @@ public class DemoGameServer : GameServerBase
         hosterIsLose = false;
         if ((allCount - loseNum) <= 1)
         {
-            OnGameEndNotify();
+            YOTOFramework.timeMgr.DelayCall(OnGameEndNotify, 10);
         }
         else
         {
-            YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer,3);   
+            YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer,1);   
         }
     
       
@@ -548,65 +548,67 @@ public class DemoGameServer : GameServerBase
     {
         // var notify = new GameEndNotify();
         List<int> losePlayers = new List<int>();
-        var rule = ServerDataPlugin.Instance.CurrentRule;
-        if (rule != null)
-        {
-            // notify.rule = rule;
-            var players = ServerDataPlugin.Instance.GetPlayerList();
-            int winId = 0;
-            if (rule.ruleId == 1)
-            {
-                //todo:读取数据，根据规则发放数据
-
-                int maxNum = 0;
-                foreach (var player in players)
-                {
-                    // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
-                    if (!hosterIsLose)
-                    {
-                        if (player.SatisfactionValue >= maxNum)
-                        {
-                            winId = player.playerId;
-                            maxNum = player.lootNum;
-                        }
-                        else
-                        {
-                            losePlayers.Add(player.playerId);
-                        }
-                    }
-                    else
-                    {
-                        losePlayers.Add(player.playerId);
-                    }
-                }
-            }
-            else if (rule.ruleId == 2)
-            {
-                int minNum = 999999;
-                foreach (var player in players)
-                {
-                    //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
-                    if (!hosterIsLose )
-                    {
-                        if (player.SatisfactionValue <= minNum)
-                        {
-                            winId = player.playerId;
-                            minNum = player.lootNum;
-                        }
-                        else
-                        {
-                            losePlayers.Add(player.playerId);
-                        }
-                    }
-                    else
-                    {
-                        losePlayers.Add(player.playerId);
-                    }
-                }
-            }
-            
-            Debug.Log("结算时规则：" + rule.roleName);
-        }
+        var players = ServerDataPlugin.Instance.GetPlayerList().ToList();
+        losePlayers.Add(players[0].playerId);   
+        // var rule = ServerDataPlugin.Instance.CurrentRule;
+        // if (rule != null)
+        // {
+        //     // notify.rule = rule;
+        //     var players = ServerDataPlugin.Instance.GetPlayerList();
+        //     int winId = 0;
+        //     if (rule.ruleId == 1)
+        //     {
+        //         //todo:读取数据，根据规则发放数据
+        //
+        //         int maxNum = 0;
+        //         foreach (var player in players)
+        //         {
+        //             // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
+        //             if (!hosterIsLose)
+        //             {
+        //                 if (player.SatisfactionValue >= maxNum)
+        //                 {
+        //                     winId = player.playerId;
+        //                     maxNum = player.lootNum;
+        //                 }
+        //                 else
+        //                 {
+        //                     losePlayers.Add(player.playerId);
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 losePlayers.Add(player.playerId);
+        //             }
+        //         }
+        //     }
+        //     else if (rule.ruleId == 2)
+        //     {
+        //         int minNum = 999999;
+        //         foreach (var player in players)
+        //         {
+        //             //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
+        //             if (!hosterIsLose )
+        //             {
+        //                 if (player.SatisfactionValue <= minNum)
+        //                 {
+        //                     winId = player.playerId;
+        //                     minNum = player.lootNum;
+        //                 }
+        //                 else
+        //                 {
+        //                     losePlayers.Add(player.playerId);
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 losePlayers.Add(player.playerId);
+        //             }
+        //         }
+        //     }
+        //     
+        //     Debug.Log("结算时规则：" + rule.roleName);
+        // }
 
         return losePlayers;
         // return notify;

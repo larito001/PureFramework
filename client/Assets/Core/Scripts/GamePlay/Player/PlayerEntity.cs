@@ -39,7 +39,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     }
     public void Dead()
     {
-        
+        animCtrl.OnDead();
     }
     public override void YOTOStart()
     {
