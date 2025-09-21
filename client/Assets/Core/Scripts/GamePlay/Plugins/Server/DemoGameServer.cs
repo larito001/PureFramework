@@ -8,30 +8,18 @@ public class DemoGameServer : GameServerBase
 {
     #region 配置属性
 
-    private const float orgGameTime = 20; //游戏总时长
-    private readonly int playerMaxNum = 4; //最大玩家数
-    private const float orgReadyTimer = 2; //ready倒计时
-    private const float orgSelectingTimer = 5; //选择规则时间
-    private const float orgvotingTimer = 10; //投票时间
+    GameServerStateCtrl stateCtrl = new GameServerStateCtrl();
+    public const int playerMaxNum = 4;
 
     #endregion
 
     #region 暂存属性
 
-    private GameState gameState = GameState.Idle;
-    private float readyTimer = orgReadyTimer; // ready计时器
-    private float selectingTimer = orgSelectingTimer; //host选择规则的计时器
-    private float delayTimer = 1; //倒计时一次的时间
-    private int delayIndex = (int)orgReadyTimer; //ready倒计时索引
-    private int votDelayIndex = (int)orgvotingTimer;
-    private float gameTimer = 0; //游戏总时间计时器
-    private float gamedelayTimer = 1; //倒计时一次的时间
-    private int gameIndex = (int)orgGameTime;
-    private float votingTimer = orgvotingTimer;
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
     private bool hosterIsLose = false;
     HashSet<int> playerVotHash = new HashSet<int>(); //是否投过票
+    private bool GameHasVoted = false;
 
     #endregion
 
@@ -49,6 +37,8 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.RegisterRequestHandler<SomeOneFindHostPlayerRequest>(
             OnSomeOneFindHostPlayerRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<VotRequest>(OnVotRequest);
+        stateCtrl.OnStateEnd = OnStateEnd;
+        stateCtrl.OnStateStart = OnStateStart;
     }
 
 
@@ -62,8 +52,65 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.UnRegisterRequestHandler<MainPlayerRuleSelectRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<SomeOneFindHostPlayerRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<VotRequest>();
+        stateCtrl.OnStateEnd = null;
+        stateCtrl.OnStateStart = null;
     }
 
+    private void OnStateStart(StateInfo state)
+    {
+        switch (state.State)
+        {
+            case GameState.Rest:
+                GotoRest();
+                break;
+            case GameState.Selecting:
+                OnSelectHostPlayer();
+                break;
+            case GameState.Ready:
+
+                OnFlyTextNotify("Ready", FlyTextType.Normal);
+                break;
+            case GameState.Playing:
+                OnGameStart();
+                break;
+            case GameState.End:
+                OnGameEndNotify();
+                break;
+            case GameState.Room:
+                break;
+
+            default:
+                throw new System.NotImplementedException();
+        }
+    }
+
+    private void OnStateEnd(StateInfo state)
+    {
+        switch (state.State)
+        {
+            case GameState.Room:
+                break;
+            case GameState.Rest:
+                break;
+            case GameState.Selecting:
+                SetRandomRule();
+                break;
+            case GameState.Ready:
+
+                break;
+            case GameState.Playing:
+                stateCtrl.ReStartLevel();
+                break;
+            case GameState.Voting:
+                VotingEnd();
+                break;
+            case GameState.End:
+                stateCtrl.OnJoinRoom();
+                break;
+            default:
+                throw new System.NotImplementedException();
+        }
+    }
 
     public override void Update(float dt)
     {
@@ -73,128 +120,9 @@ public class DemoGameServer : GameServerBase
             food.Update(dt);
         }
 
-        if (gameState == GameState.Selecting)
-        {
-            selectingTimer -= dt;
-            if (selectingTimer <= 0)
-            {
-                selectingTimer = orgSelectingTimer;
-                SetRandomRule();
-            }
-        }
-
-        if (gameState == GameState.Ready)
-        {
-            readyTimer -= dt;
-            delayTimer -= dt;
-            if (delayTimer <= 0)
-            {
-                OnFlyTextNotify("Ready!", FlyTextType.Normal);
-                delayIndex--;
-                delayTimer = 1f; // 重置为1秒
-            }
-
-            if (readyTimer <= 0)
-            {
-                OnGameStart();
-                ReSetTimers();
-            }
-        }
-
-        if (gameState == GameState.Playing)
-        {
-            //生成食物
-            if (stageQueue.Count > 0 && gameTimer >= stageQueue.Peek().randomTime)
-            {
-                var foodStage = stageQueue.Dequeue();
-                GenerateFoods(foodStage);
-            }
-
-
-            gameTimer += dt;
-            gamedelayTimer -= dt;
-            if (gamedelayTimer <= 0)
-            {
-                gameIndex--;
-                gamedelayTimer = 1;
-                GameTimerNotify(gameIndex);
-            }
-
-            if (gameTimer >= orgGameTime)
-            {
-                gameTimer = 0;
-                GotoRest();
-            }
-        }
-
-        if (gameState == GameState.Voting)
-        {
-            votingTimer -= dt;
-            delayTimer -= dt;
-            if (delayTimer <= 0)
-            {
-                OnFlyTextNotify("Pleas Voting!", FlyTextType.Normal);
-                votDelayIndex--;
-                delayTimer = 1f; // 重置为1秒
-            }
-
-            if (votingTimer <= 0)
-            {
-                votingTimer = orgvotingTimer;
-                VotingEnd();
-            }
-        }
+        stateCtrl.Update(dt);
     }
 
-    private void GotoRest()
-    {
-        gameIndex = (int)orgGameTime;
-        gameState = GameState.Rest;
-        GotoRestNotify notify = new GotoRestNotify();
-        var losePlayer = OnFinishUseRule();
-        int loseNum = 0;
-        foreach (var i in losePlayer)
-        {
-            var p = ServerDataPlugin.Instance.GetPlayerById(i);
-            if (p != null)
-            {
-                p.PlayerLose();
-            }
-        }
-        OnFlyTextNotify("Have a Rest!", FlyTextType.Normal);
-        var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
-        var allCount = pList.Count;
-        foreach (var playerData in pList)
-        {
-            if (playerData.GetState() == PlayerState.Dead)
-            {
-                loseNum++;
-            }
-        }
-        GameHasVoted = false;
-        hosterIsLose = false;
-        if ((allCount - loseNum) <= 1)
-        {
-            YOTOFramework.timeMgr.DelayCall(OnGameEndNotify, 10);
-        }
-        else
-        {
-            YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer,1);   
-        }
-    
-      
-
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-
-    private void ReSetTimers()
-    {
-        delayIndex = (int)orgReadyTimer;
-        readyTimer = orgReadyTimer;
-        selectingTimer = orgSelectingTimer;
-        delayTimer = 1;
-    }
 
     #region host
 
@@ -267,7 +195,7 @@ public class DemoGameServer : GameServerBase
             isSuccess = false,
             playerData = null
         };
-        if (ServerDataPlugin.Instance.GetPlayerList().Count < playerMaxNum && gameState == GameState.Idle)
+        if (ServerDataPlugin.Instance.GetPlayerList().Count < playerMaxNum && !stateCtrl.GameIsStart())
         {
             playerDataTemp = new PlayerData();
             playerDataTemp.playerId = connectionId;
@@ -277,6 +205,11 @@ public class DemoGameServer : GameServerBase
             RefreshPlayerNotify();
             res.isSuccess = true;
             res.playerData = playerDataTemp;
+        }
+
+        if (connectionId == 0)
+        {
+            stateCtrl.OnJoinRoom();
         }
 
         return res;
@@ -297,6 +230,7 @@ public class DemoGameServer : GameServerBase
         RefreshPlayerNotify();
         if (ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
         {
+            stateCtrl.OnJoinRoom();
             OnGameEndNotify();
         }
     }
@@ -309,7 +243,6 @@ public class DemoGameServer : GameServerBase
 
     #endregion
 
-    #region 游戏业务
 
     #region 通用模块
 
@@ -322,25 +255,121 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
+    private void GameTimerNotify(int i)
+    {
+        GameTimerNotify notify = new GameTimerNotify();
+        notify.index = i;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
     #endregion
 
-    #region 游戏生命周期
+    #region 游戏业务
 
+    #region 游戏循环
+
+    /// <summary>
+    /// 游戏开始
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
+    /// <returns></returns>
     private IResponse OnGameReadyRequest(GameStartRequest arg1, int arg2)
     {
-        if (gameState != GameState.Idle) return null;
+        if (stateCtrl.GameIsStart()) return null;
+        stateCtrl.OnGameStart();
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        YOTOFramework.timeMgr.DelayCall(OnSelectHostPlayer, 2);
 
         return null;
     }
 
+    /// <summary>
+    /// 开启投票阶段
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
+    /// <returns></returns>
+    private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
+    {
+        if (!GameHasVoted)
+        {
+            playerVotNum.Clear();
+            playerVotHash.Clear();
+            GameHasVoted = true;
+            stateCtrl.StartVoting();
+            SomeOneFindHostPlayerNotifyt notify = new SomeOneFindHostPlayerNotifyt
+            {
+                playerId = arg2
+            };
+            ServerMessageManager.Instance.SendNotify(notify);
+        }
 
+        return null;
+    }
+
+    /// <summary>
+    /// 进入休息阶段
+    /// </summary>
+    private void GotoRest()
+    {
+        GotoRestNotify notify = new GotoRestNotify();
+        var losePlayer = OnFinishUseRule();
+        int loseNum = 0;
+        foreach (var i in losePlayer)
+        {
+            var p = ServerDataPlugin.Instance.GetPlayerById(i);
+            if (p != null)
+            {
+                p.PlayerLose();
+            }
+        }
+
+        OnFlyTextNotify("Have a Rest!", FlyTextType.Normal);
+        var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
+        var allCount = pList.Count;
+        foreach (var playerData in pList)
+        {
+            if (playerData.GetState() == PlayerState.Dead)
+            {
+                loseNum++;
+            }
+        }
+
+        GameHasVoted = false;
+        hosterIsLose = false;
+        if ((allCount - loseNum) <= 1)
+        {
+            stateCtrl.GameEnd();
+        }
+
+
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
+    /// <summary>
+    /// 进入规则指定阶段
+    /// </summary>
+    private void OnSelectHostPlayer()
+    {
+        //选择主玩家，给主玩家发送可选项，制定游戏规则
+        var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
+        ServerDataPlugin.Instance.SetRulePlayerId(playerId);
+        var rules = ServerDataPlugin.Instance.getRandomRules(3);
+        RuleSelectNotify notify = new RuleSelectNotify
+        {
+            rules = rules,
+            playerId = playerId
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
+    /// <summary>
+    /// 游戏抢夺阶段
+    /// </summary>
     private void OnGameStart()
     {
-        gameState = GameState.Playing;
         OnFlyTextNotify("Go!", FlyTextType.Normal);
         ServerDataPlugin.Instance.OnGameReStart();
         ServerDataPlugin.Instance.SetRandomPattern();
@@ -359,11 +388,11 @@ public class DemoGameServer : GameServerBase
         RefreshAllPlayerProperty();
     }
 
+    /// <summary>
+    /// 游戏完全结束阶段
+    /// </summary>
     public void OnGameEndNotify()
     {
-
-        gameState = GameState.Idle;
-
         GameEndNotify notify = new GameEndNotify();
         //判定最终赢家
         var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
@@ -393,12 +422,8 @@ public class DemoGameServer : GameServerBase
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
-    private void GameTimerNotify(int i)
-    {
-        GameTimerNotify notify = new GameTimerNotify();
-        notify.index = i;
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
+
+
 
     #endregion
 
@@ -406,138 +431,21 @@ public class DemoGameServer : GameServerBase
 
     #region 规则系统
 
-    private bool GameHasVoted = false;
-
-    /// <summary>
-    /// 有人想开始投票
-    /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
-    /// <returns></returns>
-    private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
-    {
-        if (!GameHasVoted && gameState == GameState.Playing)
-        {
-            playerVotNum.Clear();
-            playerVotHash.Clear();
-            GameHasVoted = true;
-            gameState = GameState.Voting;
-            SomeOneFindHostPlayerNotifyt notify = new SomeOneFindHostPlayerNotifyt
-            {
-                playerId = arg2
-            };
-            ServerMessageManager.Instance.SendNotify(notify);
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// 玩家投票
-    /// </summary>
-    private IResponse OnVotRequest(VotRequest arg1, int playerId)
-    {
-        if (!playerVotHash.Contains(arg1.playerId))
-        {
-            playerVotHash.Add(arg1.playerId);
-            if (playerVotNum.ContainsKey(playerId))
-            {
-                playerVotNum[playerId]++;
-            }
-            else
-            {
-                playerVotNum.Add(playerId, 1);
-            }
-        }
-
-
-        return null;
-    }
-
-    /// <summary>
-    /// 投票结束
-    /// </summary>
-    private void VotingEnd()
-    {
-        VotEndNotify notify = new VotEndNotify();
-        notify.pidAndvots = new List<Vector2Int>();
-        notify.isSuccess = false;
-        if (playerVotNum.Count > 0)
-        {
-            int maxNum = 0;
-            int maxId = 0;
-            foreach (var keyValuePair in playerVotNum)
-            {
-                notify.pidAndvots.Add(new Vector2Int(keyValuePair.Key, keyValuePair.Value));
-                if (keyValuePair.Value > maxNum)
-                {
-                    maxNum = keyValuePair.Value;
-                    maxId = keyValuePair.Key;
-                }
-            }
-
-            var hostId = ServerDataPlugin.Instance.RulePlayerId;
-            if (hostId == maxId)
-            {
-                //todo:投票成功
-                OnFlyTextNotify("bingo! hoster is " + ServerDataPlugin.Instance.GetPlayerById(hostId).playerName,
-                    FlyTextType.Normal);
-                notify.isSuccess = true;
-                hosterIsLose = true;
-            }
-            else
-            {
-                OnFlyTextNotify("shit,guess wrong!", FlyTextType.Normal);
-            }
-        }
-        else
-        {
-            OnFlyTextNotify("what? are you sure?", FlyTextType.Normal);
-        }
-
-        ServerMessageManager.Instance.SendNotify(notify);
-        gameState = GameState.Playing;
-    }
-
-
-    /// <summary>
-    /// 游戏开始选择规则制定者
-    /// </summary>
-    private void OnSelectHostPlayer()
-    {
-        //选择主玩家，给主玩家发送可选项，制定游戏规则
-        var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
-        ServerDataPlugin.Instance.SetRulePlayerId(playerId);
-        var rules = ServerDataPlugin.Instance.getRandomRules(3);
-        RuleSelectNotify notify = new RuleSelectNotify
-        {
-            rules = rules,
-            playerId = playerId
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
-        gameState = GameState.Selecting;
-    }
-
     /// <summary>
     /// 接收玩家选择的rule
     /// </summary>
     /// <param name="param"></param>
     private IResponse OnMainPlayerRuleSelectRequest(MainPlayerRuleSelectRequest param, int playerId)
     {
-        if (gameState == GameState.Selecting)
-        {
-            int id = param.ruleId;
-            ServerDataPlugin.Instance.SetCurrentRule(id);
-            gameState = GameState.Ready;
-        }
-
+        int id = param.ruleId;
+        ServerDataPlugin.Instance.SetCurrentRule(id);
+        stateCtrl.ForcePopCurrentState(GameState.Selecting);
         return null;
     }
 
     public void SetRandomRule()
     {
         ServerDataPlugin.Instance.SetRandomRule();
-        gameState = GameState.Ready;
     }
 
     /// <summary>
@@ -549,7 +457,7 @@ public class DemoGameServer : GameServerBase
         // var notify = new GameEndNotify();
         List<int> losePlayers = new List<int>();
         var players = ServerDataPlugin.Instance.GetPlayerList().ToList();
-        losePlayers.Add(players[0].playerId);   
+        losePlayers.Add(players[0].playerId);
         // var rule = ServerDataPlugin.Instance.CurrentRule;
         // if (rule != null)
         // {
@@ -616,20 +524,7 @@ public class DemoGameServer : GameServerBase
 
     #endregion
 
-    #region 基础玩法
-
-    /// <summary>
-    /// 刷新所有玩家的属性
-    /// </summary>
-    private void RefreshAllPlayerProperty()
-    {
-        var tempList = ServerDataPlugin.Instance.GetPlayerList();
-        foreach (var player in tempList)
-        {
-            player.ClearProperty();
-            player.RefreshPlayerProperty();
-        }
-    }
+    #region 食物
 
     /// <summary>
     /// 广播生成食物
@@ -652,25 +547,6 @@ public class DemoGameServer : GameServerBase
         FoodNotify notify = new FoodNotify();
         notify.foodList = foods;
         ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-
-    /// <summary>
-    /// 广播转发角色头的位置
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    private IResponse OnHeadRotationRequest(HeadPosRequest request, int id)
-    {
-        HeadPosNotify notify = new HeadPosNotify()
-        {
-            playerId = request.playerId,
-            pos = request.pos
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
-
-        return null;
     }
 
     /// <summary>
@@ -717,17 +593,112 @@ public class DemoGameServer : GameServerBase
 
     #endregion
 
-    #endregion
+    #region 投票
 
-    #endregion
-
-    public enum GameState
+    /// <summary>
+    /// 玩家投票
+    /// </summary>
+    private IResponse OnVotRequest(VotRequest arg1, int playerId)
     {
-        Idle, //未开始
-        Selecting, //等待选择规则
-        Ready, //ready
-        Playing, //游戏开始
-        Voting, //正在投票
-        Rest //中场休息
+        if (!playerVotHash.Contains(arg1.playerId))
+        {
+            playerVotHash.Add(arg1.playerId);
+            if (playerVotNum.ContainsKey(playerId))
+            {
+                playerVotNum[playerId]++;
+            }
+            else
+            {
+                playerVotNum.Add(playerId, 1);
+            }
+        }
+
+
+        return null;
     }
+    
+    /// <summary>
+    /// 投票结束
+    /// </summary>
+    private void VotingEnd()
+    {
+        VotEndNotify notify = new VotEndNotify();
+        notify.pidAndvots = new List<Vector2Int>();
+        notify.isSuccess = false;
+        if (playerVotNum.Count > 0)
+        {
+            int maxNum = 0;
+            int maxId = 0;
+            foreach (var keyValuePair in playerVotNum)
+            {
+                notify.pidAndvots.Add(new Vector2Int(keyValuePair.Key, keyValuePair.Value));
+                if (keyValuePair.Value > maxNum)
+                {
+                    maxNum = keyValuePair.Value;
+                    maxId = keyValuePair.Key;
+                }
+            }
+
+            var hostId = ServerDataPlugin.Instance.RulePlayerId;
+            if (hostId == maxId)
+            {
+                //todo:投票成功
+                OnFlyTextNotify("bingo! hoster is " + ServerDataPlugin.Instance.GetPlayerById(hostId).playerName,
+                    FlyTextType.Normal);
+                notify.isSuccess = true;
+                hosterIsLose = true;
+            }
+            else
+            {
+                OnFlyTextNotify("shit,guess wrong!", FlyTextType.Normal);
+            }
+        }
+        else
+        {
+            OnFlyTextNotify("what? are you sure?", FlyTextType.Normal);
+        }
+
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+
+    #endregion
+
+    #region 角色行为
+
+    /// <summary>
+    /// 广播转发角色头的位置
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private IResponse OnHeadRotationRequest(HeadPosRequest request, int id)
+    {
+        HeadPosNotify notify = new HeadPosNotify()
+        {
+            playerId = request.playerId,
+            pos = request.pos
+        };
+        ServerMessageManager.Instance.SendNotify(notify);
+
+        return null;
+    }
+
+    /// <summary>
+    /// 刷新所有玩家的属性
+    /// </summary>
+    private void RefreshAllPlayerProperty()
+    {
+        var tempList = ServerDataPlugin.Instance.GetPlayerList();
+        foreach (var player in tempList)
+        {
+            player.ClearProperty();
+            player.RefreshPlayerProperty();
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #endregion
 }
