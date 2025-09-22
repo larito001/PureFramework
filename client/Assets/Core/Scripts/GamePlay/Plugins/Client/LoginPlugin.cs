@@ -37,7 +37,7 @@ public class LoginPlugin : LogicPluginBase
     public void OnNetInstall()
     {
         ClientMessageManager.Instance.RegisterResponseHandler<LoginResponse>(LoginResponse);
-        ClientMessageManager.Instance.RegisterResponseHandler<LoginNotify>(LoginNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<RefreshPlayerDatas>(LoginNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameStartNotify>(OnGameStartNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GameEndNotify>(OnGameEndNotify);
     }
@@ -46,7 +46,7 @@ public class LoginPlugin : LogicPluginBase
     public void OnNetUninstall()
     {
         ClientMessageManager.Instance.UnRegisterResponseHandler<LoginResponse>();
-        ClientMessageManager.Instance.UnRegisterResponseHandler<LoginNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<RefreshPlayerDatas>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameStartNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameEndNotify>();
     }
@@ -90,7 +90,7 @@ public class LoginPlugin : LogicPluginBase
         });
     }
 
-    private void LoginNotify(LoginNotify obj)
+    private void LoginNotify(RefreshPlayerDatas obj)
     {
         Debug.Log($"当前人数:{obj.playerDatas.Count}");
         _playerDatas = obj.playerDatas;

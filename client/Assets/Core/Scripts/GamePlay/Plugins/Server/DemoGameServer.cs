@@ -8,35 +8,48 @@ public class DemoGameServer : GameServerBase
 {
     #region 配置属性
 
-    GameServerStateCtrl stateCtrl = new GameServerStateCtrl();
-    public const int playerMaxNum = 4;
+    public GameServerStateCtrl stateCtrl = new GameServerStateCtrl();
+    private RuleSystem ruleSystem = new RuleSystem();
+    public CommonSystem commonSystem = new CommonSystem();
+    private FoodSystem foodSystem = new FoodSystem();
+    private VotSystem votSystem = new VotSystem();
+    private PlayerSystem playerSystem = new PlayerSystem();
+    private RestSystem restSystem = new RestSystem();
 
     #endregion
 
     #region 暂存属性
 
-    Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
-    private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
-    private bool hosterIsLose = false;
-    HashSet<int> playerVotHash = new HashSet<int>(); //是否投过票
-    private bool GameHasVoted = false;
+    List<ServerSystemBase> systemList = new List<ServerSystemBase>();
 
     #endregion
 
-    #region 生命周期
+    #region Systems
+
+    private void AddSystem(ServerSystemBase system)
+    {
+        systemList.Add(system);
+        system.Init(this);
+    }
+
+    public DemoGameServer()
+    {
+        AddSystem(playerSystem);
+        AddSystem(ruleSystem);
+        AddSystem(commonSystem);
+        AddSystem(foodSystem);
+        AddSystem(votSystem);
+        AddSystem(restSystem);
+    }
 
     private void AddEvent()
     {
-        ServerMessageManager.Instance.RegisterRequestHandler<LoginRequest>(OnLoginRequest);
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameReadyRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<HeadPosRequest>(OnHeadRotationRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<LootingInputRequest>(OnLootingInputRequest);
-        ServerMessageManager.Instance
-            .RegisterRequestHandler<MainPlayerRuleSelectRequest>(OnMainPlayerRuleSelectRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<SomeOneFindHostPlayerRequest>(
-            OnSomeOneFindHostPlayerRequest);
-        ServerMessageManager.Instance.RegisterRequestHandler<VotRequest>(OnVotRequest);
+        for (var i = 0; i < systemList.Count; i++)
+        {
+            systemList[i].AddEvent();
+        }
+
         stateCtrl.OnStateEnd = OnStateEnd;
         stateCtrl.OnStateStart = OnStateStart;
     }
@@ -44,71 +57,62 @@ public class DemoGameServer : GameServerBase
 
     private void RemoveEvent()
     {
-        ServerMessageManager.Instance.UnRegisterRequestHandler<LoginRequest>();
         ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<HeadPosRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<CatchFoodRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<LootingInputRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<MainPlayerRuleSelectRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<SomeOneFindHostPlayerRequest>();
-        ServerMessageManager.Instance.UnRegisterRequestHandler<VotRequest>();
+        for (var i = 0; i < systemList.Count; i++)
+        {
+            systemList[i].RemoveEvent();
+        }
+
         stateCtrl.OnStateEnd = null;
         stateCtrl.OnStateStart = null;
     }
+
+    #endregion
+
+    #region 生命周期
 
     private void OnStateStart(StateInfo state)
     {
         switch (state.State)
         {
             case GameState.Rest:
-                GotoRest();
+                votSystem.Reset();
+                var loser = ruleSystem.OnFinishUseRule();
+                restSystem.StartRestSystem(loser);
                 break;
             case GameState.Selecting:
-                OnSelectHostPlayer();
+                ruleSystem.OnSelectHostPlayer();
                 break;
             case GameState.Ready:
-
-                OnFlyTextNotify("Ready", FlyTextType.Normal);
+                commonSystem.OnFlyTextNotify("Ready", FlyTextType.Normal);
                 break;
             case GameState.Playing:
-                OnGameStart();
+                foodSystem.StartFoodSystem();
+                playerSystem.RefreshAllPlayerProperty();
                 break;
             case GameState.End:
                 OnGameEndNotify();
                 break;
-            case GameState.Room:
-                break;
-
-            default:
-                throw new System.NotImplementedException();
         }
     }
 
     private void OnStateEnd(StateInfo state)
     {
+        Debug.LogWarning("State:"+state.State);
         switch (state.State)
         {
-            case GameState.Room:
-                break;
-            case GameState.Rest:
-                break;
             case GameState.Selecting:
-                SetRandomRule();
-                break;
-            case GameState.Ready:
-
+                ruleSystem.SetRandomRule();
                 break;
             case GameState.Playing:
                 stateCtrl.ReStartLevel();
                 break;
             case GameState.Voting:
-                VotingEnd();
+                votSystem.VotingEnd();
                 break;
             case GameState.End:
                 stateCtrl.OnJoinRoom();
                 break;
-            default:
-                throw new System.NotImplementedException();
         }
     }
 
@@ -148,7 +152,7 @@ public class DemoGameServer : GameServerBase
 
     public override void OnStopServer()
     {
-        ClearPlayers();
+        playerSystem.ClearPlayers();
         RemoveEvent();
         Debug.Log("🛑 Server stopped");
     }
@@ -171,7 +175,7 @@ public class DemoGameServer : GameServerBase
     public override void OnServerDisconnect(int connectionId)
     {
         Debug.Log($"❌ Client {connectionId} disconnected from server");
-        RemovePlayer(connectionId);
+        playerSystem.RemovePlayer(connectionId);
     }
 
     public override void OnServerAddPlayer(int connectionId)
@@ -183,90 +187,7 @@ public class DemoGameServer : GameServerBase
 
     #endregion
 
-    #region 游戏外业务:登录，登出
-
-    private IResponse OnLoginRequest(LoginRequest req, int connectionId)
-    {
-        Debug.Log($"Player {req.playerName}");
-
-        PlayerData playerDataTemp = null;
-        LoginResponse res = new LoginResponse
-        {
-            isSuccess = false,
-            playerData = null
-        };
-        if (ServerDataPlugin.Instance.GetPlayerList().Count < playerMaxNum && !stateCtrl.GameIsStart())
-        {
-            playerDataTemp = new PlayerData();
-            playerDataTemp.playerId = connectionId;
-            playerDataTemp.playerName = req.playerName;
-            ServerDataPlugin.Instance.AddPlayer(playerDataTemp);
-            // 广播给所有客户端
-            RefreshPlayerNotify();
-            res.isSuccess = true;
-            res.playerData = playerDataTemp;
-        }
-
-        if (connectionId == 0)
-        {
-            stateCtrl.OnJoinRoom();
-        }
-
-        return res;
-    }
-
-    private void RefreshPlayerNotify()
-    {
-        LoginNotify notify = new LoginNotify
-        {
-            playerDatas = ServerDataPlugin.Instance.GetPlayerList().ToList()
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    private void RemovePlayer(int connectionId)
-    {
-        ServerDataPlugin.Instance.RemovePlayerById(connectionId);
-        RefreshPlayerNotify();
-        if (ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
-        {
-            stateCtrl.OnJoinRoom();
-            OnGameEndNotify();
-        }
-    }
-
-    private void ClearPlayers()
-    {
-        ServerDataPlugin.Instance.RemoveAllPlayers();
-        RefreshPlayerNotify();
-    }
-
-    #endregion
-
-
-    #region 通用模块
-
-    private void OnFlyTextNotify(string txt, FlyTextType flyType, List<int> elsePlayers = null)
-    {
-        FlyTextNotify notify = new FlyTextNotify();
-        notify.txt = txt;
-        notify.elsePlayers = elsePlayers;
-        notify.flyType = flyType;
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    private void GameTimerNotify(int i)
-    {
-        GameTimerNotify notify = new GameTimerNotify();
-        notify.index = i;
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    #endregion
-
-    #region 游戏业务
-
-    #region 游戏循环
+    #region 游戏生命周期
 
     /// <summary>
     /// 游戏开始
@@ -277,115 +198,14 @@ public class DemoGameServer : GameServerBase
     private IResponse OnGameReadyRequest(GameStartRequest arg1, int arg2)
     {
         if (stateCtrl.GameIsStart()) return null;
+
         stateCtrl.OnGameStart();
+
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
 
         return null;
-    }
-
-    /// <summary>
-    /// 开启投票阶段
-    /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
-    /// <returns></returns>
-    private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
-    {
-        if (!GameHasVoted)
-        {
-            playerVotNum.Clear();
-            playerVotHash.Clear();
-            GameHasVoted = true;
-            stateCtrl.StartVoting();
-            SomeOneFindHostPlayerNotifyt notify = new SomeOneFindHostPlayerNotifyt
-            {
-                playerId = arg2
-            };
-            ServerMessageManager.Instance.SendNotify(notify);
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// 进入休息阶段
-    /// </summary>
-    private void GotoRest()
-    {
-        GotoRestNotify notify = new GotoRestNotify();
-        var losePlayer = OnFinishUseRule();
-        int loseNum = 0;
-        foreach (var i in losePlayer)
-        {
-            var p = ServerDataPlugin.Instance.GetPlayerById(i);
-            if (p != null)
-            {
-                p.PlayerLose();
-            }
-        }
-
-        OnFlyTextNotify("Have a Rest!", FlyTextType.Normal);
-        var pList = ServerDataPlugin.Instance.GetPlayerList().ToList();
-        var allCount = pList.Count;
-        foreach (var playerData in pList)
-        {
-            if (playerData.GetState() == PlayerState.Dead)
-            {
-                loseNum++;
-            }
-        }
-
-        GameHasVoted = false;
-        hosterIsLose = false;
-        if ((allCount - loseNum) <= 1)
-        {
-            stateCtrl.GameEnd();
-        }
-
-
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    /// <summary>
-    /// 进入规则指定阶段
-    /// </summary>
-    private void OnSelectHostPlayer()
-    {
-        //选择主玩家，给主玩家发送可选项，制定游戏规则
-        var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
-        ServerDataPlugin.Instance.SetRulePlayerId(playerId);
-        var rules = ServerDataPlugin.Instance.getRandomRules(3);
-        RuleSelectNotify notify = new RuleSelectNotify
-        {
-            rules = rules,
-            playerId = playerId
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    /// <summary>
-    /// 游戏抢夺阶段
-    /// </summary>
-    private void OnGameStart()
-    {
-        OnFlyTextNotify("Go!", FlyTextType.Normal);
-        ServerDataPlugin.Instance.OnGameReStart();
-        ServerDataPlugin.Instance.SetRandomPattern();
-        stageQueue.Clear();
-        var stages = ServerDataPlugin.Instance.CurrentPattern.stages;
-        for (var i = 0; i < stages.Count; i++)
-        {
-            var start = stages[i].startTime;
-            var end = stages[i].endTime;
-            var randomDropTime = UnityEngine.Random.Range(start, end);
-
-            stages[i].randomTime = randomDropTime;
-            stageQueue.Enqueue(stages[i]);
-        }
-
-        RefreshAllPlayerProperty();
     }
 
     /// <summary>
@@ -421,284 +241,6 @@ public class DemoGameServer : GameServerBase
 
         ServerMessageManager.Instance.SendNotify(notify);
     }
-
-
-
-
-    #endregion
-
-    #region 游戏gamePlay逻辑
-
-    #region 规则系统
-
-    /// <summary>
-    /// 接收玩家选择的rule
-    /// </summary>
-    /// <param name="param"></param>
-    private IResponse OnMainPlayerRuleSelectRequest(MainPlayerRuleSelectRequest param, int playerId)
-    {
-        int id = param.ruleId;
-        ServerDataPlugin.Instance.SetCurrentRule(id);
-        stateCtrl.ForcePopCurrentState(GameState.Selecting);
-        return null;
-    }
-
-    public void SetRandomRule()
-    {
-        ServerDataPlugin.Instance.SetRandomRule();
-    }
-
-    /// <summary>
-    /// 规则结算
-    /// </summary>
-    /// <returns></returns>
-    private List<int> OnFinishUseRule()
-    {
-        // var notify = new GameEndNotify();
-        List<int> losePlayers = new List<int>();
-        var players = ServerDataPlugin.Instance.GetPlayerList().ToList();
-        losePlayers.Add(players[0].playerId);
-        // var rule = ServerDataPlugin.Instance.CurrentRule;
-        // if (rule != null)
-        // {
-        //     // notify.rule = rule;
-        //     var players = ServerDataPlugin.Instance.GetPlayerList();
-        //     int winId = 0;
-        //     if (rule.ruleId == 1)
-        //     {
-        //         //todo:读取数据，根据规则发放数据
-        //
-        //         int maxNum = 0;
-        //         foreach (var player in players)
-        //         {
-        //             // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!hosterIsLose)
-        //             {
-        //                 if (player.SatisfactionValue >= maxNum)
-        //                 {
-        //                     winId = player.playerId;
-        //                     maxNum = player.lootNum;
-        //                 }
-        //                 else
-        //                 {
-        //                     losePlayers.Add(player.playerId);
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 losePlayers.Add(player.playerId);
-        //             }
-        //         }
-        //     }
-        //     else if (rule.ruleId == 2)
-        //     {
-        //         int minNum = 999999;
-        //         foreach (var player in players)
-        //         {
-        //             //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!hosterIsLose )
-        //             {
-        //                 if (player.SatisfactionValue <= minNum)
-        //                 {
-        //                     winId = player.playerId;
-        //                     minNum = player.lootNum;
-        //                 }
-        //                 else
-        //                 {
-        //                     losePlayers.Add(player.playerId);
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 losePlayers.Add(player.playerId);
-        //             }
-        //         }
-        //     }
-        //     
-        //     Debug.Log("结算时规则：" + rule.roleName);
-        // }
-
-        return losePlayers;
-        // return notify;
-    }
-
-    #endregion
-
-    #region 食物
-
-    /// <summary>
-    /// 广播生成食物
-    /// </summary>
-    private void GenerateFoods(FoodDropStage stage)
-    {
-        List<FoodData> foods = new List<FoodData>();
-        for (int i = 0; i < stage.dropCount; i++)
-        {
-            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
-            var food = new FoodData();
-            food.foodId = FoodData.idIndex++;
-            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
-            food.quality = qualityRandom;
-            food.Init();
-            ServerDataPlugin.Instance.AddFood(food);
-            foods.Add(food);
-        }
-
-        FoodNotify notify = new FoodNotify();
-        notify.foodList = foods;
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    /// <summary>
-    /// 抓取食物的请求
-    /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
-    /// <returns></returns>
-    private IResponse OnCatchFoodRequest(CatchFoodRequest arg1, int arg2)
-    {
-        if (ServerDataPlugin.Instance.CheckHaveFood(arg1.foodId))
-        {
-            if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId))
-            {
-                var food = ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
-                food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// 键盘输入抢夺
-    /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
-    /// <returns></returns>
-    private IResponse OnLootingInputRequest(LootingInputRequest arg1, int arg2)
-    {
-        var player = ServerDataPlugin.Instance.GetPlayerById(arg1.playerId);
-        if (player.AddLoot())
-        {
-            var food = ServerDataPlugin.Instance.GetFoodById(player.useFoodId);
-            var proDic = food.GetProgress();
-            LootingInputNotify notify = new LootingInputNotify();
-            notify.playerProgress = proDic;
-            ServerMessageManager.Instance.SendNotify(notify);
-            OnFlyTextNotify("!Space!", FlyTextType.Quick);
-        }
-
-        return null;
-    }
-
-    #endregion
-
-    #region 投票
-
-    /// <summary>
-    /// 玩家投票
-    /// </summary>
-    private IResponse OnVotRequest(VotRequest arg1, int playerId)
-    {
-        if (!playerVotHash.Contains(arg1.playerId))
-        {
-            playerVotHash.Add(arg1.playerId);
-            if (playerVotNum.ContainsKey(playerId))
-            {
-                playerVotNum[playerId]++;
-            }
-            else
-            {
-                playerVotNum.Add(playerId, 1);
-            }
-        }
-
-
-        return null;
-    }
-    
-    /// <summary>
-    /// 投票结束
-    /// </summary>
-    private void VotingEnd()
-    {
-        VotEndNotify notify = new VotEndNotify();
-        notify.pidAndvots = new List<Vector2Int>();
-        notify.isSuccess = false;
-        if (playerVotNum.Count > 0)
-        {
-            int maxNum = 0;
-            int maxId = 0;
-            foreach (var keyValuePair in playerVotNum)
-            {
-                notify.pidAndvots.Add(new Vector2Int(keyValuePair.Key, keyValuePair.Value));
-                if (keyValuePair.Value > maxNum)
-                {
-                    maxNum = keyValuePair.Value;
-                    maxId = keyValuePair.Key;
-                }
-            }
-
-            var hostId = ServerDataPlugin.Instance.RulePlayerId;
-            if (hostId == maxId)
-            {
-                //todo:投票成功
-                OnFlyTextNotify("bingo! hoster is " + ServerDataPlugin.Instance.GetPlayerById(hostId).playerName,
-                    FlyTextType.Normal);
-                notify.isSuccess = true;
-                hosterIsLose = true;
-            }
-            else
-            {
-                OnFlyTextNotify("shit,guess wrong!", FlyTextType.Normal);
-            }
-        }
-        else
-        {
-            OnFlyTextNotify("what? are you sure?", FlyTextType.Normal);
-        }
-
-        ServerMessageManager.Instance.SendNotify(notify);
-    }
-
-    #endregion
-
-    #region 角色行为
-
-    /// <summary>
-    /// 广播转发角色头的位置
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    private IResponse OnHeadRotationRequest(HeadPosRequest request, int id)
-    {
-        HeadPosNotify notify = new HeadPosNotify()
-        {
-            playerId = request.playerId,
-            pos = request.pos
-        };
-        ServerMessageManager.Instance.SendNotify(notify);
-
-        return null;
-    }
-
-    /// <summary>
-    /// 刷新所有玩家的属性
-    /// </summary>
-    private void RefreshAllPlayerProperty()
-    {
-        var tempList = ServerDataPlugin.Instance.GetPlayerList();
-        foreach (var player in tempList)
-        {
-            player.ClearProperty();
-            player.RefreshPlayerProperty();
-        }
-    }
-
-    #endregion
-
-    #endregion
 
     #endregion
 }

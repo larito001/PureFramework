@@ -567,7 +567,7 @@ public struct LoginRequest : IRequest
     public string playerName;
 }
 
-public struct LoginNotify : IResponse
+public struct RefreshPlayerDatas : IResponse
 {
     public List<PlayerData> playerDatas;
 }
