@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using YOTO;
 
 public class FoodSystem : ServerSystemBase
 {
     Queue<FoodDropStage> stageQueue = new Queue<FoodDropStage>(); //掉落队列
-
+    private int index = 0;
     public override void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<CatchFoodRequest>(OnCatchFoodRequest);
@@ -40,14 +41,31 @@ public class FoodSystem : ServerSystemBase
             stageQueue.Enqueue(stages[i]);
         }
 
- 
+        YOTOFramework.timeMgr.LoopCall(GenerateFoods,1);
+
     }
 
+    
+
+    public void EndGenerateFood()
+    {
+        YOTOFramework.timeMgr.RemoveTimer(GenerateFoods);
+    }
+    
+    
     /// <summary>
     /// 广播生成食物
     /// </summary>
-    private void GenerateFoods(FoodDropStage stage)
+    private void GenerateFoods()
     {
+        index++;
+       var stage= stageQueue.Peek();
+       if (index < stage.randomTime)
+       {
+           return;
+       }
+
+       stageQueue.Dequeue();
         List<FoodData> foods = new List<FoodData>();
         for (int i = 0; i < stage.dropCount; i++)
         {

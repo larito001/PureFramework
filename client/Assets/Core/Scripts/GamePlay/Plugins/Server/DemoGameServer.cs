@@ -15,23 +15,7 @@ public class DemoGameServer : GameServerBase
     private VotSystem votSystem = new VotSystem();
     private PlayerSystem playerSystem = new PlayerSystem();
     private RestSystem restSystem = new RestSystem();
-
-    #endregion
-
-    #region 暂存属性
-
-    List<ServerSystemBase> systemList = new List<ServerSystemBase>();
-
-    #endregion
-
-    #region Systems
-
-    private void AddSystem(ServerSystemBase system)
-    {
-        systemList.Add(system);
-        system.Init(this);
-    }
-
+    private List<ServerSystemBase> systemList = new List<ServerSystemBase>();
     public DemoGameServer()
     {
         AddSystem(playerSystem);
@@ -41,6 +25,66 @@ public class DemoGameServer : GameServerBase
         AddSystem(votSystem);
         AddSystem(restSystem);
     }
+    private void OnStateStart(StateInfo state)
+    {
+        Debug.LogWarning("Start State:"+state.State);
+        switch (state.State)
+        {
+            case GameState.Rest:
+                votSystem.Reset();
+                var loser = ruleSystem.OnFinishUseRule();
+                restSystem.StartRestSystem(loser);
+                break;
+            case GameState.Selecting:
+                ruleSystem.OnSelectHostPlayer();
+                break;
+            case GameState.Ready:
+                commonSystem.OnFlyTextNotify("Ready", FlyTextType.Normal);
+                break;
+            case GameState.Playing:
+                foodSystem.StartFoodSystem();
+
+                break;
+            case GameState.End:
+
+                break;
+        }
+    }
+
+    private void OnStateEnd(StateInfo state)
+    {
+        Debug.LogWarning("End State:"+state.State);
+        switch (state.State)
+        {
+            case GameState.Selecting:
+                ruleSystem.SetRandomRule();
+                break;
+            case GameState.Playing:
+                foodSystem.EndGenerateFood();
+                stateCtrl.ReStartLevel();
+                break;
+            case GameState.Voting:
+                votSystem.VotingEnd();
+                break;
+            case GameState.End:
+                OnGameEndNotify();
+                stateCtrl.OnJoinRoom();
+   
+                break;
+        }
+    }
+
+
+    #endregion
+    
+    #region Systems生命周期
+
+    private void AddSystem(ServerSystemBase system)
+    {
+        systemList.Add(system);
+        system.Init(this);
+    }
+
 
     private void AddEvent()
     {
@@ -70,52 +114,7 @@ public class DemoGameServer : GameServerBase
     #endregion
 
     #region 生命周期
-
-    private void OnStateStart(StateInfo state)
-    {
-        switch (state.State)
-        {
-            case GameState.Rest:
-                votSystem.Reset();
-                var loser = ruleSystem.OnFinishUseRule();
-                restSystem.StartRestSystem(loser);
-                break;
-            case GameState.Selecting:
-                ruleSystem.OnSelectHostPlayer();
-                break;
-            case GameState.Ready:
-                commonSystem.OnFlyTextNotify("Ready", FlyTextType.Normal);
-                break;
-            case GameState.Playing:
-                foodSystem.StartFoodSystem();
-                playerSystem.RefreshAllPlayerProperty();
-                break;
-            case GameState.End:
-                OnGameEndNotify();
-                break;
-        }
-    }
-
-    private void OnStateEnd(StateInfo state)
-    {
-        Debug.LogWarning("State:"+state.State);
-        switch (state.State)
-        {
-            case GameState.Selecting:
-                ruleSystem.SetRandomRule();
-                break;
-            case GameState.Playing:
-                stateCtrl.ReStartLevel();
-                break;
-            case GameState.Voting:
-                votSystem.VotingEnd();
-                break;
-            case GameState.End:
-                stateCtrl.OnJoinRoom();
-                break;
-        }
-    }
-
+    
     public override void Update(float dt)
     {
         // 可以在这里处理服务器每帧逻辑
@@ -126,8 +125,7 @@ public class DemoGameServer : GameServerBase
 
         stateCtrl.Update(dt);
     }
-
-
+    
     #region host
 
     public override void OnStartHost()
@@ -198,9 +196,8 @@ public class DemoGameServer : GameServerBase
     private IResponse OnGameReadyRequest(GameStartRequest arg1, int arg2)
     {
         if (stateCtrl.GameIsStart()) return null;
-
+        playerSystem.RefreshAllPlayerProperty();
         stateCtrl.OnGameStart();
-
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
@@ -240,6 +237,7 @@ public class DemoGameServer : GameServerBase
 
 
         ServerMessageManager.Instance.SendNotify(notify);
+        
     }
 
     #endregion

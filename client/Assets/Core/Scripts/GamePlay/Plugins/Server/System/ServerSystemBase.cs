@@ -12,4 +12,5 @@ public abstract class ServerSystemBase
     }
     public abstract void AddEvent();
     public abstract void RemoveEvent();
+
 }

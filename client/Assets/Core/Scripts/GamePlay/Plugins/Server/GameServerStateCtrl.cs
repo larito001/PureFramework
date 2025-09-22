@@ -41,12 +41,12 @@ public class StateInfo
 
 public class GameServerStateCtrl
 {
-    private const float orgGameTime = 5; //playing总时长
+    private const float orgGameTime =20; //playing总时长
     private const float orgReadyTimer = 2; //ready倒计时
-    private const float orgSelectingTimer = 3; //选择规则时间
+    private const float orgSelectingTimer = 5; //选择规则时间
     private const float orgvotingTimer = 3; //投票时间
-    private const float orgRestTImer = 2; //休息时间
-    private const float orgEndTImer = 3; //结算时间
+    private const float orgRestTImer = 10; //休息时间
+    private const float orgEndTImer = 5; //结算时间
 
     public UnityAction<StateInfo> OnStateEnd;
     public UnityAction<StateInfo> OnStateStart;
@@ -146,6 +146,7 @@ public class GameServerStateCtrl
     {
         var state = new StateInfo(GameState.Voting, orgvotingTimer);
         _stateStack.Push(state);
+        OnStateStart?.Invoke(state);
     }
 
     public void GameEnd()
