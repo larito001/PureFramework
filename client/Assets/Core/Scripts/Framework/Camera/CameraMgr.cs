@@ -31,7 +31,9 @@ public class CameraMgr
         //mainCamera.tag = "MainCamera";
         //mainCamera.clearFlags = CameraClearFlags.SolidColor;
         //mainCamera.cullingMask = ~(1 << LayerMask.NameToLayer("UI"));
-        mainCamera.gameObject.AddComponent<CinemachineBrain>().m_UpdateMethod = CinemachineBrain.UpdateMethod.FixedUpdate;
+        var brain = mainCamera.gameObject.AddComponent<CinemachineBrain>();
+        brain.m_UpdateMethod = CinemachineBrain.UpdateMethod.FixedUpdate;
+        brain.m_DefaultBlend.m_Time = 0.5f;
 
         GameObject UIcamera = GameObject.Find("UICamera");
         GameObject.DontDestroyOnLoad(UIcamera);

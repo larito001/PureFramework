@@ -11,6 +11,14 @@ public class AnimatorCtrl : MonoBehaviour
     public Animator animator;
     public Rig rig; 
     private bool isDead;
+    PlayerEntity _playerEntity;
+
+    public void Init(PlayerEntity playerEntity)
+    {
+        _playerEntity = playerEntity;
+        rig.weight = 1;
+        animator.SetBool("Die",false);
+    }
     public void OnDead()
     {
         isDead = true;

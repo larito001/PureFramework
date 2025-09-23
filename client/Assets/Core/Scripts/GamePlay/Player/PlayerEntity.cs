@@ -156,5 +156,6 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         animCtrl = objTrans.GetComponent<AnimatorCtrl>();
         eyesCtrl.Init(this);
         handCtrl.Init(this);
+        animCtrl.Init(this);
     }
 }

@@ -18,6 +18,7 @@ public class ServerDataPlugin : LogicPluginBase
     private FoodDropPattern _currentPattern; //当前套路
     private GameRule _currentRule; //当前规则
     private int _rulePlayerId = -1; //当前host玩家id
+    public bool hosterIsLose = false;
 
     public int RulePlayerId
     {

@@ -19,18 +19,25 @@ public class StateInfo
     public GameState State;
     public float stateOrgTime = 10;
     public float stateCurrentTime = 10;
+    public int secondIndex = 0;
+    public float timer = 0;
 
     public StateInfo(GameState state, float orgTime)
     {
         State = state;
         stateOrgTime = orgTime;
-        stateCurrentTime = orgTime+0.001f;
+        stateCurrentTime = orgTime + 0.001f;
+        timer = 0;
+        secondIndex = (int)stateOrgTime;
     }
 
     public void ResetTimer()
     {
-        
+        stateCurrentTime = stateOrgTime;
+        secondIndex = (int)stateOrgTime;
+        timer = 0;
     }
+
     public void SetSecondsCallBack(UnityAction<int> secondsCallBack)
     {
         _secondsCallBack = secondsCallBack;
@@ -41,15 +48,16 @@ public class StateInfo
 
 public class GameServerStateCtrl
 {
-    private const float orgGameTime =20; //playing总时长
+    private const float orgGameTime = 20; //playing总时长
     private const float orgReadyTimer = 2; //ready倒计时
     private const float orgSelectingTimer = 5; //选择规则时间
     private const float orgvotingTimer = 3; //投票时间
-    private const float orgRestTImer = 10; //休息时间
+    private const float orgRestTImer = 15; //休息时间
     private const float orgEndTImer = 5; //结算时间
 
     public UnityAction<StateInfo> OnStateEnd;
     public UnityAction<StateInfo> OnStateStart;
+    public UnityAction<StateInfo, int> OnStateUpdate;
     private Stack<StateInfo> _stateStack = new Stack<StateInfo>();
     private int GameIndex = 0; //几轮
 
@@ -59,7 +67,7 @@ public class GameServerStateCtrl
         {
             return _stateStack.Peek().State != GameState.Room;
         }
-        
+
         return false;
     }
 
@@ -71,6 +79,14 @@ public class GameServerStateCtrl
         var currentTime = state.stateCurrentTime;
         if (currentTime >= 0)
         {
+            state.timer += dt;
+            if (state.timer >= 1)
+            {
+                state.timer -= 1;
+                state.secondIndex--;
+                OnStateUpdate?.Invoke(state,state.secondIndex);
+            }
+
             state.stateCurrentTime -= dt;
         }
         else
@@ -83,7 +99,7 @@ public class GameServerStateCtrl
     {
         if (_stateStack.Count == 0) return;
         var current = _stateStack.Pop();
-        current.ResetTimer(); 
+        current.ResetTimer();
         OnStateEnd?.Invoke(current);
 
         if (_stateStack.Count == 0) return;
@@ -92,7 +108,6 @@ public class GameServerStateCtrl
         {
             OnStateStart?.Invoke(next);
         }
-
     }
 
     public void OnJoinRoom()
@@ -110,13 +125,14 @@ public class GameServerStateCtrl
         state = new StateInfo(GameState.Selecting, orgSelectingTimer);
         _stateStack.Push(state);
         state = new StateInfo(GameState.Rest, orgRestTImer);
-        _stateStack.Push(state);   
+        _stateStack.Push(state);
     }
 
     public void OnGameStart()
     {
         ForcePopCurrentState(GameState.Room);
     }
+
     private void RePush()
     {
         _stateStack.Clear();
@@ -125,8 +141,6 @@ public class GameServerStateCtrl
         state = new StateInfo(GameState.Ready, orgReadyTimer);
         _stateStack.Push(state);
         state = new StateInfo(GameState.Selecting, orgSelectingTimer);
-        _stateStack.Push(state);
-        state = new StateInfo(GameState.Rest, orgRestTImer);
         _stateStack.Push(state);
         state = new StateInfo(GameState.Room, -1);
         _stateStack.Push(state);

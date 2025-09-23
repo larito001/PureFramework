@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RuleSystem:ServerSystemBase
+public class RuleSystem : ServerSystemBase
 {
-
     public override void AddEvent()
     {
         ServerMessageManager.Instance
@@ -62,8 +61,22 @@ public class RuleSystem:ServerSystemBase
         // var notify = new GameEndNotify();
         List<int> losePlayers = new List<int>();
         var players = ServerDataPlugin.Instance.GetPlayerList().ToList();
-        // losePlayers.Add(players[0].playerId);
-        // var rule = ServerDataPlugin.Instance.CurrentRule;
+
+        if (players[0].GetState() != PlayerState.Dead)
+        {
+            losePlayers.Add(players[0].playerId);
+        }
+        else if (players.Count > 1 && players[1].GetState() != PlayerState.Dead)
+        {
+            losePlayers.Add(players[1].playerId);
+        }
+        else if (players.Count > 2 && players[2].GetState() != PlayerState.Dead)
+        {
+            losePlayers.Add(players[2].playerId);
+        }
+
+
+        var rule = ServerDataPlugin.Instance.CurrentRule;
         // if (rule != null)
         // {
         //     // notify.rule = rule;
@@ -77,7 +90,7 @@ public class RuleSystem:ServerSystemBase
         //         foreach (var player in players)
         //         {
         //             // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!hosterIsLose)
+        //             if (!ServerDataPlugin.Instance.hosterIsLose)
         //             {
         //                 if (player.SatisfactionValue >= maxNum)
         //                 {
@@ -86,11 +99,13 @@ public class RuleSystem:ServerSystemBase
         //                 }
         //                 else
         //                 {
+        //                     if(player.GetState()!= PlayerState.Dead)
         //                     losePlayers.Add(player.playerId);
         //                 }
         //             }
         //             else
         //             {
+        //                 if(player.GetState()!= PlayerState.Dead)
         //                 losePlayers.Add(player.playerId);
         //             }
         //         }
@@ -101,7 +116,7 @@ public class RuleSystem:ServerSystemBase
         //         foreach (var player in players)
         //         {
         //             //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!hosterIsLose )
+        //             if (!ServerDataPlugin.Instance.hosterIsLose)
         //             {
         //                 if (player.SatisfactionValue <= minNum)
         //                 {
@@ -110,16 +125,18 @@ public class RuleSystem:ServerSystemBase
         //                 }
         //                 else
         //                 {
+        //                     if(player.GetState()!= PlayerState.Dead)
         //                     losePlayers.Add(player.playerId);
         //                 }
         //             }
         //             else
         //             {
+        //                 if(player.GetState()!= PlayerState.Dead)
         //                 losePlayers.Add(player.playerId);
         //             }
         //         }
         //     }
-        //     
+        //
         //     Debug.Log("结算时规则：" + rule.roleName);
         // }
 

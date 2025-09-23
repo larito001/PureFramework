@@ -24,7 +24,7 @@ public class CommonSystem : ServerSystemBase
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
-    private void GameTimerNotify(int i)
+    public void GameTimerNotify(int i)
     {
         GameTimerNotify notify = new GameTimerNotify();
         notify.index = i;

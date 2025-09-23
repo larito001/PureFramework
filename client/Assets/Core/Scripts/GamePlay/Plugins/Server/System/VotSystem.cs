@@ -6,7 +6,7 @@ public class VotSystem : ServerSystemBase
 {
     private Dictionary<int, int> playerVotNum = new Dictionary<int, int>(); //投票数
     HashSet<int> playerVotHash = new HashSet<int>(); //是否投过票
-    private bool hosterIsLose = false;
+
     private bool GameHasVoted = false;
 
     public override void AddEvent()
@@ -101,7 +101,7 @@ public class VotSystem : ServerSystemBase
                     "bingo! hoster is " + ServerDataPlugin.Instance.GetPlayerById(hostId).playerName,
                     FlyTextType.Normal);
                 notify.isSuccess = true;
-                hosterIsLose = true;
+                ServerDataPlugin.Instance.hosterIsLose = true;
             }
             else
             {
@@ -121,6 +121,6 @@ public class VotSystem : ServerSystemBase
     public void Reset()
     {
         GameHasVoted = false;
-        hosterIsLose = false;
+        ServerDataPlugin.Instance.hosterIsLose = false;
     }
 }

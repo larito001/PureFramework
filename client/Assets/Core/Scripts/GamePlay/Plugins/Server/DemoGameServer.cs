@@ -16,6 +16,8 @@ public class DemoGameServer : GameServerBase
     private PlayerSystem playerSystem = new PlayerSystem();
     private RestSystem restSystem = new RestSystem();
     private List<ServerSystemBase> systemList = new List<ServerSystemBase>();
+    
+    
     public DemoGameServer()
     {
         AddSystem(playerSystem);
@@ -25,9 +27,10 @@ public class DemoGameServer : GameServerBase
         AddSystem(votSystem);
         AddSystem(restSystem);
     }
+
     private void OnStateStart(StateInfo state)
     {
-        Debug.LogWarning("Start State:"+state.State);
+        Debug.LogWarning("Start State:" + state.State);
         switch (state.State)
         {
             case GameState.Rest:
@@ -51,9 +54,28 @@ public class DemoGameServer : GameServerBase
         }
     }
 
+    private void OnStateUpdate(StateInfo state, int second)
+    {
+        switch (state.State)
+        {
+            case GameState.Rest:
+      
+                break;
+            case GameState.Selecting:
+                break;
+            case GameState.Ready:
+                break;
+            case GameState.Playing:
+                commonSystem.GameTimerNotify(second);
+                break;
+            case GameState.End:
+                break;
+        }
+    }
+
     private void OnStateEnd(StateInfo state)
     {
-        Debug.LogWarning("End State:"+state.State);
+        Debug.LogWarning("End State:" + state.State);
         switch (state.State)
         {
             case GameState.Selecting:
@@ -69,14 +91,13 @@ public class DemoGameServer : GameServerBase
             case GameState.End:
                 OnGameEndNotify();
                 stateCtrl.OnJoinRoom();
-   
+
                 break;
         }
     }
 
-
     #endregion
-    
+
     #region Systems生命周期
 
     private void AddSystem(ServerSystemBase system)
@@ -96,6 +117,7 @@ public class DemoGameServer : GameServerBase
 
         stateCtrl.OnStateEnd = OnStateEnd;
         stateCtrl.OnStateStart = OnStateStart;
+        stateCtrl.OnStateUpdate =OnStateUpdate;
     }
 
 
@@ -109,12 +131,13 @@ public class DemoGameServer : GameServerBase
 
         stateCtrl.OnStateEnd = null;
         stateCtrl.OnStateStart = null;
+        stateCtrl.OnStateUpdate = null;
     }
 
     #endregion
 
     #region 生命周期
-    
+
     public override void Update(float dt)
     {
         // 可以在这里处理服务器每帧逻辑
@@ -125,7 +148,7 @@ public class DemoGameServer : GameServerBase
 
         stateCtrl.Update(dt);
     }
-    
+
     #region host
 
     public override void OnStartHost()
@@ -197,11 +220,11 @@ public class DemoGameServer : GameServerBase
     {
         if (stateCtrl.GameIsStart()) return null;
         playerSystem.RefreshAllPlayerProperty();
-        stateCtrl.OnGameStart();
+
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-
+        YOTOFramework.timeMgr.DelayCall(stateCtrl.OnGameStart, 2);
         return null;
     }
 
@@ -237,7 +260,6 @@ public class DemoGameServer : GameServerBase
 
 
         ServerMessageManager.Instance.SendNotify(notify);
-        
     }
 
     #endregion
