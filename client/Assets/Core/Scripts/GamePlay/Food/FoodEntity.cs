@@ -58,7 +58,7 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
         {
             food.foodId = -1;
         }
-
+        shakeTween.Kill();
         rigidbody.isKinematic = true;
         RecoverObject();
     }
