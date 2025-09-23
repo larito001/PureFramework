@@ -60,7 +60,11 @@ public class GameServerStateCtrl
     public UnityAction<StateInfo, int> OnStateUpdate;
     private Stack<StateInfo> _stateStack = new Stack<StateInfo>();
     private int GameIndex = 0; //几轮
-
+    
+    public bool CheckIsPlaying()
+    {
+        return _stateStack.Count > 0 && _stateStack.Peek().State == GameState.Playing;
+    }
     public bool GameIsStart()
     {
         if (_stateStack.Count > 0)
@@ -122,8 +126,8 @@ public class GameServerStateCtrl
         _stateStack.Push(state);
         state = new StateInfo(GameState.Ready, orgReadyTimer);
         _stateStack.Push(state);
-        state = new StateInfo(GameState.Selecting, orgSelectingTimer);
-        _stateStack.Push(state);
+        // state = new StateInfo(GameState.Selecting, orgSelectingTimer);
+        // _stateStack.Push(state);
         state = new StateInfo(GameState.Rest, orgRestTImer);
         _stateStack.Push(state);
     }

@@ -27,6 +27,7 @@ namespace YOTO
             if (timers.ContainsKey(callback))
             {
                 timers[callback].Stop();
+                timers.Remove(callback);
             }
         }
         public void DelayCall(TimerCallback callback, float delayTime)

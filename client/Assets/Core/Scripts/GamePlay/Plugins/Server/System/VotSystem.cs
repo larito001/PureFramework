@@ -33,6 +33,7 @@ public class VotSystem : ServerSystemBase
     /// <returns></returns>
     private IResponse OnSomeOneFindHostPlayerRequest(SomeOneFindHostPlayerRequest arg1, int arg2)
     {
+        if (!_server.stateCtrl.CheckIsPlaying()) return null;
         if (!GameHasVoted)
         {
             playerVotNum.Clear();

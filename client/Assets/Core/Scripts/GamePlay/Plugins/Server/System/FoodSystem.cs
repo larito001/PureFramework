@@ -92,6 +92,8 @@ public class FoodSystem : ServerSystemBase
     /// <returns></returns>
     private IResponse OnCatchFoodRequest(CatchFoodRequest arg1, int arg2)
     {
+        if (!_server.stateCtrl.CheckIsPlaying()) return null;
+        
         if (ServerDataPlugin.Instance.CheckHaveFood(arg1.foodId))
         {
             if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId))

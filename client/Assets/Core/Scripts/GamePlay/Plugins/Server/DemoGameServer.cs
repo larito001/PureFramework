@@ -34,7 +34,7 @@ public class DemoGameServer : GameServerBase
         switch (state.State)
         {
             case GameState.Rest:
-                votSystem.Reset();
+      
                 var loser = ruleSystem.OnFinishUseRule();
                 restSystem.StartRestSystem(loser);
                 break;
@@ -91,7 +91,7 @@ public class DemoGameServer : GameServerBase
             case GameState.End:
                 OnGameEndNotify();
                 stateCtrl.OnJoinRoom();
-
+                votSystem.Reset();
                 break;
         }
     }
