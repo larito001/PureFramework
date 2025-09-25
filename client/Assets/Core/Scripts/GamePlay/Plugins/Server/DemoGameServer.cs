@@ -46,10 +46,9 @@ public class DemoGameServer : GameServerBase
                 break;
             case GameState.Playing:
                 foodSystem.StartFoodSystem();
-
                 break;
             case GameState.End:
-
+         
                 break;
         }
     }
@@ -84,6 +83,7 @@ public class DemoGameServer : GameServerBase
             case GameState.Playing:
                 foodSystem.EndGenerateFood();
                 stateCtrl.ReStartLevel();
+                ServerDataPlugin.Instance.RemoveAllFoods();
                 break;
             case GameState.Voting:
                 votSystem.VotingEnd();
@@ -92,6 +92,7 @@ public class DemoGameServer : GameServerBase
                 OnGameEndNotify();
                 stateCtrl.OnJoinRoom();
                 votSystem.Reset();
+  
                 break;
         }
     }

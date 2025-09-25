@@ -104,7 +104,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
      
         if (isSelf)
         {
-            YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+                YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
         }
     }
 

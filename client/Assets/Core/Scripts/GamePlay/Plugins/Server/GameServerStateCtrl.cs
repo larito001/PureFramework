@@ -169,6 +169,10 @@ public class GameServerStateCtrl
 
     public void GameEnd()
     {
+        var current = _stateStack.Pop();
+        current.ResetTimer();
+        OnStateEnd?.Invoke(current);
+        _stateStack.Clear();
         var state = new StateInfo(GameState.End, orgEndTImer);
         _stateStack.Push(state);
         OnStateStart?.Invoke(state);

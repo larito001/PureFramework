@@ -28,6 +28,36 @@ public class FoodData
         playerIds.Clear();
     }
 
+    public void OnRemove()
+    {
+        foreach (var id in playerIds)
+        {
+            var info = ServerDataPlugin.Instance.GetPlayerById(id);
+            if (info.OnCatchFoodEnd())
+            {
+                EndCatchFoodNotify notify = new EndCatchFoodNotify()
+                {
+                    foodId = foodId,
+                    playerId = info.playerId,
+                    isSuccess = false
+                };
+                ServerMessageManager.Instance.SendNotify(notify);
+            }else if (info.OnLootFoodEnd())
+            {
+                StopLootNotify notify = new StopLootNotify()
+                {
+                    foodId = foodId,
+                    res = LootRes.Lose,
+                    losePlayers = playerIds
+                };
+                ServerMessageManager.Instance.SendNotify(notify);
+            }
+  
+  
+        }
+
+    }
+
     private void CheckPlayerIsAlive()
     {
         for (var i = playerIds.Count - 1; i >= 0; i--)

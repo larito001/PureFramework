@@ -27,7 +27,7 @@ public class FoodSystem : ServerSystemBase
     public void StartFoodSystem()
     {
         _server.commonSystem.OnFlyTextNotify("Go!", FlyTextType.Normal);
-        ServerDataPlugin.Instance.OnGameReStart();
+  
         ServerDataPlugin.Instance.SetRandomPattern();
         stageQueue.Clear();
         var stages = ServerDataPlugin.Instance.CurrentPattern.stages;

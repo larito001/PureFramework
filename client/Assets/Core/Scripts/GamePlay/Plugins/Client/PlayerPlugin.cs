@@ -112,6 +112,15 @@ public class PlayerPlugin : LogicPluginBase
         //todo:抢夺结束，退出特殊状态
         Debug.Log("抢夺结束，player" + obj.winPlayerId + "赢了");
 
+        if (obj.res == LootRes.Lose)
+        {
+            for (var i = 0; i < obj.losePlayers.Count; i++)
+            {
+                players[obj.winPlayerId].EndLooting(false, obj.foodId);
+            }
+            return;
+        }
+        
         if (players.ContainsKey(obj.winPlayerId))
         {
             players[obj.winPlayerId].EndLooting(true, obj.foodId);
@@ -177,6 +186,14 @@ public class PlayerPlugin : LogicPluginBase
                 //处理catch过程中，玩家退出
                 StagePlugin.Instance.RemoveFood(obj.foodId);
             }
+        }
+        else
+        {
+            if (players.ContainsKey(obj.playerId))
+            {
+                players[obj.playerId].EndCatch(); 
+            }
+  
         }
     }
 

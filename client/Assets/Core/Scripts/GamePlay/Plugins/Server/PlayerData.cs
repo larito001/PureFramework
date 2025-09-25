@@ -94,13 +94,15 @@ public class PlayerData
         return false;
     }
 
-    public void OnCatchFoodEnd()
+    public bool  OnCatchFoodEnd()
     {
         if (State == PlayerState.Catching)
         {
             State = PlayerState.Idle;
             useFoodId = -1;
+            return true;
         }
+        return false;
     }
 
     public void EatFood(int satiety, int satisfaction)
@@ -121,13 +123,16 @@ public class PlayerData
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
-    public void OnLootFoodEnd()
+    public bool OnLootFoodEnd()
     {
         if (State == PlayerState.Looting)
         {
             State = PlayerState.Idle;
             useFoodId = -1;
+            return true;
         }
+
+        return false;
     }
 
     public void ClearProperty()

@@ -708,11 +708,6 @@ public class ServerDataPlugin : LogicPluginBase
         return foods.Values;
     }
 
-    public void OnGameReStart()
-    {
-        // players.Clear();
-        RemoveAllFoods();
-    }
 
     public PlayerData GetPlayerById(int id)
     {
@@ -771,13 +766,19 @@ public class ServerDataPlugin : LogicPluginBase
     {
         if (foods.ContainsKey(id))
         {
+            foods[id].OnRemove();
             foods.Remove(id);
         }
     }
 
     public void RemoveAllFoods()
     {
+        foreach (var food in foods.Values)
+        {
+            food.OnRemove();
+        }
         foods.Clear();
+        
     }
 
 

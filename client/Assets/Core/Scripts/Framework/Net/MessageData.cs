@@ -108,6 +108,7 @@ public enum LootRes
 {
     Success, //胜利
     Dogfall, //平局
+    Lose
 }
 
 public struct LootingInputRequest : IRequest
