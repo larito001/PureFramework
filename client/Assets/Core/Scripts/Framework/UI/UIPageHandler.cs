@@ -146,7 +146,7 @@ public class UIPageHandler
     {
         Debug.Log($"[UIPageHandler] OnHide Start: key={key}, hasUI={uIPageBase != null}, hasCanvasGroup={uIPageBase?.canvasGroup != null}");
         shouldBeHidden = true; // 设置隐藏标记
-        if (uIPageBase != null)
+        if (uIPageBase != null&&curState==PageState.Show)
         {
             Disable();
             uIPageBase.OnHide();

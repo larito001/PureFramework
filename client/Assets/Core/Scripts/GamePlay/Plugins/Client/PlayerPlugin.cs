@@ -149,11 +149,8 @@ public class PlayerPlugin : LogicPluginBase
             float distance = (food.transform.position - selfTrans.position).magnitude;
             if (distance > 3f)
             {
-                // 将屏幕中心的世界坐标转换为屏幕坐标
-                Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
-
                 // 如果FlyTextMgr使用的是屏幕坐标
-                FlyTextMgr.Instance.AddText("Distanc Over", screenCenter, FlyTextType.Normal, TextPosType.Screen);
+                FlyTextMgr.Instance.AddTextAtScreenCenter("Distanc Over",  FlyTextType.Normal);
                 return;
             }
         }
@@ -339,11 +336,9 @@ public class PlayerPlugin : LogicPluginBase
     
     private void OnFlyTextNotify(FlyTextNotify obj)
     {
-        // 将屏幕中心的世界坐标转换为屏幕坐标
-        Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
 
         // 如果FlyTextMgr使用的是屏幕坐标
-        FlyTextMgr.Instance.AddText(obj.txt, screenCenter, obj.flyType, TextPosType.Screen);
+        FlyTextMgr.Instance.AddTextAtScreenCenter(obj.txt,  obj.flyType);
     }
 
     public void OnFindHostPlayerClick()

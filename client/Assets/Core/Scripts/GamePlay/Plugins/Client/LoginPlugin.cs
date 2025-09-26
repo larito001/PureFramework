@@ -106,6 +106,11 @@ public class LoginPlugin : LogicPluginBase
             _playerId = obj.playerData.playerId;
             YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         }
+        else
+        {
+            //todo：强制断链
+            YOTOFramework.netMgr.LeaveHost();
+        }
     }
 
 

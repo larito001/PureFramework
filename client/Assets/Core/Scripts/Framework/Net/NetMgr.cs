@@ -66,6 +66,7 @@ namespace YOTO
                     else
                     {
                         Debug.LogError("端口已被使用");
+                        FlyTextMgr.Instance.AddTextAtScreenCenter("端口已被使用", FlyTextType.Normal);
                     }
                
                     break;

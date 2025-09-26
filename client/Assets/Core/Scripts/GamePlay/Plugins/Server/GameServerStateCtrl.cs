@@ -69,10 +69,11 @@ public class GameServerStateCtrl
     {
         if (_stateStack.Count > 0)
         {
-            return _stateStack.Peek().State != GameState.Room;
+            bool res = _stateStack.Peek().State != GameState.Room;
+            return res;
         }
 
-        return false;
+        return  false;
     }
 
     public void Update(float dt)

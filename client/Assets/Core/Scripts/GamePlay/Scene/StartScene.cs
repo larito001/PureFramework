@@ -8,18 +8,16 @@ public class StartScene : VirtualSceneBase
 {
     public override void OnAdd()
     {
-  
     }
 
     public override void Onload(SceneParam param)
     {
-
     }
 
     public override void OnInit()
     {
         YOTOFramework.sceneMgr.cameraCtrl.UseStarCamera();
-        
+
         YOTOFramework.uIMgr.Show(UIEnum.StartPanel);
     }
 
@@ -30,6 +28,6 @@ public class StartScene : VirtualSceneBase
 
     public override void Update(float dt)
     {
-
+        FlyTextMgr.Instance.Update(dt);
     }
 }

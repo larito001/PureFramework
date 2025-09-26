@@ -227,7 +227,7 @@ public class DemoGameServer : GameServerBase
         var notify = new GameStartNotify();
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
-        YOTOFramework.timeMgr.DelayCall(stateCtrl.OnGameStart, 2);
+        stateCtrl.OnGameStart();
         return null;
     }
 
