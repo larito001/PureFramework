@@ -78,13 +78,22 @@ public class PlayerSystem : ServerSystemBase
     /// <summary>
     /// 刷新所有玩家的属性
     /// </summary>
-    public void RefreshAllPlayerProperty()
+    public void OnGameStart()
     {
         var tempList = ServerDataPlugin.Instance.GetPlayerList();
         foreach (var player in tempList)
         {
             player.ClearProperty();
             player.RefreshPlayerProperty();
+        }
+    }
+
+    public void OnRoundEnd()
+    {
+        var tempList = ServerDataPlugin.Instance.GetPlayerList();
+        foreach (var player in tempList)
+        {
+            player.OnRoundEnd();
         }
     }
 

@@ -3,7 +3,6 @@ public enum PlayerState
     Idle, //无
     Catching, //抓取中
     Looting, //抢夺中
-    Backing, //返回中
     Dead, //死亡
 }
 
@@ -135,11 +134,15 @@ public class PlayerData
         return false;
     }
 
-    public void ClearProperty()
+    public void OnRoundEnd()
     {
-        currentAlcohol = 0;
         SatietyValue = 0;
         SatisfactionValue = 0;
         State = PlayerState.Idle;
+    }
+    public void ClearProperty()
+    {
+        currentAlcohol = 0;
+        OnRoundEnd();
     }
 }

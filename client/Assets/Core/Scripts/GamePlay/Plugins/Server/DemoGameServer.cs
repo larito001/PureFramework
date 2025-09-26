@@ -16,8 +16,8 @@ public class DemoGameServer : GameServerBase
     private PlayerSystem playerSystem = new PlayerSystem();
     private RestSystem restSystem = new RestSystem();
     private List<ServerSystemBase> systemList = new List<ServerSystemBase>();
-    
-    
+
+
     public DemoGameServer()
     {
         AddSystem(playerSystem);
@@ -34,7 +34,7 @@ public class DemoGameServer : GameServerBase
         switch (state.State)
         {
             case GameState.Rest:
-      
+
                 var loser = ruleSystem.OnFinishUseRule();
                 restSystem.StartRestSystem(loser);
                 break;
@@ -48,7 +48,7 @@ public class DemoGameServer : GameServerBase
                 foodSystem.StartFoodSystem();
                 break;
             case GameState.End:
-         
+
                 break;
         }
     }
@@ -58,7 +58,7 @@ public class DemoGameServer : GameServerBase
         switch (state.State)
         {
             case GameState.Rest:
-      
+
                 break;
             case GameState.Selecting:
                 break;
@@ -84,6 +84,7 @@ public class DemoGameServer : GameServerBase
                 foodSystem.EndGenerateFood();
                 stateCtrl.ReStartLevel();
                 ServerDataPlugin.Instance.RemoveAllFoods();
+                playerSystem.OnRoundEnd();
                 break;
             case GameState.Voting:
                 votSystem.VotingEnd();
@@ -92,7 +93,9 @@ public class DemoGameServer : GameServerBase
                 OnGameEndNotify();
                 stateCtrl.OnJoinRoom();
                 votSystem.Reset();
-  
+                break;
+            case GameState.Room:
+                playerSystem.OnGameStart();
                 break;
         }
     }
@@ -118,7 +121,7 @@ public class DemoGameServer : GameServerBase
 
         stateCtrl.OnStateEnd = OnStateEnd;
         stateCtrl.OnStateStart = OnStateStart;
-        stateCtrl.OnStateUpdate =OnStateUpdate;
+        stateCtrl.OnStateUpdate = OnStateUpdate;
     }
 
 
@@ -220,7 +223,6 @@ public class DemoGameServer : GameServerBase
     private IResponse OnGameReadyRequest(GameStartRequest arg1, int arg2)
     {
         if (stateCtrl.GameIsStart()) return null;
-        playerSystem.RefreshAllPlayerProperty();
 
         var notify = new GameStartNotify();
         notify.isSuccess = true;
