@@ -257,12 +257,15 @@ public class ServerDataPlugin : LogicPluginBase
         return players.ContainsKey(id);
     }
 
-    public void RemovePlayerById(int id)
+    public bool RemovePlayerById(int id)
     {
         if (players.ContainsKey(id))
         {
             players.Remove(id);
+            return true;
         }
+
+        return false;
     }
 
     public void RemoveAllPlayers()

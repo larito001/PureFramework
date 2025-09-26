@@ -60,13 +60,16 @@ public class PlayerSystem : ServerSystemBase
 
     public void RemovePlayer(int connectionId)
     {
-        ServerDataPlugin.Instance.RemovePlayerById(connectionId);
-        RefreshPlayerDatas();
-        if (ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
+        if (ServerDataPlugin.Instance.RemovePlayerById(connectionId))
         {
-            _server.stateCtrl.OnJoinRoom();
-            _server.OnGameEndNotify();
+            RefreshPlayerDatas();
+            if (ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
+            {
+                _server.stateCtrl.OnJoinRoom();
+                _server.OnGameEndNotify();
+            }
         }
+ 
     }
 
     public void ClearPlayers()

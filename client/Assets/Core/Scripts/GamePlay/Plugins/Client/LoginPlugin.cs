@@ -108,6 +108,7 @@ public class LoginPlugin : LogicPluginBase
         }
         else
         {
+            FlyTextMgr.Instance.AddTextAtScreenCenter("加入失败");
             //todo：强制断链
             YOTOFramework.netMgr.LeaveHost();
         }
