@@ -10,7 +10,7 @@ using YOTO;
 
 public class GameMainPanel : UIPageBase
 {
-    public TextMeshProUGUI txt_satiety;
+    public Slider slider_satiety;
     public TextMeshProUGUI txt_satisfaction;
     public TextMeshProUGUI txt_timer;
     public Button findBtn;
@@ -118,8 +118,8 @@ public class GameMainPanel : UIPageBase
     private void RefreshPlayerProperty()
     {
         var self = PlayerPlugin.Instance.GetSelf();
-        txt_satiety.text = "satiety:" + self.SatietyValue + "/" + PlayerEntity.maxStatiety;
-        txt_satisfaction.text = "satisfaction:" + self.SatisfactionValue;
+        slider_satiety.value =(float)self.SatietyValue /(float)PlayerEntity.maxStatiety;
+        txt_satisfaction.text = "满意度:" + self.SatisfactionValue;
     }
 
     public override void OnHide()

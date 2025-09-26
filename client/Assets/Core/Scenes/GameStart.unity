@@ -1231,6 +1231,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8645392398309298675, guid: b200e4650eab92b43a3582a0012a23a5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8645392398309298675, guid: b200e4650eab92b43a3582a0012a23a5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8682126790710733860, guid: b200e4650eab92b43a3582a0012a23a5, type: 3}
       propertyPath: m_Name
       value: GameMainPanel
