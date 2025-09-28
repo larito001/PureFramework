@@ -38,6 +38,7 @@ public struct PlayerDeadNotify : IResponse
 public struct PlayerNeedDrinkNotify:IResponse
 {
     public int playerId;
+    public float currentRate;
 }
 
 #endregion

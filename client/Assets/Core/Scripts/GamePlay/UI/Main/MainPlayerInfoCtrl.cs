@@ -9,12 +9,13 @@ using YOTO;
 public class MainPlayerInfoCtrl : MonoBehaviour
 {
     public Image rate;
-    public TextMeshProUGUI name;
-
+    public TextMeshProUGUI pname;
+    public Image Bg;
     private PlayerEntity _player;
     private bool isStart=false;
     private Camera cam;
-    private Vector2 screenPadding = new Vector2(30f, 30f); 
+    private Vector2 screenPadding = new Vector2(30f, 30f);
+    private float lastRate = -1;
     /// <summary>
     /// 设置进度条（rate）的比例，范围 0~1
     /// </summary>
@@ -23,7 +24,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
         gameObject.SetActive(true);
         _player = player;
         isStart = true;
-        name.text=player.GetPlayerDta().playerName;
+        pname.text=player.GetPlayerDta().playerName;
         // if (rate != null)
         // {
         //     // 确保 type 是 Filled，否则 fillAmount 无效
@@ -33,6 +34,18 @@ public class MainPlayerInfoCtrl : MonoBehaviour
         if (cam==null)
         {
             cam=YOTOFramework.cameraMgr.getUICamera();
+        }
+      
+    }
+
+    private void RefreshDrinkRate()
+    {
+        if (!Mathf.Approximately(lastRate,  _player.drinkRate))
+        {
+            lastRate=_player.drinkRate;
+            // 根据rate由绿色渐变为红色（0-30）
+            float normalizedRate = Mathf.Clamp01(lastRate / 30f); // 将rate归一化到0-1范围
+            Bg.color = Color.Lerp(Color.green, Color.red, normalizedRate);
         }
     }
 
@@ -44,7 +57,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
         {
             rate.fillAmount = Mathf.Clamp01(_player.SatietyValue / (float)PlayerEntity.maxStatiety);
             Vector3 screenPosition = cam.WorldToScreenPoint(_player.Location);
-
+            RefreshDrinkRate();
             // 获取UI实际尺寸
             Vector2 uiSize = ((RectTransform)transform).sizeDelta * transform.lossyScale; 
             float halfWidth = uiSize.x / 2f;

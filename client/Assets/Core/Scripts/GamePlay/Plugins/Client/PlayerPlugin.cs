@@ -48,7 +48,7 @@ public class PlayerPlugin : LogicPluginBase
         Debug.LogError("玩家"+obj.playerId+"喝酒了");
         if (players.ContainsKey(obj.playerId))
         {
-            players[obj.playerId].Drink();
+            players[obj.playerId].Drink(obj.currentRate);
         }
     }
 

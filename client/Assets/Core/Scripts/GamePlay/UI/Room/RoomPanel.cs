@@ -73,7 +73,7 @@ public class RoomPanel : UIPageBase
             
             YOTOFramework.netMgr.StopHost();
             YOTOFramework.netMgr.LeaveHost();
-            LoginPlugin.Instance.OnNetError();
+            // LoginPlugin.Instance.OnNetError();
         });
         readyBtn.onClick.AddListener(() =>
         {

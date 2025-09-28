@@ -24,6 +24,7 @@ public class PlayerData
             PlayerNeedDrinkNotify drinkNotify = new PlayerNeedDrinkNotify();
             drinkNotify.playerId = playerId;
             currentAlcohol += 10;
+            drinkNotify.currentRate = currentAlcohol;
             ServerMessageManager.Instance.SendNotify(drinkNotify);
 
             if (currentAlcohol >= 20)

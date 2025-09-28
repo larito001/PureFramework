@@ -18,6 +18,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public int SatietyValue;
     public int SatisfactionValue;
     public const int maxStatiety = 20;//最高饱腹值
+    public float drinkRate = 0;
     public bool CheckCanCatch()
     {
         bool isEnd = SatietyValue >= maxStatiety;
@@ -32,8 +33,9 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     {
     }
 
-    public void Drink()
+    public void Drink(float rate)
     {
+        drinkRate=rate;
         animCtrl.OnDrink();
     }
     public void Dead()

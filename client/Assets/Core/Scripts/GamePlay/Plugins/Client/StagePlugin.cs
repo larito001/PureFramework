@@ -12,6 +12,7 @@ public class StagePlugin : LogicPluginBase
     // private List<PlayerData> players = new List<PlayerData>();
     private List<GameRule> rulesTemp ;
     public bool GameStart = false;
+    private GameObject foods;
     
     #region 单例，事件注册
 
@@ -136,7 +137,7 @@ public class StagePlugin : LogicPluginBase
     {
         GameStart = true;
         YOTOFramework.sceneMgr.LoadScene<NormalScene>();
-        var foods = GameObject.Find("foods");
+        foods = GameObject.Find("foods");
         foods.SetActive(false);
     }
 
@@ -156,8 +157,7 @@ public class StagePlugin : LogicPluginBase
 
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
         YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
-        var foods = GameObject.Find("foods");
-        foods.SetActive(false);
+        foods.SetActive(true);
     }
     private void OnGameTimerNotify(GameTimerNotify obj)
     {
