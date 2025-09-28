@@ -354,6 +354,7 @@ public class PlayerPlugin : LogicPluginBase
     private void OnVotEndNotify(VotEndNotify obj)
     {
         YOTOFramework.eventMgr.TriggerEvent<VotEndNotify>(YOTOEventType.VotEndNotify,obj);
+
     }
 
     public void OnVotClick(int playerId)

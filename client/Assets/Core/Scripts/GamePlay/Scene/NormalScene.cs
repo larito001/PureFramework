@@ -29,6 +29,12 @@ public class NormalScene : VirtualSceneBase
 
         PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas());
         YOTOFramework.uIMgr.Show(UIEnum.GameMainPanel);
+        YOTOFramework.timeMgr.DelayCall(() =>
+        {
+            PlayerLoadReadyRequest request = new PlayerLoadReadyRequest();
+            request.playerId = LoginPlugin.Instance.PlayerId;
+            ClientMessageManager.Instance.SendRequest(request);
+        },2);
     }
     
 

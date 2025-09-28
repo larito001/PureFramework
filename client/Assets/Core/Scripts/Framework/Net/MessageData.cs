@@ -219,7 +219,10 @@ public struct GameStartNotify : IResponse
 {
     public bool isSuccess;
 }
-
+public struct PlayerLoadReadyRequest: IRequest
+{
+    public int playerId;
+}
 public struct GameEndNotify : IResponse
 {
     public GameRule rule;

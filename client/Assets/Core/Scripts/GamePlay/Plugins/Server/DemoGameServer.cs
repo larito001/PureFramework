@@ -16,7 +16,7 @@ public class DemoGameServer : GameServerBase
     private PlayerSystem playerSystem = new PlayerSystem();
     private RestSystem restSystem = new RestSystem();
     private List<ServerSystemBase> systemList = new List<ServerSystemBase>();
-
+    private HashSet<int> playerLoadEnd = new HashSet<int>();
 
     public DemoGameServer()
     {
@@ -114,6 +114,7 @@ public class DemoGameServer : GameServerBase
     private void AddEvent()
     {
         ServerMessageManager.Instance.RegisterRequestHandler<GameStartRequest>(OnGameReadyRequest);
+        ServerMessageManager.Instance.RegisterRequestHandler<PlayerLoadReadyRequest>(OnPlayerLoadReadyRequest);
         for (var i = 0; i < systemList.Count; i++)
         {
             systemList[i].AddEvent();
@@ -128,6 +129,7 @@ public class DemoGameServer : GameServerBase
     private void RemoveEvent()
     {
         ServerMessageManager.Instance.UnRegisterRequestHandler<GameStartRequest>();
+        ServerMessageManager.Instance.UnRegisterRequestHandler<PlayerLoadReadyRequest>();
         for (var i = 0; i < systemList.Count; i++)
         {
             systemList[i].RemoveEvent();
@@ -228,6 +230,20 @@ public class DemoGameServer : GameServerBase
         notify.isSuccess = true;
         ServerMessageManager.Instance.SendNotify(notify);
         stateCtrl.OnGameStart();
+        return null;
+    }
+
+    private IResponse OnPlayerLoadReadyRequest(PlayerLoadReadyRequest request, int id)
+    {
+        if (!playerLoadEnd.Contains(request.playerId))
+        {
+            playerLoadEnd.Add(request.playerId);
+        }
+
+        if (playerLoadEnd.Count == ServerDataPlugin.Instance.GetPlayerList().Count)
+        {
+            stateCtrl.ForcePopCurrentState(GameState.Ready);
+        }
         return null;
     }
 

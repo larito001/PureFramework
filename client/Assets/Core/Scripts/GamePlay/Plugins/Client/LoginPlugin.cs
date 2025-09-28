@@ -71,6 +71,8 @@ public class LoginPlugin : LogicPluginBase
         Debug.Log("游戏开始！");
 
         StagePlugin.Instance.OnGameStart();
+        //todo:打开loading
+        YOTOFramework.uIMgr.Show(UIEnum.LoadingPanel);
     }
 
     public void OnNetError()

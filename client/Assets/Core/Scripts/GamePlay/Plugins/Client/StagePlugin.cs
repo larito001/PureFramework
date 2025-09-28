@@ -120,6 +120,7 @@ public class StagePlugin : LogicPluginBase
             rulesTemp = obj.rules;
             YOTOFramework.uIMgr.Show(UIEnum.RuleSelectPanel);
         }
+        YOTOFramework.uIMgr.Hide(UIEnum.LoadingPanel);
     }
     public void SetRule(int ruleRuleId)
     {
@@ -136,7 +137,7 @@ public class StagePlugin : LogicPluginBase
         GameStart = true;
         YOTOFramework.sceneMgr.LoadScene<NormalScene>();
         var foods = GameObject.Find("foods");
-        GameObject.Destroy(foods);
+        foods.SetActive(false);
     }
 
     public void OnGameError()
@@ -155,6 +156,8 @@ public class StagePlugin : LogicPluginBase
 
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
         YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
+        var foods = GameObject.Find("foods");
+        foods.SetActive(false);
     }
     private void OnGameTimerNotify(GameTimerNotify obj)
     {
