@@ -69,10 +69,9 @@ public class LoginPlugin : LogicPluginBase
     private void OnGameStartNotify(GameStartNotify obj)
     {
         Debug.Log("游戏开始！");
-
-        StagePlugin.Instance.OnGameStart();
         //todo:打开loading
         YOTOFramework.uIMgr.Show(UIEnum.LoadingPanel);
+        YOTOFramework.timeMgr.DelayCall( StagePlugin.Instance.OnGameStart,0.5f);
     }
 
     public void OnNetError()

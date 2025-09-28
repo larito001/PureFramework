@@ -12,6 +12,7 @@ using YOTO;
 public abstract class UIPageBase : MonoBehaviour
 {
     public UIEnum uiType;
+    public bool Tween=false;
     public bool isEnable = false;
     public CanvasGroup canvasGroup;
     public abstract void OnLoad();
@@ -25,18 +26,25 @@ public abstract class UIPageBase : MonoBehaviour
         {
             float currentAlpha = 0f;
             canvasGroup.alpha = 0f;
-
-            DOTween.To(
-                    () => currentAlpha,
-                    x => {
-                        currentAlpha = x;
-                        if (canvasGroup != null)
-                            canvasGroup.alpha = x;
-                    },
-                    1f,
-                    1f
-                ).SetEase(Ease.OutQuad)
-                .SetTarget(this); // 绑定 tween，方便管理
+            if (Tween)
+            {
+                DOTween.To(
+                        () => currentAlpha,
+                        x => {
+                            currentAlpha = x;
+                            if (canvasGroup != null)
+                                canvasGroup.alpha = x;
+                        },
+                        1f,
+                        1f
+                    ).SetEase(Ease.OutQuad)
+                    .SetTarget(this); // 绑定 tween，方便管理 
+            }
+            else
+            {
+                canvasGroup.alpha = 1;
+            }
+         
 
             isEnable = true;
             canvasGroup.interactable = true;
@@ -51,12 +59,12 @@ public abstract class UIPageBase : MonoBehaviour
             .SetEase(Ease.OutQuad);
     }
 
-    public void Exit(bool isTween = true)
+    public void Exit()
     {
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup != null)
         {
-            if (isTween)
+            if (Tween)
             {
                 float currentAlpha = canvasGroup.alpha;
 
