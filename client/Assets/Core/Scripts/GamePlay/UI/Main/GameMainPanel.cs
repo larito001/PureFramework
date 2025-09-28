@@ -61,7 +61,8 @@ public class GameMainPanel : UIPageBase
                 playerInfoCtrls[index++].SetPlayer(player);
             }
         }
-        
+
+        RefreshPlayerProperty();
     }
 
     private void OnTimerNotify(int index )

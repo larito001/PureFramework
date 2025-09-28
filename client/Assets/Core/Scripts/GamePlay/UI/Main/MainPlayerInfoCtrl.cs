@@ -40,13 +40,19 @@ public class MainPlayerInfoCtrl : MonoBehaviour
 
     private void RefreshDrinkRate()
     {
-        if (!Mathf.Approximately(lastRate,  _player.drinkRate))
+        if (_player.GetPlayerDta().GetState() != PlayerState.Dead)
         {
-            lastRate=_player.drinkRate;
-            // 根据rate由绿色渐变为红色（0-30）
-            float normalizedRate = Mathf.Clamp01(lastRate / 30f); // 将rate归一化到0-1范围
-            Bg.color = Color.Lerp(Color.green, Color.red, normalizedRate);
+            if (!Mathf.Approximately(lastRate,  _player.drinkRate))
+            {
+                lastRate=_player.drinkRate;
+                // 根据rate由绿色渐变为红色（0-30）
+                float normalizedRate = Mathf.Clamp01(lastRate / 30f); // 将rate归一化到0-1范围
+                Bg.color = Color.Lerp(Color.green, Color.red, normalizedRate);
+            }
         }
+   
+        
+    
     }
 
 // x 是左右留白, y 是上下留白
