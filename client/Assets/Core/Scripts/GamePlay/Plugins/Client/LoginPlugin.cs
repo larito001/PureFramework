@@ -75,6 +75,7 @@ public class LoginPlugin : LogicPluginBase
 
     public void OnNetError()
     {
+        FlyTextMgr.Instance.AddTextAtScreenCenter("链接失败", FlyTextType.Normal);
         YOTOFramework.netMgr.LeaveHost();
         _playerId = -1;
         StagePlugin.Instance.OnGameError();

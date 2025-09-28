@@ -116,6 +116,7 @@ namespace YOTO
                 case NetState.Client:
                     client.StopClient();
                     currentState = NetState.Idle;
+      
                     break;
                 default:
                     Debug.LogWarning("离开host异常: 当前状态=" + currentState);

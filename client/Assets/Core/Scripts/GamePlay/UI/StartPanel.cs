@@ -33,6 +33,14 @@ public class StartPanel : UIPageBase
         IPInput.text = "127.0.0.1";
         NameInput.text = "testName";
 
+
+    }
+
+    public override void OnShow()
+    {
+        leftBg.alpha = 0;
+        bg.alpha = 0;
+        startBtn.gameObject.SetActive(true);
         joinBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.Name = NameInput.text;
@@ -60,13 +68,6 @@ public class StartPanel : UIPageBase
         });
     }
 
-    public override void OnShow()
-    {
-        leftBg.alpha = 0;
-        bg.alpha = 0;
-        startBtn.gameObject.SetActive(true);
-    }
-
     public override void OnHide()
     {
         // 同时执行移动和渐显动画
@@ -80,7 +81,11 @@ public class StartPanel : UIPageBase
             .OnComplete(() =>
             {
             });
-
+// 按钮注销
+        joinBtn.onClick.RemoveAllListeners();
+        createBtn.onClick.RemoveAllListeners();
+        startBtn.onClick.RemoveAllListeners();
+        
         startBtn.gameObject.SetActive(false);
     }
 }
