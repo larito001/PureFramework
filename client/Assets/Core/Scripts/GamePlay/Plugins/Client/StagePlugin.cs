@@ -156,6 +156,7 @@ public class StagePlugin : LogicPluginBase
         GameStart = false;
 
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
+        YOTOFramework.uIMgr.Hide(UIEnum.FinishPanel);
         YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);
         foods.SetActive(true);
     }

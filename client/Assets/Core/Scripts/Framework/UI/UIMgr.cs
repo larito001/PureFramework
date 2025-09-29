@@ -76,7 +76,11 @@ public class UILayer
     {
         foreach (var uiPageHandler in handlers)
         {
-            uiPageHandler.Value.OnHide();
+            if (uiPageHandler.Key!=UIEnum.LoadingPanel)
+            {
+                uiPageHandler.Value.OnHide();
+            }
+
         }
     }
 }

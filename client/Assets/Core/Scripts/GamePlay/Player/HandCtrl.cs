@@ -103,6 +103,11 @@ public class HandCtrl : MonoBehaviour
         leftHand.DOKill(true);
         Debug.Log("开始收" + playerEntity.isSelf);
         Sequence seq = DOTween.Sequence();
+        if (leftTarget != null && leftTarget.ObjTrans != null)
+        {
+            leftTarget.StopCatch();  
+        }
+  
         seq.Join(leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase));
         seq.Join(leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase));
         seq.OnComplete(() =>
@@ -111,7 +116,7 @@ public class HandCtrl : MonoBehaviour
             playerEntity.leftHandDoing = false;
             if (leftTarget != null&&leftTarget.ObjTrans!=null)
             {
-                leftTarget.StopCatch();
+        
                 var food = leftTarget.ObjTrans.GetComponent<FoodBase>();
                 StagePlugin.Instance.RemoveFood(food.foodId);
             }
@@ -131,6 +136,11 @@ public class HandCtrl : MonoBehaviour
         if (rightHand == null) return;
 
         rightHand.DOKill(true);
+
+        if (rightTarget != null && rightTarget.ObjTrans != null)
+        {
+            rightTarget.StopCatch();
+        }
 
         Sequence seq = DOTween.Sequence();
         seq.Join(rightHand.DOMove(rightHandOriginalPos, moveDuration).SetEase(moveEase));

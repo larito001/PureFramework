@@ -9,7 +9,8 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
     private FoodData data;
     private Rigidbody rigidbody;
     private OutLineCtrl outLineCtrl;
-
+    public SelectEntity selectEntity;
+  
     protected override void YOTOOnload()
     {
     }
@@ -54,6 +55,7 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
 
     public void AfterIntoObjectPool()
     {
+        RecoverSelect();
         if (objTrans != null && objTrans.TryGetComponent<FoodBase>(out FoodBase food))
         {
             food.foodId = -1;
@@ -84,14 +86,29 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
         {
             shakeTween.Kill();
         }
-
+        
         // 使用DOTween实现以z轴为中心的旋转抖动
         shakeTween = objTrans.DOShakeRotation(1f, strength: 15f, vibrato: 10, randomness: 90f, fadeOut: true)
             .SetEase(Ease.OutQuad).SetLoops(-1, LoopType.Restart);
+        if (selectEntity == null)
+        {
+            selectEntity=  SelectEntity.pool.GetItem(this);
+        }
+    
     }
 
+    private void RecoverSelect()
+    {
+        if (selectEntity!=null)
+        {
+            SelectEntity.pool.RecoverItem(selectEntity);
+            selectEntity = null;
+        } 
+    }
     public void StopCatch()
     {
+
+        RecoverSelect();
         // 停止抖动动画
         if (shakeTween != null && shakeTween.IsActive())
         {

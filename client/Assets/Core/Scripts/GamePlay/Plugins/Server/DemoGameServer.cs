@@ -31,6 +31,7 @@ public class DemoGameServer : GameServerBase
     private void OnStateStart(StateInfo state)
     {
         Debug.LogWarning("Start State:" + state.State);
+        //todo:发放生命周期的信息，后续UI全部依赖于此
         switch (state.State)
         {
             case GameState.Rest:
@@ -48,7 +49,7 @@ public class DemoGameServer : GameServerBase
                 foodSystem.StartFoodSystem();
                 break;
             case GameState.End:
-
+                
                 break;
         }
     }
@@ -58,7 +59,6 @@ public class DemoGameServer : GameServerBase
         switch (state.State)
         {
             case GameState.Rest:
-
                 break;
             case GameState.Selecting:
                 break;

@@ -62,7 +62,8 @@ public class LoginPlugin : LogicPluginBase
     }
 
     private void OnGameEndNotify(GameEndNotify obj)
-    {
+    {   
+        YOTOFramework.uIMgr.Show(UIEnum.FinishPanel);
         YOTOFramework.timeMgr.DelayCall(StagePlugin.Instance.OnGameEnd, 3);
     }
 

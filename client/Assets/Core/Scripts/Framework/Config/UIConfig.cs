@@ -45,6 +45,7 @@ public enum UIEnum
     RuleSelectPanel,
     VotingPanel,
     LoadingPanel,
+    FinishPanel
 }
 
 public class UIConfig
@@ -58,6 +59,8 @@ public class UIConfig
         new UIInfo(UIEnum.RuleSelectPanel, UILayerEnum.Normal, "prefabs/UI/RuleSelectPanel"),
         new UIInfo(UIEnum.VotingPanel, UILayerEnum.Normal, "prefabs/UI/VotingPanel"),
         new UIInfo(UIEnum.LoadingPanel, UILayerEnum.RayCast, "prefabs/UI/LoadingPanel"),
+        new UIInfo(UIEnum.FinishPanel, UILayerEnum.Normal, "prefabs/UI/FinishPanel"),
+        
     };
 
     #region  对外
