@@ -37,9 +37,19 @@ namespace YOTO
                 });
         }
 
-        public void ReleasePack(string path)
+        public void LoadAudio(string path, Action<AudioClip> callBack)
         {
-            
+            ResLoader<AudioClip> loader = CreateLoader<AudioClip>();
+            loader.LoadAsync(path,
+                (t) =>
+                {
+                    callBack(t);
+                }); 
+        }
+
+        public void ReleasePack(Object obj)
+        {
+            Resources.UnloadAsset(obj);
         }
     }
 }

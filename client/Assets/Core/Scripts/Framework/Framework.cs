@@ -24,6 +24,7 @@ namespace YOTO
         public static  NetMgr netMgr = new NetMgr();
         private static PluginManager PluginMgr = new PluginManager();
         private static GameDataManager GameDataManager = new GameDataManager();
+        private static SoundMgr soundMgr = new SoundMgr();
         public void Init()
         {
             if (!isInit)
@@ -43,6 +44,7 @@ namespace YOTO
                 uIMgr.Init();
                 sceneMgr.Init();
                 netMgr.Init();
+                soundMgr.Init();
             }
 
             Debug.Log("YTLOG初始化完成");
