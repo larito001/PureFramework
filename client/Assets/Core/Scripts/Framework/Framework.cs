@@ -7,6 +7,9 @@ namespace YOTO
     public class YOTOFramework : SingletonMono<YOTOFramework>
     {
         private bool isInit = false;
+        
+        ScreenMonitor screenMonitor = new ScreenMonitor();
+        
         public static  TimeMgr timeMgr = new TimeMgr();
         public static  Logger logger = new Logger();
         public static  ToolMgr toolMgr = new ToolMgr();
@@ -61,6 +64,18 @@ namespace YOTO
             entityMgr._FixedUpdate(dt);
             netMgr.FixUpdate(dt);
         }
+        private void OnScreenResize(int width, int height)
+        {
+        YOTOFramework.timeMgr.DelayCallFram(() =>
+        {
+            OnResizeScreen();
+        },2);
+        }
+
+        private void OnResizeScreen()
+        {
+            uIMgr.ResizeScreen();
+        }
 
         private void Update()
         {
@@ -68,7 +83,7 @@ namespace YOTO
             timeMgr.Update(dt);
             entityMgr._Update(dt);
             sceneMgr.Update(dt);
-      
+            screenMonitor.Update();
         }
 
         private void LateUpdate()

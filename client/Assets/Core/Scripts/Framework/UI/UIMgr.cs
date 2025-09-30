@@ -83,6 +83,14 @@ public class UILayer
 
         }
     }
+
+    public void Resize()
+    {
+        foreach (var uiLayer in handlers)
+        {
+            uiLayer.Value.OnResize();
+        }
+    }
 }
 
 public class UIMgr
@@ -171,5 +179,10 @@ public class UIMgr
                 typeBase.Clear();
             }
         }
+    }
+
+    public void ResizeScreen()
+    {
+        
     }
 }

@@ -9,58 +9,68 @@ using YOTO;
 public class StartPanel : UIPageBase
 {
     public Button joinBtn;
-
     public Button createBtn;
 
     // textMeshpro的input
     public TMP_InputField IPInput;
     public TMP_InputField NameInput;
     public TMP_InputField PortInput;
+
     public CanvasGroup bg;
     public CanvasGroup leftBg;
 
     public Button startBtn;
 
-    // 设置起始状态：屏幕下方且完全透明
-    Vector3 originalPosition ;
-    Vector3 leftoriginalPosition ;
+    // 原始布局位置（目标点）
+    private Vector2 bgOriginalPos;
+    private Vector2 leftOriginalPos;
+
+    private RectTransform bgRect;
+    private RectTransform leftRect;
 
     public override void OnLoad()
     {
-        originalPosition = bg.transform.position;
-        leftoriginalPosition = leftBg.transform.position;
+        bgRect = bg.GetComponent<RectTransform>();
+        leftRect = leftBg.GetComponent<RectTransform>();
+
+        // 记录初始布局点
+        bgOriginalPos = bgRect.anchoredPosition;
+        leftOriginalPos = leftRect.anchoredPosition;
+
         PortInput.text = "9999";
         IPInput.text = "127.0.0.1";
         NameInput.text = "testName";
-
-
     }
 
     public override void OnShow()
     {
+        // 初始隐藏
         leftBg.alpha = 0;
         bg.alpha = 0;
         startBtn.gameObject.SetActive(true);
+
+        // 绑定按钮事件
         joinBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.Name = NameInput.text;
             YOTOFramework.netMgr.JoinHost(IPInput.text, ushort.Parse(PortInput.text));
-            // CloseSelf();
         });
+
         startBtn.onClick.AddListener(() =>
         {
-            // 设置起始状态：屏幕下方且完全透明
-            bg.transform.position = originalPosition + new Vector3(Screen.width, -Screen.height, 0);
-            leftBg.transform.position = leftoriginalPosition + new Vector3(-Screen.width, Screen.height, 0);
+            // 设置起始位置（屏幕外）
+            bgRect.anchoredPosition = bgOriginalPos + new Vector2(Screen.width, -Screen.height);
+            leftRect.anchoredPosition = leftOriginalPos + new Vector2(-Screen.width, Screen.height);
 
-            // 同时执行移动和渐显动画
+            // 淡入 + 移动到目标位置
             Sequence sequence = DOTween.Sequence();
             bg.alpha = 1;
             leftBg.alpha = 1;
-            sequence.Append(bg.transform.DOMove(originalPosition, 1f).SetEase(Ease.OutQuint))
-                .Join(leftBg.transform.DOMove(leftoriginalPosition, 1f).SetEase(Ease.OutQuint));
+            sequence.Append(bgRect.DOAnchorPos(bgOriginalPos, 1f).SetEase(Ease.OutQuint))
+                    .Join(leftRect.DOAnchorPos(leftOriginalPos, 1f).SetEase(Ease.OutQuint));
             startBtn.gameObject.SetActive(false);
         });
+
         createBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.Name = NameInput.text;
@@ -70,22 +80,43 @@ public class StartPanel : UIPageBase
 
     public override void OnHide()
     {
-        // 同时执行移动和渐显动画
+        // 执行出场动画
         Sequence sequence = DOTween.Sequence();
         bg.alpha = 1;
         leftBg.alpha = 1;
-        bg.transform.position = originalPosition;
-        leftBg.transform.position = leftoriginalPosition;
-        sequence.Append(bg.transform.DOMove(new Vector3(Screen.width, -Screen.height, 0), 1f).SetEase(Ease.OutQuint))
-            .Join(leftBg.transform.DOMove(new Vector3(-Screen.width, Screen.height, 0), 1f).SetEase(Ease.OutQuint))
-            .OnComplete(() =>
-            {
-            });
-// 按钮注销
+
+        bgRect.anchoredPosition = bgOriginalPos;
+        leftRect.anchoredPosition = leftOriginalPos;
+
+        sequence.Append(bgRect.DOAnchorPos(new Vector2(bgOriginalPos.x + Screen.width, bgOriginalPos.y - Screen.height), 1f)
+                         .SetEase(Ease.OutQuint))
+                .Join(leftRect.DOAnchorPos(new Vector2(leftOriginalPos.x - Screen.width, leftOriginalPos.y + Screen.height), 1f)
+                         .SetEase(Ease.OutQuint));
+
+        // 注销按钮事件
         joinBtn.onClick.RemoveAllListeners();
         createBtn.onClick.RemoveAllListeners();
         startBtn.onClick.RemoveAllListeners();
-        
+
         startBtn.gameObject.SetActive(false);
+    }
+
+    public override void OnResize()
+    {
+        // 重新计算原始位置（适配分辨率变化）
+        bgOriginalPos = bgRect.anchoredPosition;
+        leftOriginalPos = leftRect.anchoredPosition;
+
+        // 强制完成动画，避免停在中间状态
+        DOTween.Complete(bgRect);
+        DOTween.Complete(leftRect);
+
+        // 恢复到布局目标点
+        bgRect.anchoredPosition = bgOriginalPos;
+        leftRect.anchoredPosition = leftOriginalPos;
+
+        // 保证透明度正确
+        bg.alpha = Mathf.Clamp01(bg.alpha);
+        leftBg.alpha = Mathf.Clamp01(leftBg.alpha);
     }
 }

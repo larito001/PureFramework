@@ -20,4 +20,9 @@ public class FinishPanel : UIPageBase
     {
         
     }
+
+    public override void OnResize()
+    {
+        
+    }
 }

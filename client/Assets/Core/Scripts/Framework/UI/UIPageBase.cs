@@ -19,6 +19,7 @@ public abstract class UIPageBase : MonoBehaviour
     public abstract void OnShow();
     public abstract void OnHide();
 
+    public abstract void OnResize();
     public void Enter()
     {
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
@@ -97,4 +98,5 @@ public abstract class UIPageBase : MonoBehaviour
     {
         YOTOFramework.uIMgr.Hide(uiType);
     }
+
 }

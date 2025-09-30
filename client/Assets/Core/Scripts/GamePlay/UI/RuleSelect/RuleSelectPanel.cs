@@ -38,4 +38,9 @@ public class RuleSelectPanel : UIPageBase
     {
         OnCardFinsh();
     }
+
+    public override void OnResize()
+    {
+        
+    }
 }

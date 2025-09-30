@@ -63,4 +63,9 @@ public class LootingPanel : UIPageBase
         YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.LootTimerNotify, OnLootTimerNotify);
         
     }
+
+    public override void OnResize()
+    {
+        
+    }
 }

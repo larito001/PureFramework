@@ -144,4 +144,21 @@ public class GameMainPanel : UIPageBase
         findBtnRect.anchoredPosition = btnOriginalPosition;
         findBtnRect.localScale = btnOriginalScale;
     }
+
+    public override void OnResize()
+    {
+        // 重新记录原始位置和缩放
+        topOriginalPosition = topInfoBg.anchoredPosition;
+        btnOriginalPosition = findBtnRect.anchoredPosition;
+        btnOriginalScale = findBtnRect.localScale;
+
+        // 强制完成动画，避免屏幕变化时位置错乱
+        DOTween.Complete(topInfoBg);
+        DOTween.Complete(findBtnRect);
+
+        // 确保 UI 处于正确的最终状态
+        topInfoBg.anchoredPosition = topOriginalPosition;
+        findBtnRect.anchoredPosition = btnOriginalPosition;
+        findBtnRect.localScale = btnOriginalScale;
+    }
 }

@@ -46,4 +46,9 @@ public class VotingPanel : UIPageBase
         YOTOFramework.eventMgr.RemoveEventListener<VotEndNotify>(YOTOEventType.VotEndNotify,OnVotEndNotify);
 
     }
+
+    public override void OnResize()
+    {
+        
+    }
 }

@@ -34,6 +34,10 @@ public class UIPageHandler
         }
     }
 
+    public void OnResize()
+    {
+        uIPageBase?.OnResize();
+    }
     public void SetLoadCallback(Action callback)
     {
         Debug.Log($"[UIPageHandler] SetLoadCallback: key={key}");

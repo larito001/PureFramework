@@ -18,4 +18,9 @@ public class LoadingPanel : UIPageBase
     {
         
     }
+
+    public override void OnResize()
+    {
+        
+    }
 }
