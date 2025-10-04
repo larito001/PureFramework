@@ -17,6 +17,7 @@ public class EyesCtrl : MonoBehaviour
 
     private void Update()
     {
+        if (playerEntity.isShow) return;
         if (eyes != null)
         {
             // Lerp 平滑移动到 targetEyesPos
@@ -72,13 +73,14 @@ public class EyesCtrl : MonoBehaviour
         forward = t.transform.position - transform.position;
         transform.forward = forward;
         if (playerEntity.isSelf)
-        { 
-            SetIsSelf(true);
+        {
+            
+            SetIsSelf(!playerEntity.isShow);  
             //相机跟随
             var camera=   YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
      
             //forward = 当前位置到t的位置
-
+    
             transform.forward = forward;
             camera.gameObject.transform.position =transform.forward*0.2f+transform.position+new Vector3(0,0.5f,0);
             EyesOrgPos=eyes.localPosition;

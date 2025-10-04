@@ -19,8 +19,10 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public int SatisfactionValue;
     public const int maxStatiety = 20;//最高饱腹值
     public float drinkRate = 0;
+    public bool isShow = false;//是否是仅展示
     public bool CheckCanCatch()
     {
+        if (isShow) return false;
         bool isEnd = SatietyValue >= maxStatiety;
         if (isEnd)
         {
@@ -35,11 +37,13 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void Drink(float rate)
     {
-        drinkRate=rate;
+        if (isShow) return;
+            drinkRate=rate;
         animCtrl.OnDrink();
     }
     public void Dead()
     {
+        if (isShow) return;
         animCtrl.OnDead();
     }
     public override void YOTOStart()
@@ -52,18 +56,21 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void SetEyesMove(Vector2 input)
     {
+        if (isShow) return;
         if(eyesCtrl!=null)
         eyesCtrl.SetEyesMove(input);
     }
 
     public void SetEyesMove(Vector3 pos)
     {
+        if (isShow) return;
         if(eyesCtrl!=null)
         eyesCtrl.ForceMove(pos);
     }
 
     public void CatchFood(int foodId, bool success)
     {
+        if (isShow) return;
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
         if (success)
         {
@@ -74,11 +81,13 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void EndCatch()
     {
+        if (isShow) return;
         handCtrl.RetractLeftHand();
     }
 
     public void StartLooting(int foodId)
     {
+        if (isShow) return;
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
         handCtrl.ExtendLeftHand(food);
 
@@ -91,7 +100,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void EndLooting(bool win, int foodId)
     {
-        
+        if (isShow) return;
         if (win)
         {
             var food = StagePlugin.Instance.GetFoodEntityById(foodId);
@@ -129,6 +138,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
 
     public void RefreshPlayerProperty(int satiety, int satisfaction)
     {
+        if (isShow) return;
         SatietyValue = satiety;
         SatisfactionValue = satisfaction;
         YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.RefreshPlayerProperty);

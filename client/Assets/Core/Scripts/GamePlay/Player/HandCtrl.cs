@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using YOTO;
 
 public class HandCtrl : MonoBehaviour
 {
@@ -116,7 +117,8 @@ public class HandCtrl : MonoBehaviour
             playerEntity.leftHandDoing = false;
             if (leftTarget != null&&leftTarget.ObjTrans!=null)
             {
-        
+                YOTOFramework.soundMgr.PlaySFX("Sound/Eat");
+                leftTarget.StopCatch();  
                 var food = leftTarget.ObjTrans.GetComponent<FoodBase>();
                 StagePlugin.Instance.RemoveFood(food.foodId);
             }
@@ -150,6 +152,7 @@ public class HandCtrl : MonoBehaviour
             playerEntity.rightHandDoing = false;
             if (rightTarget != null&&rightTarget.ObjTrans!=null)
             {
+                YOTOFramework.soundMgr.PlaySFX("Sound/Eat");
                 rightTarget.StopCatch();
                 var food = rightTarget.ObjTrans.GetComponent<FoodBase>();
                 StagePlugin.Instance.RemoveFood(food.foodId);

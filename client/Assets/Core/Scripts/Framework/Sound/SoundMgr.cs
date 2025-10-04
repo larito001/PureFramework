@@ -30,7 +30,7 @@ public class SoundMgr
             _sfxSources.Add(sfx);
         }
 
-        PlayBGM("Sound/TestSound");
+        PlayBGM("Sound/BGM1",0.3f);
     }
 
     /// <summary>

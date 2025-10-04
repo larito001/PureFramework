@@ -54,6 +54,7 @@ public class StartPanel : UIPageBase
         {
             LoginPlugin.Instance.Name = NameInput.text;
             YOTOFramework.netMgr.JoinHost(IPInput.text, ushort.Parse(PortInput.text));
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
 
         startBtn.onClick.AddListener(() =>
@@ -69,12 +70,14 @@ public class StartPanel : UIPageBase
             sequence.Append(bgRect.DOAnchorPos(bgOriginalPos, 1f).SetEase(Ease.OutQuint))
                     .Join(leftRect.DOAnchorPos(leftOriginalPos, 1f).SetEase(Ease.OutQuint));
             startBtn.gameObject.SetActive(false);
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
 
         createBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.Name = NameInput.text;
             YOTOFramework.netMgr.CreateHost(ushort.Parse(PortInput.text));
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
     }
 
@@ -99,6 +102,7 @@ public class StartPanel : UIPageBase
         startBtn.onClick.RemoveAllListeners();
 
         startBtn.gameObject.SetActive(false);
+        
     }
 
     public override void OnResize()

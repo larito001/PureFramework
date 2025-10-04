@@ -31,8 +31,6 @@ public class ClientMessageManager : Singleton<ClientMessageManager>
         {
             Debug.LogError("客户端未就绪");
         }
-  
-        
     }
 
     

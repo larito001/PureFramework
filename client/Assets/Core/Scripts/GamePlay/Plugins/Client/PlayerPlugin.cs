@@ -111,15 +111,7 @@ public class PlayerPlugin : LogicPluginBase
         YOTOFramework.uIMgr.Hide(UIEnum.LootingPanel);
         //todo:抢夺结束，退出特殊状态
         Debug.Log("抢夺结束，player" + obj.winPlayerId + "赢了");
-
-        if (obj.res == LootRes.Lose)
-        {
-            for (var i = 0; i < obj.losePlayers.Count; i++)
-            {
-                players[obj.winPlayerId].EndLooting(false, obj.foodId);
-            }
-            return;
-        }
+        
         
         if (players.ContainsKey(obj.winPlayerId))
         {
@@ -266,8 +258,9 @@ public class PlayerPlugin : LogicPluginBase
 
     #region 生成、移除player
 
-    public void GeneratePlayers(List<PlayerData> playerDatas)
+    public void GeneratePlayers(List<PlayerData> playerDatas,bool isShow =false)
     {
+        RemoveAllPlayers();
         for (var i = 0; i < playerDatas.Count; i++)
         {
             // playerDatas[i]
@@ -276,6 +269,7 @@ public class PlayerPlugin : LogicPluginBase
             {
                 var p = PlayerEntity.pool.GetItem(playerDatas[i]);
                 p.Location = pp.transform.position;
+                p.isShow=isShow;
                 p.InstanceGObj();
                 players.Add(playerDatas[i].playerId, p);
             }

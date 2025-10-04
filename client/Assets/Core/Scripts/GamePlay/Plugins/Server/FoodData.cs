@@ -42,13 +42,15 @@ public class FoodData
                     isSuccess = false
                 };
                 ServerMessageManager.Instance.SendNotify(notify);
-            }else if (info.OnLootFoodEnd())
+            }
+            if (info.OnLootFoodEnd())
             {
                 StopLootNotify notify = new StopLootNotify()
                 {
                     foodId = foodId,
                     res = LootRes.Lose,
-                    losePlayers = playerIds
+                    winPlayerId = id,
+                    losePlayers = new List<int>()
                 };
                 ServerMessageManager.Instance.SendNotify(notify);
             }

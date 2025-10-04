@@ -24,7 +24,7 @@ namespace YOTO
         public static  NetMgr netMgr = new NetMgr();
         private static PluginManager PluginMgr = new PluginManager();
         private static GameDataManager GameDataManager = new GameDataManager();
-        private static SoundMgr soundMgr = new SoundMgr();
+        public static SoundMgr soundMgr = new SoundMgr();
         public void Init()
         {
             if (!isInit)

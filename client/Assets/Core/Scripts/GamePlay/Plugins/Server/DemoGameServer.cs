@@ -35,7 +35,6 @@ public class DemoGameServer : GameServerBase
         switch (state.State)
         {
             case GameState.Rest:
-
                 var loser = ruleSystem.OnFinishUseRule();
                 restSystem.StartRestSystem(loser);
                 break;

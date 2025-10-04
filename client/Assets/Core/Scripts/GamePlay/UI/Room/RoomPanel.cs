@@ -64,11 +64,13 @@ public class RoomPanel : UIPageBase
         {
             YOTOFramework.netMgr.StopHost();
             YOTOFramework.netMgr.LeaveHost();
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Negative_Close_1",0.5f);
         });
 
         readyBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.GameStartRequest();
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
     }
 
@@ -83,10 +85,12 @@ public class RoomPanel : UIPageBase
         var tempList = LoginPlugin.Instance.GetPlayerDatas();
         playerList.Initialize(10);
         playerList.SetData(tempList.Count);
+        PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas(),true);
     }
 
     public override void OnHide()
     {
+        PlayerPlugin.Instance.RemoveAllPlayers();
         // 出场动画
         Sequence exitSequence = DOTween.Sequence();
         exitSequence.Join(bg.DOAnchorPos(bgOriginalPos + new Vector2(Screen.width, 0), duration)

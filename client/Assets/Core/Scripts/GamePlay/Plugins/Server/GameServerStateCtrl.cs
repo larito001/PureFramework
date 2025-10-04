@@ -153,6 +153,7 @@ public class GameServerStateCtrl
 
     public void ForcePopCurrentState(GameState state)
     {
+        
         if (_stateStack.Count == 0) return;
         var topState = _stateStack.Peek();
         if (topState.State == state)
