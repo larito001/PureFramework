@@ -64,7 +64,7 @@ public class StartPanel : UIPageBase
         startBtn.onClick.AddListener(() =>
         {
             // 设置起始位置（屏幕外）
-            bgRect.anchoredPosition = bgOriginalPos + new Vector2(Screen.width, -Screen.height);
+            bgRect.anchoredPosition = bgOriginalPos + new Vector2(0, -Screen.height);
             leftRect.anchoredPosition = leftOriginalPos + new Vector2(-Screen.width, Screen.height);
 
             // 淡入 + 移动到目标位置
@@ -95,7 +95,7 @@ public class StartPanel : UIPageBase
         bgRect.anchoredPosition = bgOriginalPos;
         leftRect.anchoredPosition = leftOriginalPos;
 
-        sequence.Append(bgRect.DOAnchorPos(new Vector2(bgOriginalPos.x + Screen.width, bgOriginalPos.y - Screen.height), 1f)
+        sequence.Append(bgRect.DOAnchorPos(new Vector2(bgOriginalPos.x , bgOriginalPos.y - Screen.height), 1f)
                          .SetEase(Ease.OutQuint))
                 .Join(leftRect.DOAnchorPos(new Vector2(leftOriginalPos.x - Screen.width, leftOriginalPos.y + Screen.height), 1f)
                          .SetEase(Ease.OutQuint));

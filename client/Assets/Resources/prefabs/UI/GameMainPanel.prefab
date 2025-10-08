@@ -351,7 +351,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 8645392398309298675}
   m_HandleRect: {fileID: 0}
@@ -940,6 +940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiType: 0
+  Tween: 0
   isEnable: 0
   canvasGroup: {fileID: 0}
   slider_satiety: {fileID: 2875739590113913980}

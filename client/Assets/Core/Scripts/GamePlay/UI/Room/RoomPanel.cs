@@ -37,7 +37,7 @@ public class RoomPanel : UIPageBase
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
 
         // 设置起始位置：从屏幕外进入
-        bg.anchoredPosition = bgOriginalPos + new Vector2(Screen.width, 0);
+        bg.anchoredPosition = bgOriginalPos + new Vector2(0, -Screen.height);
         leftBtnGroup.anchoredPosition = leftBtnGroupOriginalPos + new Vector2(-Screen.width, 0);
 
         // 入场动画
@@ -93,7 +93,7 @@ public class RoomPanel : UIPageBase
         PlayerPlugin.Instance.RemoveAllPlayers();
         // 出场动画
         Sequence exitSequence = DOTween.Sequence();
-        exitSequence.Join(bg.DOAnchorPos(bgOriginalPos + new Vector2(Screen.width, 0), duration)
+        exitSequence.Join(bg.DOAnchorPos(bgOriginalPos + new Vector2(0, -Screen.height), duration)
             .SetEase(Ease.OutQuint));
         exitSequence.Join(leftBtnGroup.DOAnchorPos(leftBtnGroupOriginalPos + new Vector2(-Screen.width, 0), duration)
             .SetEase(Ease.OutQuint));
