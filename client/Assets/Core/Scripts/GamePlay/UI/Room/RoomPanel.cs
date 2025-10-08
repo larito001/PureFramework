@@ -11,19 +11,16 @@ public class RoomPanel : UIPageBase
     public Button leaveBtn;
     public Button readyBtn;
     public RectTransform bg;
-    public RectTransform leftBtnGroup;
 
     private float duration = 1f;
 
     // 保存原始位置（UI 正常布局位置）
     private Vector2 bgOriginalPos;
-    private Vector2 leftBtnGroupOriginalPos;
 
     public override void OnLoad()
     {
         // 记录初始布局点
         bgOriginalPos = bg.anchoredPosition;
-        leftBtnGroupOriginalPos = leftBtnGroup.anchoredPosition;
     }
 
     private void ItemRender(YOTOScrollViewItem arg1, int index)
@@ -38,12 +35,10 @@ public class RoomPanel : UIPageBase
 
         // 设置起始位置：从屏幕外进入
         bg.anchoredPosition = bgOriginalPos + new Vector2(0, -Screen.height);
-        leftBtnGroup.anchoredPosition = leftBtnGroupOriginalPos + new Vector2(-Screen.width, 0);
 
         // 入场动画
         Sequence enterSequence = DOTween.Sequence();
         enterSequence.Join(bg.DOAnchorPos(bgOriginalPos, duration).SetEase(Ease.OutQuint));
-        enterSequence.Join(leftBtnGroup.DOAnchorPos(leftBtnGroupOriginalPos, duration).SetEase(Ease.OutQuint));
 
         enterSequence.OnStart(() =>
         {
@@ -95,8 +90,6 @@ public class RoomPanel : UIPageBase
         Sequence exitSequence = DOTween.Sequence();
         exitSequence.Join(bg.DOAnchorPos(bgOriginalPos + new Vector2(0, -Screen.height), duration)
             .SetEase(Ease.OutQuint));
-        exitSequence.Join(leftBtnGroup.DOAnchorPos(leftBtnGroupOriginalPos + new Vector2(-Screen.width, 0), duration)
-            .SetEase(Ease.OutQuint));
 
         exitSequence.OnStart(() =>
         {
@@ -108,7 +101,6 @@ public class RoomPanel : UIPageBase
             Debug.Log("出场动画完成");
             // 重置位置
             bg.anchoredPosition = bgOriginalPos;
-            leftBtnGroup.anchoredPosition = leftBtnGroupOriginalPos;
         });
 
         leaveBtn.onClick.RemoveAllListeners();
@@ -120,25 +112,20 @@ public class RoomPanel : UIPageBase
     {
         // 重新获取目标位置
         bgOriginalPos = bg.anchoredPosition;
-        leftBtnGroupOriginalPos = leftBtnGroup.anchoredPosition;
 
         // 完成动画，避免停在中间
         DOTween.Complete(bg);
-        DOTween.Complete(leftBtnGroup);
 
         // 恢复到布局位置
         bg.anchoredPosition = bgOriginalPos;
-        leftBtnGroup.anchoredPosition = leftBtnGroupOriginalPos;
     }
 
     // 可选：立即完成动画的方法
     public void CompleteAnimationsImmediately()
     {
         DOTween.Complete(bg);
-        DOTween.Complete(leftBtnGroup);
 
         bg.anchoredPosition = bgOriginalPos;
-        leftBtnGroup.anchoredPosition = leftBtnGroupOriginalPos;
         SetUIElementsInteractable(true);
     }
 }

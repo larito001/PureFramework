@@ -11,6 +11,7 @@ using YOTO;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class UIPageBase : MonoBehaviour
 {
+    public List<YOTOUIMove> tweenList=new List<YOTOUIMove>();
     public UIEnum uiType;
     public bool Tween=false;
     public bool isEnable = false;
@@ -22,6 +23,10 @@ public abstract class UIPageBase : MonoBehaviour
     public abstract void OnResize();
     public void Enter()
     {
+        for (var i = 0; i < tweenList.Count; i++)
+        {
+            tweenList[i].OnEnter();
+        }
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup != null)
         {
@@ -62,6 +67,10 @@ public abstract class UIPageBase : MonoBehaviour
 
     public void Exit()
     {
+        for (var i = 0; i < tweenList.Count; i++)
+        {
+            tweenList[i].OnExist();
+        }
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup != null)
         {
