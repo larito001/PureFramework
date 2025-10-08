@@ -6,10 +6,6 @@ using UnityEngine;
 public class RoomListItem: YOTOScrollViewItem 
 {
     public TextMeshProUGUI nameText;
-    public override void OnRenderItem()
-    {
-        base.OnRenderItem();
-    }
 
     public void SetData(PlayerData playerData)
     {

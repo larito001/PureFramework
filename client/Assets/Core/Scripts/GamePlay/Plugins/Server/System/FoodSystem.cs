@@ -98,8 +98,15 @@ public class FoodSystem : ServerSystemBase
         {
             if (ServerDataPlugin.Instance.CheckHavePlayer(arg1.playerId))
             {
-                var food = ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
-                food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));
+                if (ServerDataPlugin.Instance.GetPlayerById(arg1.playerId).GetState()!=PlayerState.Dead)
+                {
+                    var food = ServerDataPlugin.Instance.GetFoodById(arg1.foodId);
+                    food.StartCatch(ServerDataPlugin.Instance.GetPlayerById(arg1.playerId));  
+                }
+                else
+                {
+                    Debug.Log("死了还想抓");
+                }
             }
         }
 

@@ -45,7 +45,8 @@ public enum UIEnum
     RuleSelectPanel,
     VotingPanel,
     LoadingPanel,
-    FinishPanel
+    FinishPanel,
+    SettingPanel
 }
 
 public class UIConfig
@@ -60,6 +61,7 @@ public class UIConfig
         new UIInfo(UIEnum.VotingPanel, UILayerEnum.Normal, "prefabs/UI/VotingPanel"),
         new UIInfo(UIEnum.LoadingPanel, UILayerEnum.RayCast, "prefabs/UI/LoadingPanel"),
         new UIInfo(UIEnum.FinishPanel, UILayerEnum.Normal, "prefabs/UI/FinishPanel"),
+        new UIInfo(UIEnum.SettingPanel, UILayerEnum.Normal, "prefabs/UI/SettingPanel")
         
     };
 

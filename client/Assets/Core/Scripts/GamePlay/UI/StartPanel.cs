@@ -10,7 +10,8 @@ public class StartPanel : UIPageBase
 {
     public Button joinBtn;
     public Button createBtn;
-
+    public Button settingBtn;
+    
     // textMeshpro的input
     public TMP_InputField IPInput;
     public TMP_InputField NameInput;
@@ -48,7 +49,10 @@ public class StartPanel : UIPageBase
         leftBg.alpha = 0;
         bg.alpha = 0;
         startBtn.gameObject.SetActive(true);
-
+        settingBtn.onClick.AddListener(() =>
+        {
+            YOTOFramework.uIMgr.Show(UIEnum.SettingPanel);
+        });
         // 绑定按钮事件
         joinBtn.onClick.AddListener(() =>
         {
