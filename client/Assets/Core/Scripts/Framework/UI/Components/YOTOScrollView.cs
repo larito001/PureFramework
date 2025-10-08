@@ -30,6 +30,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     [Header("Center Settings")] [SerializeField]
     private CenterMode centerMode = CenterMode.None;
+    [Header("Layout Padding")]
+    [SerializeField] private RectOffset padding ;
 
     [Header("References")] [SerializeField]
     private RectTransform content;
@@ -69,6 +71,8 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void Awake()
     {
+        if (padding == null)
+            padding = new RectOffset(0, 0, 0, 0);
         itemPool = new List<YOTOScrollViewItem>();
         visibleIndices = new HashSet<int>();
         currentVisible = new Dictionary<int, YOTOScrollViewItem>();
@@ -142,7 +146,6 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             return;
         }
 
-        // 清空当前可见项
         foreach (var it in itemPool)
         {
             if (it.gameObject.activeSelf)
@@ -151,15 +154,12 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                 it.gameObject.SetActive(false);
             }
         }
-
         visibleIndices.Clear();
         currentVisible.Clear();
 
-        // 保障行列最小为 1（仅用于非空数据的排布）
         columns = Mathf.Max(1, columns);
         rows = Mathf.Max(1, rows);
 
-        // 空数据时：重置尺寸与位置后直接返回，避免计算出负尺寸或 maxRow = -1 等问题
         if (dataCount == 0)
         {
             content.sizeDelta = Vector2.zero;
@@ -180,158 +180,161 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             totalCols = Mathf.CeilToInt((float)dataCount / totalRows);
         }
 
-        contentWidth = totalCols > 0 ? totalCols * itemWidth + (totalCols - 1) * spacing : 0f;
-        contentHeight = totalRows > 0 ? totalRows * itemHeight + (totalRows - 1) * spacing : 0f;
+        // 加上 padding
+        contentWidth  = totalCols > 0 ? totalCols * itemWidth  + (totalCols - 1) * spacing + padding.left + padding.right : 0f;
+        contentHeight = totalRows > 0 ? totalRows * itemHeight + (totalRows - 1) * spacing + padding.top  + padding.bottom : 0f;
+
         content.sizeDelta = new Vector2(contentWidth, contentHeight);
 
         ClampContentPosition();
         RefreshItems();
     }
 
-    private void RefreshItems()
-    {
-        if (renderAction == null) return;
 
-        // 空数据直接清理并返回，避免 maxRow/maxCol 变成 -1
-        if (dataCount <= 0)
+    private void RefreshItems()
+{
+    if (renderAction == null) return;
+
+    if (dataCount <= 0)
+    {
+        foreach (var it in itemPool)
         {
-            foreach (var it in itemPool)
+            if (it.gameObject.activeSelf)
             {
-                if (it.gameObject.activeSelf)
+                it.OnHidItem();
+                it.gameObject.SetActive(false);
+            }
+        }
+        visibleIndices.Clear();
+        currentVisible.Clear();
+        return;
+    }
+
+    columns = Mathf.Max(1, columns);
+    rows = Mathf.Max(1, rows);
+
+    currentVisible.Clear();
+
+    if (layout == LayoutType.Vertical)
+    {
+        float scrollY = content.anchoredPosition.y;
+        float viewH = viewport.rect.height;
+        float rowH = itemHeight + spacing;
+
+        startRow = Mathf.FloorToInt(scrollY / rowH);
+        int visRows = Mathf.CeilToInt(viewH / rowH) + 1;
+        endRow = startRow + visRows;
+
+        int maxRow = Mathf.CeilToInt((float)dataCount / columns) - 1;
+        maxRow = Mathf.Max(-1, maxRow);
+        startRow = Mathf.Clamp(startRow, 0, Mathf.Max(0, maxRow));
+        endRow   = Mathf.Clamp(endRow,   0, Mathf.Max(0, maxRow));
+
+        foreach (var it in itemPool)
+        {
+            if (it.gameObject.activeSelf)
+            {
+                int idx = it.DataIndex;
+                int r = idx / columns;
+                if (r < startRow || r > endRow)
                 {
                     it.OnHidItem();
                     it.gameObject.SetActive(false);
+                    visibleIndices.Remove(idx);
                 }
-            }
-
-            visibleIndices.Clear();
-            currentVisible.Clear();
-            return;
-        }
-
-        // 保障行列合法
-        columns = Mathf.Max(1, columns);
-        rows = Mathf.Max(1, rows);
-
-        currentVisible.Clear();
-
-        if (layout == LayoutType.Vertical)
-        {
-            float scrollY = content.anchoredPosition.y;
-            float viewH = viewport.rect.height;
-            float rowH = itemHeight + spacing;
-
-            startRow = Mathf.FloorToInt(scrollY / rowH);
-            int visRows = Mathf.CeilToInt(viewH / rowH) + 1;
-            endRow = startRow + visRows;
-
-            int maxRow = Mathf.CeilToInt((float)dataCount / columns) - 1;
-            maxRow = Mathf.Max(-1, maxRow); // 防御性：理论上 dataCount>0 时 >=0，这里只是双保险
-            startRow = Mathf.Clamp(startRow, 0, Mathf.Max(0, maxRow));
-            endRow = Mathf.Clamp(endRow, 0, Mathf.Max(0, maxRow));
-
-            foreach (var it in itemPool)
-            {
-                if (it.gameObject.activeSelf)
-                {
-                    int idx = it.DataIndex;
-                    int r = idx / columns;
-                    if (r < startRow || r > endRow)
-                    {
-                        it.OnHidItem();
-                        it.gameObject.SetActive(false);
-                        visibleIndices.Remove(idx);
-                    }
-                    else currentVisible[idx] = it;
-                }
-            }
-
-            for (int r = startRow; r <= endRow; r++)
-            {
-                for (int c = 0; c < columns; c++)
-                {
-                    int idx = r * columns + c;
-                    if (idx >= dataCount) break;
-
-                    float x = c * (itemWidth + spacing) + itemWidth * 0.5f;
-                    float y = -r * (itemHeight + spacing) - itemHeight * 0.5f;
-
-                    if (currentVisible.TryGetValue(idx, out var exist))
-                    {
-                        exist.transform.localPosition = new Vector3(x, y, 0);
-                        continue;
-                    }
-
-                    var ni = GetFreeItem();
-                    if (ni == null) continue;
-                    ni.transform.localPosition = new Vector3(x, y, 0);
-                    ni.DataIndex = idx;
-                    ni.gameObject.SetActive(true);
-                    ni.OnRenderItem();
-                    renderAction(ni, idx);
-                    visibleIndices.Add(idx);
-                }
+                else currentVisible[idx] = it;
             }
         }
-        else // Horizontal
+
+        for (int r = startRow; r <= endRow; r++)
         {
-            float scrollX = -content.anchoredPosition.x;
-            float viewW = viewport.rect.width;
-            float colW = itemWidth + spacing;
-
-            startCol = Mathf.FloorToInt(scrollX / colW);
-            int visCols = Mathf.CeilToInt(viewW / colW) + 1;
-            endCol = startCol + visCols;
-
-            int maxCol = Mathf.CeilToInt((float)dataCount / rows) - 1;
-            maxCol = Mathf.Max(-1, maxCol);
-            startCol = Mathf.Clamp(startCol, 0, Mathf.Max(0, maxCol));
-            endCol = Mathf.Clamp(endCol, 0, Mathf.Max(0, maxCol));
-
-            foreach (var it in itemPool)
+            for (int c = 0; c < columns; c++)
             {
-                if (it.gameObject.activeSelf)
+                int idx = r * columns + c;
+                if (idx >= dataCount) break;
+
+                // 加上 padding
+                float x = padding.left + c * (itemWidth + spacing) + itemWidth * 0.5f;
+                float y = -padding.top - r * (itemHeight + spacing) - itemHeight * 0.5f;
+
+                if (currentVisible.TryGetValue(idx, out var exist))
                 {
-                    int idx = it.DataIndex;
-                    int c = idx / rows;
-                    if (c < startCol || c > endCol)
-                    {
-                        it.OnHidItem();
-                        it.gameObject.SetActive(false);
-                        visibleIndices.Remove(idx);
-                    }
-                    else currentVisible[idx] = it;
+                    exist.transform.localPosition = new Vector3(x, y, 0);
+                    continue;
                 }
-            }
 
-            for (int c = startCol; c <= endCol; c++)
-            {
-                for (int r = 0; r < rows; r++)
-                {
-                    int idx = c * rows + r;
-                    if (idx >= dataCount) break;
-
-                    float x = c * (itemWidth + spacing) + itemWidth * 0.5f;
-                    float y = -r * (itemHeight + spacing) - itemHeight * 0.5f;
-
-                    if (currentVisible.TryGetValue(idx, out var exist))
-                    {
-                        exist.transform.localPosition = new Vector3(x, y, 0);
-                        continue;
-                    }
-
-                    var ni = GetFreeItem();
-                    if (ni == null) continue;
-                    ni.transform.localPosition = new Vector3(x, y, 0);
-                    ni.DataIndex = idx;
-                    ni.gameObject.SetActive(true);
-                    ni.OnRenderItem();
-                    renderAction(ni, idx);
-                    visibleIndices.Add(idx);
-                }
+                var ni = GetFreeItem();
+                if (ni == null) continue;
+                ni.transform.localPosition = new Vector3(x, y, 0);
+                ni.DataIndex = idx;
+                ni.gameObject.SetActive(true);
+                ni.OnRenderItem();
+                renderAction(ni, idx);
+                visibleIndices.Add(idx);
             }
         }
     }
+    else // Horizontal
+    {
+        float scrollX = -content.anchoredPosition.x;
+        float viewW = viewport.rect.width;
+        float colW = itemWidth + spacing;
+
+        startCol = Mathf.FloorToInt(scrollX / colW);
+        int visCols = Mathf.CeilToInt(viewW / colW) + 1;
+        endCol = startCol + visCols;
+
+        int maxCol = Mathf.CeilToInt((float)dataCount / rows) - 1;
+        maxCol = Mathf.Max(-1, maxCol);
+        startCol = Mathf.Clamp(startCol, 0, Mathf.Max(0, maxCol));
+        endCol   = Mathf.Clamp(endCol,   0, Mathf.Max(0, maxCol));
+
+        foreach (var it in itemPool)
+        {
+            if (it.gameObject.activeSelf)
+            {
+                int idx = it.DataIndex;
+                int c = idx / rows;
+                if (c < startCol || c > endCol)
+                {
+                    it.OnHidItem();
+                    it.gameObject.SetActive(false);
+                    visibleIndices.Remove(idx);
+                }
+                else currentVisible[idx] = it;
+            }
+        }
+
+        for (int c = startCol; c <= endCol; c++)
+        {
+            for (int r = 0; r < rows; r++)
+            {
+                int idx = c * rows + r;
+                if (idx >= dataCount) break;
+
+                // 加上 padding
+                float x = padding.left + c * (itemWidth + spacing) + itemWidth * 0.5f;
+                float y = -padding.top - r * (itemHeight + spacing) - itemHeight * 0.5f;
+
+                if (currentVisible.TryGetValue(idx, out var exist))
+                {
+                    exist.transform.localPosition = new Vector3(x, y, 0);
+                    continue;
+                }
+
+                var ni = GetFreeItem();
+                if (ni == null) continue;
+                ni.transform.localPosition = new Vector3(x, y, 0);
+                ni.DataIndex = idx;
+                ni.gameObject.SetActive(true);
+                ni.OnRenderItem();
+                renderAction(ni, idx);
+                visibleIndices.Add(idx);
+            }
+        }
+    }
+}
+
 
 
     private YOTOScrollViewItem GetFreeItem()
