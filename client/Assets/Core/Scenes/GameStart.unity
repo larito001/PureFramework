@@ -690,6 +690,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4716625242422785045, guid: 67b712b42fd128e42b78e47ed7e7cf18, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5388902251058778781, guid: 67b712b42fd128e42b78e47ed7e7cf18, type: 3}
       propertyPath: m_Name
       value: StartPanel

@@ -8,6 +8,14 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(RectTransform))]
 public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    public enum CenterMode
+    {
+        None,
+        Horizontal,
+        Vertical,
+        Both
+    }
+
     public enum LayoutType
     {
         Vertical,
@@ -19,7 +27,9 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     [SerializeField] private int columns = 5; // Used when layout is Vertical
     [SerializeField] private int rows = 1; // Used when layout is Horizontal
-    [SerializeField] private bool isCenter = false;
+
+    [Header("Center Settings")] [SerializeField]
+    private CenterMode centerMode = CenterMode.None;
 
     [Header("References")] [SerializeField]
     private RectTransform content;
@@ -370,19 +380,18 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             float maxY = Mathf.Max(0, contentHeight - viewport.rect.height);
             pos.y = Mathf.Clamp(pos.y, 0, maxY);
 
-            if (isCenter)
+            // 纵向居中
+            if ((centerMode == CenterMode.Vertical || centerMode == CenterMode.Both)
+                && contentHeight < viewport.rect.height)
             {
-                // 垂直方向居中（内容比 viewport 小）
-                if (contentHeight < viewport.rect.height)
-                {
-                    pos.y = -(viewport.rect.height - contentHeight) * 0.5f;
-                }
+                pos.y = -(viewport.rect.height - contentHeight) * 0.5f;
+            }
 
-                // 水平方向居中（内容比 viewport 小）
-                if (contentWidth < viewport.rect.width)
-                {
-                    pos.x = (viewport.rect.width - contentWidth) * 0.5f;
-                }
+            // 横向居中
+            if ((centerMode == CenterMode.Horizontal || centerMode == CenterMode.Both)
+                && contentWidth < viewport.rect.width)
+            {
+                pos.x = (viewport.rect.width - contentWidth) * 0.5f;
             }
         }
         else // Horizontal
@@ -390,24 +399,24 @@ public class YOTOScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             float maxX = Mathf.Max(0, contentWidth - viewport.rect.width);
             pos.x = Mathf.Clamp(pos.x, -maxX, 0);
 
-            if (isCenter)
+            // 横向居中
+            if ((centerMode == CenterMode.Horizontal || centerMode == CenterMode.Both)
+                && contentWidth < viewport.rect.width)
             {
-                // 水平方向居中
-                if (contentWidth < viewport.rect.width)
-                {
-                    pos.x = (viewport.rect.width - contentWidth) * 0.5f;
-                }
+                pos.x = (viewport.rect.width - contentWidth) * 0.5f;
+            }
 
-                // 垂直方向居中
-                if (contentHeight < viewport.rect.height)
-                {
-                    pos.y = -(viewport.rect.height - contentHeight) * 0.5f;
-                }
+            // 纵向居中
+            if ((centerMode == CenterMode.Vertical || centerMode == CenterMode.Both)
+                && contentHeight < viewport.rect.height)
+            {
+                pos.y = -(viewport.rect.height - contentHeight) * 0.5f;
             }
         }
 
         content.anchoredPosition = pos;
     }
+
 
     private void Update()
     {
