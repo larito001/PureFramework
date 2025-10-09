@@ -45,7 +45,7 @@ public class SoundMgr
             // 释放旧的 BGM
             if (_currentBgm != null)
             {
-                YOTOFramework.resMgr.ReleasePack(_currentBgm);
+                YOTOFramework.resMgr.ReleasePack("Sound/BGM1",_currentBgm);
             }
 
             _currentBgm = clip;
@@ -64,7 +64,7 @@ public class SoundMgr
 
         if (_currentBgm != null)
         {
-            YOTOFramework.resMgr.ReleasePack(_currentBgm);
+            YOTOFramework.resMgr.ReleasePack("Sound/BGM1",_currentBgm);
             _currentBgm = null;
             _bgmSource.clip = null;
         }
@@ -93,7 +93,7 @@ public class SoundMgr
     {
         yield return new WaitWhile(() => src.isPlaying);
         src.clip = null;
-        YOTOFramework.resMgr.ReleasePack(clip);
+        YOTOFramework.resMgr.ReleasePack("Sound/BGM1",clip);
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class SoundMgr
             if (s.isPlaying) s.Stop();
             if (s.clip != null)
             {
-                YOTOFramework.resMgr.ReleasePack(s.clip);
+                YOTOFramework.resMgr.ReleasePack("Sound/BGM1",s.clip);
                 s.clip = null;
             }
         }

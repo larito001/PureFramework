@@ -134,6 +134,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     {
         handCtrl.OnUnLoad();
         RecoverObject();
+        ParticleEntity.pool.RecoverItem(particle);
     }
 
     public void RefreshPlayerProperty(int satiety, int satisfaction)
@@ -156,9 +157,12 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     {
         return staticData;
     }
-
+    private ParticleEntity particle;
     protected override void AfterInstanceGObj()
     {
+        particle=  ParticleEntity.pool.GetItem(new ParticleEntityData()
+            { path = "smoke/msVFX_Stylized Smoke 1", pos = objTrans.position });
+        particle.Play();
         leftHandDoing = false;
         rightHandDoing = false;
         objTrans.gameObject.SetActive(true);
