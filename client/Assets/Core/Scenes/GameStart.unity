@@ -690,6 +690,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3837137493308156963, guid: 67b712b42fd128e42b78e47ed7e7cf18, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.3869629
+      objectReference: {fileID: 0}
     - target: {fileID: 5388902251058778781, guid: 67b712b42fd128e42b78e47ed7e7cf18, type: 3}
       propertyPath: m_Name
       value: StartPanel
@@ -3024,6 +3028,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5167705254825990062, guid: 61cfc2aaa62d7ea478511b73a02cb50c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -117.35986
+      objectReference: {fileID: 0}
+    - target: {fileID: 5167705254825990062, guid: 61cfc2aaa62d7ea478511b73a02cb50c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 28.691406
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3230,6 +3242,14 @@ PrefabInstance:
     - target: {fileID: 7975413438342855164, guid: e638fd1bb1080d643963cc5ce3ce0195, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8627294875058080966, guid: e638fd1bb1080d643963cc5ce3ce0195, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 115.85205
+      objectReference: {fileID: 0}
+    - target: {fileID: 8627294875058080966, guid: e638fd1bb1080d643963cc5ce3ce0195, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -59.92993
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

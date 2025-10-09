@@ -43,6 +43,7 @@ public class DemoGameServer : GameServerBase
                 break;
             case GameState.Ready:
                 commonSystem.OnFlyTextNotify("Ready", FlyTextType.Normal);
+
                 break;
             case GameState.Playing:
                 foodSystem.StartFoodSystem();
@@ -79,6 +80,9 @@ public class DemoGameServer : GameServerBase
             case GameState.Selecting:
                 ruleSystem.SetRandomRule();
                 break;
+            case GameState.Ready:
+                playerSystem.OnGameStart();
+                break;
             case GameState.Playing:
                 foodSystem.EndGenerateFood();
                 stateCtrl.ReStartLevel();
@@ -94,7 +98,7 @@ public class DemoGameServer : GameServerBase
                 votSystem.Reset();
                 break;
             case GameState.Room:
-                playerSystem.OnGameStart();
+ 
                 break;
         }
     }

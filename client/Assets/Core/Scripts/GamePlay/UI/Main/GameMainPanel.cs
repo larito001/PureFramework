@@ -11,19 +11,20 @@ using YOTO;
 public class GameMainPanel : UIPageBase
 {
     public Slider slider_satiety;
-    public TextMeshProUGUI txt_satisfaction;
+    public List<Sprite> satisfactionSprites = new List<Sprite>();
     public TextMeshProUGUI txt_timer;
     public Button findBtn;
-    public RectTransform topInfoBg;
     private Vector2 topOriginalPosition;
     private Vector2 btnOriginalPosition;
     private RectTransform findBtnRect;
     private Vector3 btnOriginalScale;
+    public Image satisfactionImg;
+
     public List<MainPlayerInfoCtrl> playerInfoCtrls = new List<MainPlayerInfoCtrl>();
+
     // private 
     public override void OnLoad()
     {
-        topOriginalPosition = topInfoBg.anchoredPosition;
         findBtnRect = findBtn.GetComponent<RectTransform>();
         btnOriginalPosition = findBtnRect.anchoredPosition;
         btnOriginalScale = findBtnRect.localScale;
@@ -34,20 +35,18 @@ public class GameMainPanel : UIPageBase
         YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         findBtn.onClick.AddListener(OnClickFindBtn);
-        
+
         // 添加鼠标悬停效果
         AddButtonHoverEffect();
-        
+
         // 确保UI元素在动画开始前位于屏幕外
-        topInfoBg.anchoredPosition = topOriginalPosition - new Vector2(topInfoBg.rect.width + 100, 0);
         findBtnRect.anchoredPosition = btnOriginalPosition + new Vector2(findBtnRect.rect.width + 100, 0);
-        
+
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(topInfoBg.DOAnchorPos(topOriginalPosition, 1f).SetEase(Ease.OutQuint))
-                .Join(findBtnRect.DOAnchorPos(btnOriginalPosition, 1f).SetEase(Ease.OutQuint));
-        
+        sequence.Join(findBtnRect.DOAnchorPos(btnOriginalPosition, 1f).SetEase(Ease.OutQuint));
+
         sequence.OnStart(() => { Debug.Log("入场动画开始"); })
-                .OnComplete(() => { Debug.Log("入场动画完成"); });
+            .OnComplete(() => { Debug.Log("入场动画完成"); });
         for (var i = 0; i < playerInfoCtrls.Count; i++)
         {
             playerInfoCtrls[i].Reset();
@@ -65,7 +64,7 @@ public class GameMainPanel : UIPageBase
         RefreshPlayerProperty();
     }
 
-    private void OnTimerNotify(int index )
+    private void OnTimerNotify(int index)
     {
         txt_timer.text = index.ToString();
     }
@@ -101,14 +100,14 @@ public class GameMainPanel : UIPageBase
     {
         // 直接放大按钮
         findBtnRect.DOScale(btnOriginalScale * 1.2f, 0.3f)
-                  .SetEase(Ease.OutBack);
+            .SetEase(Ease.OutBack);
     }
 
     private void OnButtonPointerExit()
     {
         // 恢复原始大小
         findBtnRect.DOScale(btnOriginalScale, 0.3f)
-                  .SetEase(Ease.OutBack);
+            .SetEase(Ease.OutBack);
     }
 
     private void OnClickFindBtn()
@@ -119,8 +118,23 @@ public class GameMainPanel : UIPageBase
     private void RefreshPlayerProperty()
     {
         var self = PlayerPlugin.Instance.GetSelf();
-        slider_satiety.value =(float)self.SatietyValue /(float)PlayerEntity.maxStatiety;
-        txt_satisfaction.text = "满意度:" + self.SatisfactionValue;
+        slider_satiety.value = (float)self.SatietyValue / (float)PlayerEntity.maxStatiety;
+        if (self.SatisfactionValue > 20f)
+        {
+            satisfactionImg.sprite = satisfactionSprites[0];
+        }
+        else if (self.SatisfactionValue > 10f)
+        {
+            satisfactionImg.sprite = satisfactionSprites[1];
+        }
+        else if (self.SatisfactionValue > 5f)
+        {
+            satisfactionImg.sprite = satisfactionSprites[2];
+        }
+        else
+        {
+            satisfactionImg.sprite = satisfactionSprites[3];
+        }
     }
 
     public override void OnHide()
@@ -132,15 +146,14 @@ public class GameMainPanel : UIPageBase
         {
             playerInfoCtrls[i].Reset();
         }
+
         // 移除事件触发器
         EventTrigger trigger = findBtn.gameObject.GetComponent<EventTrigger>();
         if (trigger != null)
         {
             trigger.triggers.Clear();
         }
-        
-        // 重置位置和缩放
-        topInfoBg.anchoredPosition = topOriginalPosition;
+
         findBtnRect.anchoredPosition = btnOriginalPosition;
         findBtnRect.localScale = btnOriginalScale;
     }
@@ -148,16 +161,13 @@ public class GameMainPanel : UIPageBase
     public override void OnResize()
     {
         // 重新记录原始位置和缩放
-        topOriginalPosition = topInfoBg.anchoredPosition;
         btnOriginalPosition = findBtnRect.anchoredPosition;
         btnOriginalScale = findBtnRect.localScale;
 
         // 强制完成动画，避免屏幕变化时位置错乱
-        DOTween.Complete(topInfoBg);
         DOTween.Complete(findBtnRect);
 
         // 确保 UI 处于正确的最终状态
-        topInfoBg.anchoredPosition = topOriginalPosition;
         findBtnRect.anchoredPosition = btnOriginalPosition;
         findBtnRect.localScale = btnOriginalScale;
     }
