@@ -40,10 +40,8 @@ public abstract class GameClientBase
     public void StopClient()
     {
         var mgr = YOTOFramework.netMgr.mirrorManager;
-
-        RemoveClientEvents(mgr);
-
         mgr.StopClient();
+        RemoveClientEvents(mgr);
     }
     public void StopHostClient()
     {
