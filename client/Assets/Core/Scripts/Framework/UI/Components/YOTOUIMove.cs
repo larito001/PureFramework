@@ -1,14 +1,15 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class YOTOUIMove : MonoBehaviour
+public class YOTOUIMove : YOTOUIChangeBase
 {
     [Header("位置控制")]
     public RectTransform StartPos;
     public RectTransform EndPos;
 
     [Header("过渡配置")]
-    public float duration = 0.5f;
+    public float enterDuration = 0.5f;
+    public float exitDuration = 0.5f;
     public Ease easeType = Ease.OutQuad;
 
     private RectTransform target;
@@ -26,20 +27,20 @@ public class YOTOUIMove : MonoBehaviour
     /// <summary>
     /// 播放进入动画（Start → End）
     /// </summary>
-    public void OnEnter()
+    public override void OnEnter()
     {
-        PlayTween(StartPos, EndPos);
+        PlayTween(StartPos, EndPos,enterDuration);
     }
 
     /// <summary>
     /// 播放退出动画（End → Start）
     /// </summary>
-    public void OnExist()
+    public override void OnExist()
     {
-        PlayTween(EndPos, StartPos);
+        PlayTween(EndPos, StartPos, exitDuration);
     }
 
-    private void PlayTween(RectTransform from, RectTransform to)
+    private void PlayTween(RectTransform from, RectTransform to,float duration)
     {
         if (target == null || from == null || to == null) return;
 

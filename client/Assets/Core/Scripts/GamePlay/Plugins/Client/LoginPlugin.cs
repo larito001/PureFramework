@@ -72,7 +72,7 @@ public class LoginPlugin : LogicPluginBase
         Debug.Log("游戏开始！");
         //todo:打开loading
         YOTOFramework.uIMgr.Show(UIEnum.LoadingPanel);
-        YOTOFramework.timeMgr.DelayCall( StagePlugin.Instance.OnGameStart,0.5f);
+        YOTOFramework.timeMgr.DelayCall( StagePlugin.Instance.OnGameStart,1.2f);
     }
 
     public void OnNetError()
