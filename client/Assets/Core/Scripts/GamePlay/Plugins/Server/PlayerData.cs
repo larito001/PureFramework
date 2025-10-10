@@ -16,6 +16,7 @@ public class PlayerData
     public int lootNum = 0;
     public int useFoodId = -1;
     public int currentAlcohol = 0;
+    public bool needPlayParticle = true;
 
     public void PlayerLose()
     {

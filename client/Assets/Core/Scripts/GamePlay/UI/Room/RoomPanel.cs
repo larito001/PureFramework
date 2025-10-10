@@ -80,7 +80,7 @@ public class RoomPanel : UIPageBase
         var tempList = LoginPlugin.Instance.GetPlayerDatas();
         playerList.Initialize(10);
         playerList.SetData(tempList.Count);
-        PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas(),true);
+        PlayerPlugin.Instance.RefreshPlayers(LoginPlugin.Instance.GetPlayerDatas(),true);
     }
 
     public override void OnHide()

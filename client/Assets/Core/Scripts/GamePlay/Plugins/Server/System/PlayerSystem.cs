@@ -63,7 +63,7 @@ public class PlayerSystem : ServerSystemBase
         if (ServerDataPlugin.Instance.RemovePlayerById(connectionId))
         {
             RefreshPlayerDatas();
-            if (ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
+            if (_server.stateCtrl.GameIsStart()&&ServerDataPlugin.Instance.GetPlayerList().Count <= 1)
             {
                 _server.stateCtrl.OnJoinRoom();
                 _server.OnGameEndNotify();
