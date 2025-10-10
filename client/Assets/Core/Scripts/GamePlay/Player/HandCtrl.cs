@@ -8,12 +8,12 @@ using YOTO;
 public class HandCtrl : MonoBehaviour
 {
     [SerializeField] private float moveDuration = 0.5f; // 动作时间，可在 Inspector 设置
-    [SerializeField] private Ease moveEase = Ease.OutBack; // 缓动类型
+    [SerializeField] private Ease moveEase = Ease.InQuad; // 缓动类型
 
     private PlayerEntity playerEntity;
     public Transform leftHand;
     public Transform rightHand;
-
+    public LineRenderer lineRenderer;
     private Vector3 leftHandOriginalPos;
     private Quaternion leftHandOriginalRot;
     private Vector3 rightHandOriginalPos;
@@ -37,6 +37,7 @@ public class HandCtrl : MonoBehaviour
             rightHandOriginalPos = rightHand.position;
             rightHandOriginalRot = rightHand.rotation;
         }
+        lineRenderer.enabled = false;
     }
 
     /// <summary>
@@ -50,6 +51,7 @@ public class HandCtrl : MonoBehaviour
         leftTarget = target;
 
         // Kill 旧的 tween，并强制触发 OnComplete 避免丢失回调
+
         leftHand.DOKill(true);
         Debug.Log("调用回收左手" + playerEntity.isSelf);
         leftHand.DOMove(leftTarget.ObjTrans.position, moveDuration)
@@ -60,6 +62,7 @@ public class HandCtrl : MonoBehaviour
                 Debug.Log("LeftHand tween complete" + playerEntity.isSelf);
                 if (leftTarget!=null&&leftTarget.ObjTrans!=null)
                 {
+                    lineRenderer.enabled = true;
                     leftTarget.OnCatch();
                     leftTarget.ObjTrans.SetParent(leftHand);   
                 }
@@ -106,7 +109,8 @@ public class HandCtrl : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         if (leftTarget != null && leftTarget.ObjTrans != null)
         {
-            leftTarget.StopCatch();  
+            leftTarget.StopCatch(); 
+            lineRenderer.enabled = false;
         }
   
         seq.Join(leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase));
@@ -123,6 +127,7 @@ public class HandCtrl : MonoBehaviour
                 StagePlugin.Instance.RemoveFood(food.foodId);
             }
             leftTarget = null;
+            lineRenderer.enabled = false;
         });
     }
 

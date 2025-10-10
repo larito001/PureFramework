@@ -257,14 +257,13 @@ public class PlayerPlugin : LogicPluginBase
     #endregion
 
     #region 生成、移除player
-
+    
     public void GeneratePlayers(List<PlayerData> playerDatas,bool isShow =false)
     {
         RemoveAllPlayers();
         for (var i = 0; i < playerDatas.Count; i++)
         {
-            // playerDatas[i]
-            var pp = GameObject.Find("p" + (i + 1).ToString());
+            var pp = GameObject.Find("p" + (i+ 1).ToString());
             if (pp != null)
             {
                 var p = PlayerEntity.pool.GetItem(playerDatas[i]);
@@ -275,33 +274,8 @@ public class PlayerPlugin : LogicPluginBase
             }
         }
     }
-
-    public void RefreshPlayers(List<PlayerData> playerDatas, bool isShow = false)
-    {
-        var addList = new List<PlayerData>();
-        
-        for (var i = 0; i < playerDatas.Count; i++)
-        {
-            if (!players.ContainsKey(playerDatas[i].playerId))
-            {
-                addList.Add(playerDatas[i]);
-            }
-        }
-
-        var startIndex = players.Count;
-        for (var i = 0; i < addList.Count; i++)
-        {
-            var pp = GameObject.Find("p" + (startIndex+i + 1).ToString());
-            if (pp != null)
-            {
-                var p = PlayerEntity.pool.GetItem(addList[i]);
-                p.Location = pp.transform.position;
-                p.isShow=isShow;
-                p.InstanceGObj();
-                players.Add(addList[i].playerId, p);
-            }
-        }
-    }
+    
+    
 
     private void OnPlayerPropertyNotify(PlayerPropertyNotify obj)
     {

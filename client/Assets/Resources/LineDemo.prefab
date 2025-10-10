@@ -76,7 +76,9 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: -3.91, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.1
@@ -140,7 +142,7 @@ LineRenderer:
     textureMode: 3
     textureScale: {x: 1, y: 1}
     shadowBias: 0
-    generateLightingData: 0
+    generateLightingData: 1
   m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
@@ -159,7 +161,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPoint: {fileID: 2540449828335550329}
   endPoint: {fileID: 0}
-  controlPoint: {fileID: 0}
   numberOfPoints: 20
   controlFollowSpeed: 5
   curveHitOffset: 1

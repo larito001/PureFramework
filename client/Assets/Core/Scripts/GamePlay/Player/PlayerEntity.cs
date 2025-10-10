@@ -158,6 +158,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         return staticData;
     }
     private ParticleEntity particle;
+
     protected override void AfterInstanceGObj()
     {
         particle=  ParticleEntity.pool.GetItem(new ParticleEntityData()

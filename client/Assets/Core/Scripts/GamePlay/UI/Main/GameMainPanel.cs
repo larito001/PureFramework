@@ -49,7 +49,7 @@ public class GameMainPanel : UIPageBase
             .OnComplete(() => { Debug.Log("入场动画完成"); });
         for (var i = 0; i < playerInfoCtrls.Count; i++)
         {
-            playerInfoCtrls[i].Reset();
+            playerInfoCtrls[i].Reset(satisfactionSprites);
         }
 
         int index = 0;
@@ -122,6 +122,7 @@ public class GameMainPanel : UIPageBase
         if (self.SatisfactionValue > 20f)
         {
             satisfactionImg.sprite = satisfactionSprites[0];
+            
         }
         else if (self.SatisfactionValue > 10f)
         {
@@ -144,7 +145,7 @@ public class GameMainPanel : UIPageBase
         findBtn.onClick.RemoveAllListeners();
         for (var i = 0; i < playerInfoCtrls.Count; i++)
         {
-            playerInfoCtrls[i].Reset();
+            playerInfoCtrls[i].Reset(null);
         }
 
         // 移除事件触发器

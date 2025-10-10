@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class YOTOButton : Button, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -11,6 +13,12 @@ public class YOTOButton : Button, IPointerEnterHandler, IPointerExitHandler, IPo
     public float duration = 0.2f;     // 动画时长
     public Ease easeType = Ease.OutBack; // 动画缓动类型
 
+    [Header("文字颜色设置")]
+    public Color normalColor = new Color(0.36f, 0.24f, 0.17f);  // 深棕色
+    public Color hoverColor = new Color(0.90f, 0.49f, 0.13f);   // 橙色
+    public Color clickColor = new Color(0.55f, 0.18f, 0.10f);   // 红棕色
+
+    private List<TextMeshProUGUI> textMeshProUGUIs = new List<TextMeshProUGUI>();
     private Vector3 originalScale;
     private Tween currentTween;
 
@@ -18,17 +26,24 @@ public class YOTOButton : Button, IPointerEnterHandler, IPointerExitHandler, IPo
     {
         base.Start();
         originalScale = transform.localScale;
+        foreach (var text in GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            textMeshProUGUIs.Add(text);
+            text.color = normalColor; // 初始设为 normalColor
+        }
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
+        SetTextColor(hoverColor);
         PlayTween(originalScale * hoverScale);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
         base.OnPointerExit(eventData);
+        SetTextColor(normalColor);
         PlayTween(originalScale);
     }
 
@@ -36,17 +51,18 @@ public class YOTOButton : Button, IPointerEnterHandler, IPointerExitHandler, IPo
     {
         base.OnPointerClick(eventData);
 
-        // 点击缩放一下再恢复
+        SetTextColor(clickColor);
         PlayTween(originalScale * clickScale, () =>
         {
-            // 点击完后，如果还在按钮上 → 回到 hoverScale
             if (RectTransformUtility.RectangleContainsScreenPoint(
                     transform as RectTransform, Input.mousePosition, eventData.pressEventCamera))
             {
+                SetTextColor(hoverColor);
                 PlayTween(originalScale * hoverScale);
             }
             else
             {
+                SetTextColor(normalColor);
                 PlayTween(originalScale);
             }
         });
@@ -60,5 +76,13 @@ public class YOTOButton : Button, IPointerEnterHandler, IPointerExitHandler, IPo
         currentTween = transform.DOScale(targetScale, duration)
             .SetEase(easeType)
             .OnComplete(onComplete);
+    }
+
+    private void SetTextColor(Color color)
+    {
+        foreach (var text in textMeshProUGUIs)
+        {
+            text.color = color;
+        }
     }
 }

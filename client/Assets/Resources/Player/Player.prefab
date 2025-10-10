@@ -1105,37 +1105,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.76174545, z: 0.42809284}
     m_Extent: {x: 0.31330565, y: 0.12091404, z: 0.0802328}
   m_DirtyAABB: 0
---- !u!1 &3564344652619607974
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 909868769378797812}
-  m_Layer: 0
-  m_Name: mid
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &909868769378797812
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3564344652619607974}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.17}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6250013457155054785}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3816653412553327843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,7 +1242,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6250013457155054785
 Transform:
   m_ObjectHideFlags: 0
@@ -1291,7 +1260,6 @@ Transform:
   - {fileID: 5249740994664686355}
   - {fileID: 719886868561135662}
   - {fileID: 2205415449992325057}
-  - {fileID: 909868769378797812}
   - {fileID: 5303116298595703491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1322,9 +1290,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDuration: 0.5
-  moveEase: 27
+  moveEase: 5
   leftHand: {fileID: 5249740994664686355}
   rightHand: {fileID: 877217819867334219}
+  lineRenderer: {fileID: 6495768571802262854}
 --- !u!114 &117937129812421381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2923,15 +2892,31 @@ PrefabInstance:
     - target: {fileID: 3326728271632336055, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
       propertyPath: endPoint
       value: 
-      objectReference: {fileID: 5249740994664686355}
+      objectReference: {fileID: 5904805000357680280}
     - target: {fileID: 3326728271632336055, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
       propertyPath: startPoint
       value: 
-      objectReference: {fileID: 5904805000357680280}
+      objectReference: {fileID: 5249740994664686355}
     - target: {fileID: 3326728271632336055, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
-      propertyPath: controlPoint
-      value: 
-      objectReference: {fileID: 909868769378797812}
+      propertyPath: numberOfPoints
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529857406776277244, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
+      propertyPath: m_Parameters.numCapVertices
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529857406776277244, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].time
+      value: 0.9884949
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529857406776277244, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.27922058
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529857406776277244, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
+      value: 0.26623344
+      objectReference: {fileID: 0}
     - target: {fileID: 5916085253837365351, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
       propertyPath: m_Name
       value: LineDemo
@@ -2944,5 +2929,10 @@ PrefabInstance:
 --- !u!4 &5303116298595703491 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2540449828335550329, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
+  m_PrefabInstance: {fileID: 7699195507482420666}
+  m_PrefabAsset: {fileID: 0}
+--- !u!120 &6495768571802262854 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 3529857406776277244, guid: cc37efe2d3e01214893e34fa0513c214, type: 3}
   m_PrefabInstance: {fileID: 7699195507482420666}
   m_PrefabAsset: {fileID: 0}

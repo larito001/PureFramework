@@ -16,6 +16,9 @@ public class MainPlayerInfoCtrl : MonoBehaviour
     private Camera cam;
     private Vector2 screenPadding = new Vector2(30f, 30f);
     private float lastRate = -1;
+    private float lastSatisfaction = -1;
+    
+    private List<Sprite> satisfactionSprites;
     /// <summary>
     /// 设置进度条（rate）的比例，范围 0~1
     /// </summary>
@@ -47,12 +50,37 @@ public class MainPlayerInfoCtrl : MonoBehaviour
                 lastRate=_player.drinkRate;
                 // 根据rate由绿色渐变为红色（0-30）
                 float normalizedRate = Mathf.Clamp01(lastRate / 30f); // 将rate归一化到0-1范围
-                Bg.color = Color.Lerp(Color.green, Color.red, normalizedRate);
+                rate.color = Color.Lerp(Color.green, Color.red, normalizedRate);
             }
         }
-   
         
-    
+    }
+
+    private void SetSatisfaction()
+    {
+        if (_player.GetPlayerDta().GetState() != PlayerState.Dead)
+        if (!Mathf.Approximately(lastSatisfaction, _player.SatisfactionValue))
+        {
+            lastSatisfaction = _player.SatisfactionValue;
+            if (_player.SatisfactionValue > 20f)
+            {
+                Bg.sprite = satisfactionSprites[0];
+            
+            }
+            else if (_player.SatisfactionValue > 10f)
+            {
+                Bg.sprite = satisfactionSprites[1];
+            }
+            else if (_player.SatisfactionValue > 5f)
+            {
+                Bg.sprite = satisfactionSprites[2];
+            }
+            else
+            {
+                Bg.sprite = satisfactionSprites[3];
+            }
+        }
+
     }
 
 // x 是左右留白, y 是上下留白
@@ -64,6 +92,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
             rate.fillAmount = Mathf.Clamp01(_player.SatietyValue / (float)PlayerEntity.maxStatiety);
             Vector3 screenPosition = cam.WorldToScreenPoint(_player.Location);
             RefreshDrinkRate();
+            SetSatisfaction();
             // 获取UI实际尺寸
             Vector2 uiSize = ((RectTransform)transform).sizeDelta * transform.lossyScale; 
             float halfWidth = uiSize.x / 2f;
@@ -82,9 +111,9 @@ public class MainPlayerInfoCtrl : MonoBehaviour
         }
     }
 
-
-    public void Reset()
+    public void Reset(List<Sprite> sprites)
     {
+        satisfactionSprites=sprites;
         isStart = false;
         _player = null;
         gameObject.SetActive(false);

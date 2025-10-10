@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
-        m_Texture: {fileID: 2800000, guid: e904953fef6aaa24aa1520e59a91e7bc, type: 3}
+        m_Texture: {fileID: 2800000, guid: b4ff835238c18474cbbb1d1ae2920f37, type: 3}
         m_Scale: {x: 10, y: 10}
         m_Offset: {x: 0, y: 0}
     - _Texture1:
@@ -120,7 +120,7 @@ Material:
     - _ZWrite: 0
     - __dirty: 0
     m_Colors:
-    - _Albedo: {r: 1, g: 1, b: 1, a: 1}
+    - _Albedo: {r: 0.47301033, g: 1, b: 0.4481132, a: 0.25490198}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}

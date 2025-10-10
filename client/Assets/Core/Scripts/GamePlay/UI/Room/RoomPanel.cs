@@ -13,7 +13,7 @@ public class RoomPanel : UIPageBase
     public RectTransform bg;
 
     private float duration = 1f;
-
+    HashSet<int> dirtyList = new HashSet<int>();
     // 保存原始位置（UI 正常布局位置）
     private Vector2 bgOriginalPos;
 
@@ -26,11 +26,22 @@ public class RoomPanel : UIPageBase
     private void ItemRender(YOTOScrollViewItem arg1, int index)
     {
         var info = LoginPlugin.Instance.GetPlayerDatas();
-        (arg1 as RoomListItem).SetData(info[index]);
+        if (!dirtyList.Contains(info[index].playerId))
+        {
+            dirtyList.Add(info[index].playerId); 
+            (arg1 as RoomListItem).SetData(info[index],true,index);
+        }
+        else
+        {
+            (arg1 as RoomListItem).SetData(info[index],false,index); 
+        }
+
+  
     }
 
     public override void OnShow()
     {
+        dirtyList.Clear();
         YOTOFramework.uIMgr.Hide(UIEnum.StartPanel);
 
         // 设置起始位置：从屏幕外进入
@@ -78,9 +89,30 @@ public class RoomPanel : UIPageBase
     private void RefreshRoleList()
     {
         var tempList = LoginPlugin.Instance.GetPlayerDatas();
+        List<int> removeList = new List<int>();
+        foreach (var pid in dirtyList)
+        {
+            bool have = false;
+            for (var i = 0; i < tempList.Count; i++)
+            {
+                if (tempList[i].playerId == pid)
+                {
+                    have = true;
+                }
+            }
+
+            if (!have)
+            {
+                removeList.Add(pid);
+            }
+        }
+        foreach (var id in removeList)
+        {
+            dirtyList.Remove(id);
+        }
         playerList.Initialize(10);
         playerList.SetData(tempList.Count);
-        PlayerPlugin.Instance.RefreshPlayers(LoginPlugin.Instance.GetPlayerDatas(),true);
+        PlayerPlugin.Instance.GeneratePlayers(LoginPlugin.Instance.GetPlayerDatas(),true);
     }
 
     public override void OnHide()
