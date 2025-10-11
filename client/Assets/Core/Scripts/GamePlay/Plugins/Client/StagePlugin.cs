@@ -154,7 +154,10 @@ public class StagePlugin : LogicPluginBase
     public void OnGameEnd()
     {
         GameStart = false;
-
+        YOTOFramework.timeMgr.DelayCall(() =>
+        {
+            YOTOFramework.uIMgr.Hide(UIEnum.LoadingPanel);
+        }, 1.5f);
         YOTOFramework.sceneMgr.LoadScene<StartScene>();
         YOTOFramework.uIMgr.Hide(UIEnum.FinishPanel);
         YOTOFramework.uIMgr.Show(UIEnum.RoomPanel);

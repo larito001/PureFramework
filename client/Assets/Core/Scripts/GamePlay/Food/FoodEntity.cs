@@ -44,7 +44,10 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
     protected override void AfterInstanceGObj()
     {
         rigidbody = objTrans.GetComponent<Rigidbody>();
-        rigidbody.isKinematic = false;
+        if (rigidbody == null)
+        {
+            objTrans.gameObject.AddComponent<Rigidbody>();
+        }
         outLineCtrl = objTrans.GetComponent<OutLineCtrl>();
         SetQuality(data.quality);
         if (objTrans.TryGetComponent<FoodBase>(out FoodBase food))
@@ -61,7 +64,6 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
             food.foodId = -1;
         }
         shakeTween.Kill();
-        rigidbody.isKinematic = true;
         RecoverObject();
     }
 
@@ -86,7 +88,8 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
         {
             shakeTween.Kill();
         }
-        
+        GameObject.Destroy(rigidbody);
+        rigidbody = null;
         // 使用DOTween实现以z轴为中心的旋转抖动
         shakeTween = objTrans.DOShakeRotation(1f, strength: 15f, vibrato: 10, randomness: 90f, fadeOut: true)
             .SetEase(Ease.OutQuad).SetLoops(-1, LoopType.Restart);

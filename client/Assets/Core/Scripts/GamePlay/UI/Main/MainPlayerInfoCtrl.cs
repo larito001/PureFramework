@@ -50,7 +50,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
                 lastRate=_player.drinkRate;
                 // 根据rate由绿色渐变为红色（0-30）
                 float normalizedRate = Mathf.Clamp01(lastRate / 30f); // 将rate归一化到0-1范围
-                rate.color = Color.Lerp(Color.green, Color.red, normalizedRate);
+                rate.color = Color.Lerp( new Color(0,1,0,0.2f), new Color(1,0,0,0.2f), normalizedRate);
             }
         }
         
@@ -58,7 +58,12 @@ public class MainPlayerInfoCtrl : MonoBehaviour
 
     private void SetSatisfaction()
     {
-        if (_player.GetPlayerDta().GetState() != PlayerState.Dead)
+        if (_player.GetPlayerDta().GetState() != PlayerState.Dead||!Bg.enabled)
+        {
+
+            return;
+        }
+        
         if (!Mathf.Approximately(lastSatisfaction, _player.SatisfactionValue))
         {
             lastSatisfaction = _player.SatisfactionValue;
@@ -114,6 +119,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
     public void Reset(List<Sprite> sprites)
     {
         satisfactionSprites=sprites;
+        Bg.enabled = (sprites != null);
         isStart = false;
         _player = null;
         gameObject.SetActive(false);

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2689693509482910160}
   - component: {fileID: 8889939970985234022}
   - component: {fileID: 4997782240780996765}
+  - component: {fileID: 6383710613031082578}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -34,10 +35,10 @@ RectTransform:
   - {fileID: 7727412366526146649}
   m_Father: {fileID: 5883795698443294799}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 642.731, y: 434.635}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 380, y: 0}
+  m_SizeDelta: {x: 809.3698, y: 575.1504}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2689693509482910160
 CanvasRenderer:
@@ -54,7 +55,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180824457376907839}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -92,10 +93,33 @@ MonoBehaviour:
   layout: 0
   columns: 1
   rows: 1
+  centerMode: 2
+  padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
   content: {fileID: 1515752171478632474}
   viewport: {fileID: 7727412366526146649}
   itemPrefab: {fileID: 5467406450347079853}
   spacing: 5
+--- !u!114 &6383710613031082578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180824457376907839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6de529fdef6265644b9e99b7d43cf38d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartPos: {fileID: 225246257870356283}
+  EndPos: {fileID: 1982674497384844127}
+  enterDuration: 0.5
+  exitDuration: 0.5
+  easeType: 6
 --- !u!1 &1349679796049337906
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +195,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.36, g: 0.24, b: 0.17, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -230,6 +254,41 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &3237861209095274007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 225246257870356283}
+  m_Layer: 5
+  m_Name: startPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &225246257870356283
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3237861209095274007}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5883795698443294799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1781, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4069681738160064464
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +323,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -83, y: 0}
+  m_AnchoredPosition: {x: -23.4, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4349825525282651480
@@ -304,8 +363,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281023836
+  m_fontColor: {r: 0.36, g: 0.24, b: 0.17, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -376,7 +435,7 @@ GameObject:
   - component: {fileID: 9111677765395413333}
   - component: {fileID: 2866182114563645613}
   - component: {fileID: 8574110696879082825}
-  - component: {fileID: 1673014496329542132}
+  - component: {fileID: 2236575666352403028}
   m_Layer: 5
   m_Name: 'Item '
   m_TagString: Untagged
@@ -433,8 +492,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 615bc2e803979bd4b85b1b29f9ad0c74, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -455,10 +514,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a283965b22029cd4cbda120b81d1a9b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 1673014496329542132}
+  btn: {fileID: 2236575666352403028}
   nameText: {fileID: 1087441168751755631}
   votNumText: {fileID: 3532696297036806100}
---- !u!114 &1673014496329542132
+  votImg: {fileID: 2866182114563645613}
+--- !u!114 &2236575666352403028
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -467,7 +527,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5467406450347079853}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: c91e54b57d5e68d4882e8853ec414073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -502,6 +562,48 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hoverScale: 1.1
+  clickScale: 0.9
+  duration: 0.2
+  easeType: 27
+  normalColor: {r: 0.36, g: 0.24, b: 0.17, a: 1}
+  hoverColor: {r: 0.9, g: 0.49, b: 0.13, a: 1}
+  clickColor: {r: 0.55, g: 0.18, b: 0.1, a: 1}
+--- !u!1 &7417291235796388504
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1982674497384844127}
+  m_Layer: 5
+  m_Name: endPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1982674497384844127
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417291235796388504}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5883795698443294799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 380, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7751153974328244258
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,6 +742,7 @@ GameObject:
   - component: {fileID: 3241779294827976103}
   - component: {fileID: 5254103910637690586}
   - component: {fileID: 2106260459454483942}
+  - component: {fileID: 7811257021840925611}
   m_Layer: 5
   m_Name: VotingPanel
   m_TagString: Untagged
@@ -661,6 +764,8 @@ RectTransform:
   m_Children:
   - {fileID: 4661402127632982207}
   - {fileID: 4739530361455074926}
+  - {fileID: 225246257870356283}
+  - {fileID: 1982674497384844127}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -683,7 +788,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8682126790710733860}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -730,7 +835,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7408a706b1eb946a15ec6eb4ebafe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tweenList:
+  - {fileID: 6383710613031082578}
   uiType: 0
+  TweenEnter: 0
+  TweenExit: 1
   isEnable: 0
   canvasGroup: {fileID: 0}
   votList: {fileID: 4997782240780996765}
+--- !u!114 &7811257021840925611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682126790710733860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d27cae616ce5744bd487f7e7f1405e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useEnterAnim: 1
+  enterDuration: 0.5
+  enterEase: 9
+  useExitAnim: 1
+  exitDuration: 0.5
+  exitEase: 8

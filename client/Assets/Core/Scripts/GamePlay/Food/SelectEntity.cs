@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class SelectEntity :ObjectBase, PoolItem<FoodEntity>
@@ -18,7 +19,6 @@ public class SelectEntity :ObjectBase, PoolItem<FoodEntity>
 
     public override void YOTOUpdate(float deltaTime)
     {
-        
     }
 
     public override void YOTONetUpdate()
@@ -39,10 +39,15 @@ public class SelectEntity :ObjectBase, PoolItem<FoodEntity>
     protected override void AfterInstanceGObj()
     {
         ObjTrans.position = _food.ObjTrans.transform.position;
+        //todo:dotween持续旋转
+        ObjTrans.DORotate(new Vector3(0, 360, 0), 1, RotateMode.LocalAxisAdd)
+            .SetEase(Ease.Linear)
+            .SetLoops(-1, LoopType.Restart);
     }
 
     public void AfterIntoObjectPool()
     {
+        ObjTrans.DOKill();
         _food = null;
         RecoverObject();
     }

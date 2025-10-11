@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3241779294827976103}
   - component: {fileID: 5254103910637690586}
   - component: {fileID: 4561641999235795664}
+  - component: {fileID: 7811257021840925611}
   m_Layer: 5
   m_Name: RuleSelectPanel
   m_TagString: Untagged
@@ -104,12 +105,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0635111b5a4c5408c68ef2029a2083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tweenList: []
   uiType: 0
+  TweenEnter: 0
+  TweenExit: 0
   isEnable: 0
   canvasGroup: {fileID: 0}
   card1Ctrl: {fileID: 503838120379772840}
   card2Ctrl: {fileID: 5413394563836351571}
   card3Ctrl: {fileID: 2233783811860809369}
+--- !u!114 &7811257021840925611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682126790710733860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d27cae616ce5744bd487f7e7f1405e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useEnterAnim: 1
+  enterDuration: 0.5
+  enterEase: 9
+  useExitAnim: 1
+  exitDuration: 0.5
+  exitEase: 8
 --- !u!1001 &1089595617986008489
 PrefabInstance:
   m_ObjectHideFlags: 0

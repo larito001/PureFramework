@@ -17,7 +17,6 @@ public class GameMainPanel : UIPageBase
     private Vector2 topOriginalPosition;
     private Vector2 btnOriginalPosition;
     private RectTransform findBtnRect;
-    private Vector3 btnOriginalScale;
     public Image satisfactionImg;
 
     public List<MainPlayerInfoCtrl> playerInfoCtrls = new List<MainPlayerInfoCtrl>();
@@ -27,7 +26,6 @@ public class GameMainPanel : UIPageBase
     {
         findBtnRect = findBtn.GetComponent<RectTransform>();
         btnOriginalPosition = findBtnRect.anchoredPosition;
-        btnOriginalScale = findBtnRect.localScale;
     }
 
     public override void OnShow()
@@ -82,33 +80,9 @@ public class GameMainPanel : UIPageBase
         {
             trigger.triggers.Clear();
         }
-
-        // 鼠标进入事件
-        EventTrigger.Entry entryEnter = new EventTrigger.Entry();
-        entryEnter.eventID = EventTriggerType.PointerEnter;
-        entryEnter.callback.AddListener((data) => { OnButtonPointerEnter(); });
-        trigger.triggers.Add(entryEnter);
-
-        // 鼠标离开事件
-        EventTrigger.Entry entryExit = new EventTrigger.Entry();
-        entryExit.eventID = EventTriggerType.PointerExit;
-        entryExit.callback.AddListener((data) => { OnButtonPointerExit(); });
-        trigger.triggers.Add(entryExit);
+        
     }
 
-    private void OnButtonPointerEnter()
-    {
-        // 直接放大按钮
-        findBtnRect.DOScale(btnOriginalScale * 1.2f, 0.3f)
-            .SetEase(Ease.OutBack);
-    }
-
-    private void OnButtonPointerExit()
-    {
-        // 恢复原始大小
-        findBtnRect.DOScale(btnOriginalScale, 0.3f)
-            .SetEase(Ease.OutBack);
-    }
 
     private void OnClickFindBtn()
     {
@@ -156,20 +130,15 @@ public class GameMainPanel : UIPageBase
         }
 
         findBtnRect.anchoredPosition = btnOriginalPosition;
-        findBtnRect.localScale = btnOriginalScale;
     }
 
     public override void OnResize()
     {
         // 重新记录原始位置和缩放
         btnOriginalPosition = findBtnRect.anchoredPosition;
-        btnOriginalScale = findBtnRect.localScale;
-
         // 强制完成动画，避免屏幕变化时位置错乱
         DOTween.Complete(findBtnRect);
-
         // 确保 UI 处于正确的最终状态
         findBtnRect.anchoredPosition = btnOriginalPosition;
-        findBtnRect.localScale = btnOriginalScale;
     }
 }

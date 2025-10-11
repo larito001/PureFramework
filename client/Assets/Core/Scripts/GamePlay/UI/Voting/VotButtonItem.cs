@@ -12,11 +12,12 @@ public class VotButtonItem : YOTOScrollViewItem
     private int playerId;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI votNumText;
-
+    public Image votImg;
     private void OnClick()
     {
         PlayerPlugin.Instance.OnVotClick(playerId);
         btn.onClick.RemoveAllListeners();
+        votImg.color=Color.yellow;
         // YOTOFramework.uIMgr.Hide(UIEnum.VotingPanel);
     }
 
@@ -27,6 +28,7 @@ public class VotButtonItem : YOTOScrollViewItem
 
     public void SetData(int pid,string playerName,int votNum )
     {
+        votImg.color=Color.white;
         playerId = pid;
         nameText.text = playerName;
         if (votNum != 0)
