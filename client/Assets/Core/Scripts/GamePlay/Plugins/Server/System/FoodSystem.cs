@@ -26,6 +26,7 @@ public class FoodSystem : ServerSystemBase
     /// </summary>
     public void StartFoodSystem()
     {
+        index = 0;
         _server.commonSystem.OnFlyTextNotify("Go!", FlyTextType.Normal);
   
         ServerDataPlugin.Instance.SetRandomPattern();

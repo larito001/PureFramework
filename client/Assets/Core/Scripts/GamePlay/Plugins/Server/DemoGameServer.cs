@@ -231,6 +231,7 @@ public class DemoGameServer : GameServerBase
 
         var notify = new GameStartNotify();
         notify.isSuccess = true;
+        playerLoadEnd.Clear();
         ServerMessageManager.Instance.SendNotify(notify);
         stateCtrl.OnGameStart();
         return null;

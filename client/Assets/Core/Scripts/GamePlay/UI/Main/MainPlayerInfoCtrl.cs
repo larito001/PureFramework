@@ -17,7 +17,6 @@ public class MainPlayerInfoCtrl : MonoBehaviour
     private Vector2 screenPadding = new Vector2(30f, 30f);
     private float lastRate = -1;
     private float lastSatisfaction = -1;
-    
     private List<Sprite> satisfactionSprites;
     /// <summary>
     /// 设置进度条（rate）的比例，范围 0~1
@@ -34,11 +33,12 @@ public class MainPlayerInfoCtrl : MonoBehaviour
         //     rate.type = Image.Type.Filled;  
         //     rate.fillAmount = Mathf.Clamp01(value);  
         // }
+
         if (cam==null)
         {
             cam=YOTOFramework.cameraMgr.getUICamera();
         }
-      
+        Refresh();
     }
 
     private void RefreshDrinkRate()
@@ -58,13 +58,21 @@ public class MainPlayerInfoCtrl : MonoBehaviour
 
     private void SetSatisfaction()
     {
-        if (_player.GetPlayerDta().GetState() != PlayerState.Dead||!Bg.enabled)
+        if (_player.GetPlayerDta().GetState() == PlayerState.Dead||Bg.enabled)
         {
-
             return;
         }
         
         if (!Mathf.Approximately(lastSatisfaction, _player.SatisfactionValue))
+        {
+            Refresh();
+        }
+
+    }
+
+    private void Refresh()
+    {
+        if (satisfactionSprites!=null)
         {
             lastSatisfaction = _player.SatisfactionValue;
             if (_player.SatisfactionValue > 20f)
@@ -83,11 +91,9 @@ public class MainPlayerInfoCtrl : MonoBehaviour
             else
             {
                 Bg.sprite = satisfactionSprites[3];
-            }
+            } 
         }
-
     }
-
 // x 是左右留白, y 是上下留白
 
     private void FixedUpdate()
@@ -119,7 +125,7 @@ public class MainPlayerInfoCtrl : MonoBehaviour
     public void Reset(List<Sprite> sprites)
     {
         satisfactionSprites=sprites;
-        Bg.enabled = (sprites != null);
+        Bg.enabled=(sprites!=null);
         isStart = false;
         _player = null;
         gameObject.SetActive(false);

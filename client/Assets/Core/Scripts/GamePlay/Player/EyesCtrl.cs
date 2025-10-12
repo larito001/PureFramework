@@ -9,8 +9,8 @@ public class EyesCtrl : MonoBehaviour
     private PlayerEntity playerEntity;
     
     public Transform eyes = null;
-    private Vector3 targetEyesPos;
-    private Vector3 EyesOrgPos; // 初始位置，需要在 Start 或 Awake 中保存
+    public Vector3 targetEyesPos;
+    public Transform EyesOrgPos; 
     private float timerTemp = 0;
     public Transform headGameObject;
     private Vector3 forward;
@@ -59,10 +59,10 @@ public class EyesCtrl : MonoBehaviour
             Vector3 newPos = eyes.localPosition + new Vector3(input.x * 0.01f, input.y * 0.01f, 0); // 调整速度
 
             // 限制在 EyesOrgPos ± moveRange 内
-            float limitX = Mathf.Clamp(newPos.x, EyesOrgPos.x - moveRange, EyesOrgPos.x + moveRange);
-            float limitY = Mathf.Clamp(newPos.y, EyesOrgPos.y - moveRange, EyesOrgPos.y + moveRange);
+            float limitX = Mathf.Clamp(newPos.x, EyesOrgPos.localPosition.x - moveRange, EyesOrgPos.localPosition.x + moveRange);
+            float limitY = Mathf.Clamp(newPos.y, EyesOrgPos.localPosition.y - moveRange, EyesOrgPos.localPosition.y + moveRange);
 
-            targetEyesPos = new Vector3(limitX, limitY, EyesOrgPos.z);
+            targetEyesPos = new Vector3(limitX, limitY, EyesOrgPos.localPosition.z);
         }
     }
 
@@ -72,6 +72,7 @@ public class EyesCtrl : MonoBehaviour
         var t = GameObject.Find("table");
         forward = t.transform.position - transform.position;
         transform.forward = forward;
+        eyes.localPosition=EyesOrgPos.localPosition;
         if (playerEntity.isSelf)
         {
             
@@ -83,11 +84,7 @@ public class EyesCtrl : MonoBehaviour
     
             transform.forward = forward;
             camera.gameObject.transform.position =transform.forward*0.2f+transform.position+new Vector3(0,0.5f,0);
-            EyesOrgPos=eyes.localPosition;
-            if (playerEntity.isSelf)
-            {
-                YOTOFramework.sceneMgr.cameraCtrl.cameraDir.transform.forward=transform.forward;
-            }
+            YOTOFramework.sceneMgr.cameraCtrl.cameraDir.transform.forward=transform.forward;
         }
         else
         {

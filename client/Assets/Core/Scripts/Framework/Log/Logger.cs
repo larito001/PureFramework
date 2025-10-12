@@ -22,7 +22,7 @@ namespace YOTO
 #if UNITY_EDITOR
             isopen = false;
 #else
-            isopen = true;
+            isopen = false;
 #endif
             Application.logMessageReceived += Log; 
         }
