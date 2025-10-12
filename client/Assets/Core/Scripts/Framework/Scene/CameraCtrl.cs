@@ -10,6 +10,7 @@ public class CameraCtrl
 {
     private CinemachineVirtualCamera vCamera;
     private CinemachineVirtualCamera startCamera;
+    private CinemachineVirtualCamera midCamera;
     private CinemachineVirtualCamera specialCamera;
     private Vector3 moveDirection;
     private Vector3 currentVelocity;
@@ -21,6 +22,7 @@ public class CameraCtrl
     private Vector3 touchPosition;
     public GameObject cameraDir;
     public GameObject startCameraDir;
+    private GameObject midCameraDir;
     private float xRotation = 0f;
     private float yRotation = 0f;
 
@@ -44,12 +46,16 @@ public class CameraCtrl
         });
 
         vCamera = YOTOFramework.cameraMgr.getVirtualCamera("MainCameraVirtual");
+        
         startCamera= YOTOFramework.cameraMgr.getVirtualCamera("StartCameraVirtual");
         specialCamera= YOTOFramework.cameraMgr.getVirtualCamera("SpecialCamera");
+        midCamera = YOTOFramework.cameraMgr.getVirtualCamera("MidCameraVirtual");
         cameraDir = GameObject.Find("CameraDir");
         startCameraDir= GameObject.Find("StartCameraDir");
+        midCameraDir = GameObject.Find("midCameraDir");
         vCamera.transform.position = cameraDir.transform.position;
         vCamera.transform.rotation = cameraDir.transform.rotation;
+        midCamera.transform.position = midCameraDir.transform.position;
         startCamera.transform.position = startCameraDir.transform.position;
         startCamera.transform.rotation = startCameraDir.transform.rotation;
         
@@ -95,6 +101,8 @@ public class CameraCtrl
     {
         vCamera.Priority = 999;
         specialCamera.Priority = 0;
+        midCamera.Priority = 0;
+        startCamera.Priority = 0;
     }
 
     public void UseStarCamera()
@@ -104,7 +112,14 @@ public class CameraCtrl
         specialCamera.Priority = 0;
         
     }
-    
+    public void UseMidCamera()
+    {
+        midCamera.Priority = 999;
+        vCamera.Priority = 0;
+        startCamera.Priority = 0;
+        specialCamera.Priority = 0;
+        
+    }
     public void UseSpecialCamera(Transform target)
     {
         vCamera.Priority = 0;
@@ -224,5 +239,27 @@ public class CameraCtrl
         
         lookInput = Vector2.zero;
    
+    }
+
+    public void UseMidCamera(Transform lookTarget, float seconds)
+    {
+        // 记录vCamera当前位置
+        Transform vCameraTransform = vCamera.transform;
+        Vector3 originalPosition = vCameraTransform.position;
+        Quaternion originalRotation = vCameraTransform.rotation;
+    
+        // 把midCamera朝向lookTarget
+        midCamera.transform.LookAt(lookTarget);
+    
+        // 调用UseMidCamera方法（移动相机）
+        UseMidCamera();
+    
+        // seconds秒后恢复位置
+        YOTOFramework.timeMgr.DelayCall(() =>
+        {
+            vCamera.transform.position = originalPosition;
+            vCamera.transform.rotation = originalRotation;
+            UsePlayerCamera();
+        },seconds);
     }
 }

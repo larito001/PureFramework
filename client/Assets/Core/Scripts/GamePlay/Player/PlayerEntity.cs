@@ -17,9 +17,10 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     private AnimatorCtrl animCtrl;
     public int SatietyValue;
     public int SatisfactionValue;
-    public const int maxStatiety = 20;//最高饱腹值
+    public const int maxStatiety = 20; //最高饱腹值
     public float drinkRate = 0;
-    public bool isShow = false;//是否是仅展示
+    public bool isShow = false; //是否是仅展示
+
     public bool CheckCanCatch()
     {
         if (isShow) return false;
@@ -27,10 +28,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (isEnd)
         {
             FlyTextMgr.Instance.AddTextAtScreenCenter("Satiety Over", FlyTextType.Normal);
-            
         }
-        return !leftHandDoing&&!isEnd;
+
+        return !leftHandDoing && !isEnd;
     }
+
     protected override void YOTOOnload()
     {
     }
@@ -38,14 +40,16 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void Drink(float rate)
     {
         if (isShow) return;
-            drinkRate=rate;
+        drinkRate = rate;
         animCtrl.OnDrink();
     }
+
     public void Dead()
     {
         if (isShow) return;
         animCtrl.OnDead();
     }
+
     public override void YOTOStart()
     {
     }
@@ -57,15 +61,15 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     public void SetEyesMove(Vector2 input)
     {
         if (isShow) return;
-        if(eyesCtrl!=null)
-        eyesCtrl.SetEyesMove(input);
+        if (eyesCtrl != null)
+            eyesCtrl.SetEyesMove(input);
     }
 
     public void SetEyesMove(Vector3 pos)
     {
         if (isShow) return;
-        if(eyesCtrl!=null)
-        eyesCtrl.ForceMove(pos);
+        if (eyesCtrl != null)
+            eyesCtrl.ForceMove(pos);
     }
 
     public void CatchFood(int foodId, bool success)
@@ -74,9 +78,8 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         var food = StagePlugin.Instance.GetFoodEntityById(foodId);
         if (success)
         {
-            handCtrl.ExtendLeftHand(food);  
+            handCtrl.ExtendLeftHand(food);
         }
-
     }
 
     public void EndCatch()
@@ -94,7 +97,6 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (isSelf)
         {
             YOTOFramework.sceneMgr.cameraCtrl.UseSpecialCamera(food.ObjTrans);
-
         }
     }
 
@@ -111,11 +113,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         {
             handCtrl.RetractLeftHand();
         }
-     
-        if (isSelf)
-        {
-                YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
-        }
+
+        // if (isSelf)
+        // {
+        //     YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+        // }
     }
 
     public override void YOTONetUpdate()
@@ -144,6 +146,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         SatisfactionValue = satisfaction;
         YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.RefreshPlayerProperty);
     }
+
     public void SetData(PlayerData data)
     {
         this.staticData = data;
@@ -157,11 +160,13 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
     {
         return staticData;
     }
+
     private ParticleEntity particle;
+    public Transform mousePos;
 
     protected override void AfterInstanceGObj()
     {
-        particle=  ParticleEntity.pool.GetItem(new ParticleEntityData()
+        particle = ParticleEntity.pool.GetItem(new ParticleEntityData()
             { path = "smoke/msVFX_Stylized Smoke 1", pos = objTrans.position });
         particle.Play();
         leftHandDoing = false;
@@ -173,5 +178,19 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         eyesCtrl.Init(this);
         handCtrl.Init(this);
         animCtrl.Init(this);
+        mousePos = objTrans.Find("mousePos");
+    }
+
+    public void SeePlayer()
+    {
+        if (isSelf)
+        {
+            YOTOFramework.sceneMgr.cameraCtrl. UsePlayerCamera();
+        }
+        else
+        {
+            YOTOFramework.sceneMgr.cameraCtrl.UseMidCamera(mousePos,2);  
+        }
+        
     }
 }

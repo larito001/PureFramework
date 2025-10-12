@@ -112,14 +112,20 @@ public class HandCtrl : MonoBehaviour
             leftTarget.StopCatch(); 
             lineRenderer.enabled = false;
         }
-  
+
+        //todo：移动leftTarget.ObjTrans 到 playerEntity.mousePos.position位置，然后调用RemoveFood
+        if (leftTarget != null && leftTarget.ObjTrans != null)
+        {
+            seq.Join(leftTarget.ObjTrans.DOMove(playerEntity.mousePos.position, moveDuration).SetEase(moveEase));
+        }
+
         seq.Join(leftHand.DOMove(leftHandOriginalPos, moveDuration).SetEase(moveEase));
         seq.Join(leftHand.DORotateQuaternion(leftHandOriginalRot, moveDuration).SetEase(moveEase));
         seq.OnComplete(() =>
         {
             Debug.Log("完成收回" + playerEntity.isSelf);
             playerEntity.leftHandDoing = false;
-            if (leftTarget != null&&leftTarget.ObjTrans!=null)
+            if (leftTarget != null && leftTarget.ObjTrans != null)
             {
                 YOTOFramework.soundMgr.PlaySFX("Sound/Eat");
                 leftTarget.StopCatch();  
@@ -130,6 +136,7 @@ public class HandCtrl : MonoBehaviour
             lineRenderer.enabled = false;
         });
     }
+
 
 
     /// <summary>

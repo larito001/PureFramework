@@ -111,8 +111,29 @@ public class PlayerPlugin : LogicPluginBase
         YOTOFramework.uIMgr.Hide(UIEnum.LootingPanel);
         //todo:抢夺结束，退出特殊状态
         Debug.Log("抢夺结束，player" + obj.winPlayerId + "赢了");
+      
         
+        bool needSwitch =false;
+        if (obj.winPlayerId == LoginPlugin.Instance.PlayerId)
+        {
+            needSwitch = true;
+        }
+        for (var i = 0; i < obj.losePlayers.Count; i++)
+        {
+            if (LoginPlugin.Instance.PlayerId == obj.losePlayers[i])
+            {
+                needSwitch = true;
+            }    
+        }
+
+        if (needSwitch)
+        {
+            //todo:把视角给到玩家两秒
         
+            var player = players[obj.winPlayerId];
+            player.SeePlayer();
+
+        }
         if (players.ContainsKey(obj.winPlayerId))
         {
             players[obj.winPlayerId].EndLooting(true, obj.foodId);
