@@ -42,17 +42,17 @@ public class ServerDataPlugin : LogicPluginBase
 
     public List<FoodDropPattern> allPatterns = new List<FoodDropPattern>()
     {
-        // T1 早饱陷阱
         new FoodDropPattern()
         {
-            patternName = "T1_早饱陷阱",
+            patternName = "正常",
             stages = new List<FoodDropStage>()
             {
                 new FoodDropStage()
                 {
                     startTime = 1,
                     endTime = 5,
-                    dropCount = 3,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.7f },
@@ -67,7 +67,8 @@ public class ServerDataPlugin : LogicPluginBase
                 {
                     startTime = 6,
                     endTime = 10,
-                    dropCount = 2,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.8f },
@@ -81,8 +82,9 @@ public class ServerDataPlugin : LogicPluginBase
                 new FoodDropStage()
                 {
                     startTime = 11,
-                    endTime = 20,
-                    dropCount = 4,
+                    endTime = 15,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.2f },
@@ -95,9 +97,10 @@ public class ServerDataPlugin : LogicPluginBase
                 },
                 new FoodDropStage()
                 {
-                    startTime = 20,
-                    endTime = 50,
-                    dropCount = 4,
+                    startTime = 13,
+                    endTime = 15,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.0f },
@@ -110,9 +113,10 @@ public class ServerDataPlugin : LogicPluginBase
                 },
                 new FoodDropStage()
                 {
-                    startTime =50,
-                    endTime = 80,
-                    dropCount = 4,
+                    startTime = 20,
+                    endTime = 30,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.0f },
@@ -122,13 +126,13 @@ public class ServerDataPlugin : LogicPluginBase
                         { Quality.Glod, 0.0f },
                         { Quality.Red, 1f }
                     }
-                }
-                ,
+                },
                 new FoodDropStage()
                 {
-                    startTime = 80,
-                    endTime = 100,
-                    dropCount = 4,
+                    startTime = 23,
+                    endTime = 25,
+                    dropCount = 1,
+                    name = "TestFood",
                     gradeWeight = new Dictionary<Quality, float>()
                     {
                         { Quality.Normal, 0.0f },
@@ -137,11 +141,95 @@ public class ServerDataPlugin : LogicPluginBase
                         { Quality.Purple, 0.0f },
                         { Quality.Glod, 0.0f },
                         { Quality.Red, 1f }
+                    }
+                },
+                new FoodDropStage()
+                {
+                    startTime = 30,
+                    endTime = 40,
+                    dropCount = 2,
+                    name = "TestFood",
+                    gradeWeight = new Dictionary<Quality, float>()
+                    {
+                        { Quality.Normal, 0.0f },
+                        { Quality.Green, 0.0f },
+                        { Quality.Blue, 0.5f },
+                        { Quality.Purple, 0.0f },
+                        { Quality.Glod, 0.0f },
+                        { Quality.Red, 0.5f }
                     }
                 }
             }
         },
-        
+        new FoodDropPattern()
+        {
+            patternName = "砸金蛋",
+            stages = new List<FoodDropStage>()
+            {
+                new FoodDropStage()
+                {
+                    startTime = 0,
+                    endTime = 1,
+                    dropCount = 20,
+                    name = "Egg",
+                    gradeWeight = new Dictionary<Quality, float>()
+                    {
+                        { Quality.Normal, 0f },
+                        { Quality.Green, 0f },
+                        { Quality.Blue, 0f },
+                        { Quality.Purple, 0f },
+                        { Quality.Glod, 1f },
+                        { Quality.Red, 0f }
+                    }
+                },
+            }
+        },
+        new FoodDropPattern()
+        {
+            patternName = "俄罗斯轮盘赌",
+            stages = new List<FoodDropStage>()
+            {
+                new FoodDropStage()
+                {
+                    startTime = 0,
+                    endTime = 1,
+                    dropCount = 20,
+                    name = "Egg",
+                    gradeWeight = new Dictionary<Quality, float>()
+                    {
+                        { Quality.Normal, 0f },
+                        { Quality.Green, 0f },
+                        { Quality.Blue, 0f },
+                        { Quality.Purple, 0f },
+                        { Quality.Glod, 0f },
+                        { Quality.Red, 1f }
+                    }
+                },
+            }
+        },
+        new FoodDropPattern()
+        {
+            patternName = "赌怪",
+            stages = new List<FoodDropStage>()
+            {
+                new FoodDropStage()
+                {
+                    startTime = 0,
+                    endTime = 1,
+                    dropCount = 20,
+                    name = "Egg",
+                    gradeWeight = new Dictionary<Quality, float>()
+                    {
+                        { Quality.Normal, 0f },
+                        { Quality.Green, 0f },
+                        { Quality.Blue, 0f },
+                        { Quality.Purple, 0f },
+                        { Quality.Glod, 1f },
+                        { Quality.Red, 0f }
+                    }
+                },
+            }
+        },
     };
 
     #endregion
@@ -153,34 +241,39 @@ public class ServerDataPlugin : LogicPluginBase
         new GameRule()
         {
             ruleId = 1,
-            roleName = "最大获胜",
-            roleDetail = "得分最高者获胜"
+            roleName = "砸金蛋", //纯运气，运气
+            roleDetail = "替换所有食物为鸡蛋，鸡蛋中有臭鸡蛋，吃到正常鸡蛋+1，吃到臭鸡蛋-1"
         },
         new GameRule()
         {
             ruleId = 2,
-            roleName = "最小获胜",
-            roleDetail = "得分最少的获胜"
+            roleName = "乡下吃席", //拼手速，力量
+            roleDetail = "食物紧缺，得分最高获胜"
         },
         new GameRule()
         {
             ruleId = 3,
-            roleName = "抢夺最多获胜",
-            roleDetail = "抢夺最多次数的玩家获胜"
+            roleName = "同学聚会", //两位数加减乘除法，智慧
+            roleDetail = "抢夺时，使用加减乘除法获得分数"
         },
         new GameRule()
         {
             ruleId = 4,
-            roleName = "抢夺最少获胜",
-            roleDetail = "抢夺最少次数的玩家获胜"
+            roleName = "商务局", //赎金,财富
+            roleDetail = "输了可以使用金币赎身，避免一次喝酒"
         },
         new GameRule()
         {
             ruleId = 5,
-            roleName = "喝一口顶两口",
-            roleDetail = "喝一口顶两口"
+            roleName = "俄罗斯轮盘赌", //掉落中有必死项，但概率极低,自信
+            roleDetail = "掉落食物中有极小概率有剧毒"
         },
-        
+        new GameRule()
+        {
+            ruleId = 6,
+            roleName = "赌怪", //高概率扣分，低概率获得极高分数,贪婪
+            roleDetail = "掉落食物中有极小概率获得极高分数"
+        },
     };
 
     public void SetCurrentRule(int id)
@@ -191,9 +284,17 @@ public class ServerDataPlugin : LogicPluginBase
 
     public void SetRandomRule()
     {
-        SetCurrentRule(rules[UnityEngine.Random.Range(0, rules.Count)].ruleId);
+        if (_currentRule == null)
+        {
+            SetCurrentRule(rules[UnityEngine.Random.Range(0, rules.Count)].ruleId);
+        }
+       
     }
 
+    public void ResetRule()
+    {
+        _currentRule = null;
+    }
     public List<GameRule> getRandomRules(int num)
     {
         return rules.OrderBy(x => UnityEngine.Random.value).Take(num).ToList();
@@ -222,7 +323,29 @@ public class ServerDataPlugin : LogicPluginBase
 
     public void SetRandomPattern()
     {
-        _currentPattern = allPatterns[UnityEngine.Random.Range(0, allPatterns.Count)];
+        switch (_currentRule.ruleId)
+        {
+            case 1:
+                _currentPattern = allPatterns[1];
+                break;
+            case 2:
+                _currentPattern = allPatterns[0];
+                break;
+            case 3:
+                _currentPattern = allPatterns[0];
+                break;
+            case 4:
+                _currentPattern = allPatterns[0];
+                break;
+            case 5:
+                _currentPattern = allPatterns[2];
+                break;
+            case 6:
+                _currentPattern = allPatterns[3];
+                break;
+        }
+
+        // _currentPattern = allPatterns[];
         Debug.Log("当前套路：" + _currentPattern.patternName);
     }
 
@@ -308,8 +431,8 @@ public class ServerDataPlugin : LogicPluginBase
         {
             food.OnRemove();
         }
+
         foods.Clear();
-        
     }
 
 

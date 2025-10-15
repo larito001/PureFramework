@@ -23,10 +23,12 @@ public class RuleSystem : ServerSystemBase
     /// </summary>
     public void OnSelectHostPlayer()
     {
+        ServerDataPlugin.Instance.ResetRule();
         //选择主玩家，给主玩家发送可选项，制定游戏规则
         var playerId = ServerDataPlugin.Instance.GetRandomPlayer();
         ServerDataPlugin.Instance.SetRulePlayerId(playerId);
         var rules = ServerDataPlugin.Instance.getRandomRules(3);
+
         RuleSelectNotify notify = new RuleSelectNotify
         {
             rules = rules,

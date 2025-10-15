@@ -70,6 +70,7 @@ public class FoodDropStage
     public float endTime;
     public float randomTime; //
     public int dropCount;
+    public string name;
     public Dictionary<Quality, float> gradeWeight; // 品质权重（0~1）
 }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class FoodData
 {
     public static int idIndex = 1000;
+    public string path = "testFood";
     public int foodId;
     public Vector3 position;
     private FoodState state;

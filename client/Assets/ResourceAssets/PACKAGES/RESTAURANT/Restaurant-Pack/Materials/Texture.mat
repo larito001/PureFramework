@@ -26,7 +26,6 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - DR_CEL_EXTRA_ON
-  - DR_GRADIENT_ON
   - DR_RIM_ON
   - DR_SPECULAR_ON
   - _BASEMAP_PREMULTIPLY
@@ -35,8 +34,10 @@ Material:
   - _GRADIENTSPACE_WORLD
   - _OUTLINESPACE_SCREEN
   - _TEXTUREBLENDINGMODE_MULTIPLY
-  - _UNITYSHADOWMODE_MULTIPLY
-  m_InvalidKeywords: []
+  - _UNITYSHADOW_OCCLUSION
+  m_InvalidKeywords:
+  - _ALPHAMODULATE_ON
+  - _UNITYSHADOWMODE_NONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -144,8 +145,8 @@ Material:
     - _FlatRimLightAlign: 0
     - _FlatRimSize: 0
     - _FlatSpecularEdgeSmoothness: 0
-    - _FlatSpecularSize: 0
-    - _Flatness: 0.982
+    - _FlatSpecularSize: 1
+    - _Flatness: 1
     - _FlatnessExtra: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -153,10 +154,10 @@ Material:
     - _GradientAngle: 0
     - _GradientCenterX: 0
     - _GradientCenterY: 1
-    - _GradientEnabled: 1
+    - _GradientEnabled: 0
     - _GradientSize: 10
     - _GradientSpace: 0
-    - _LightContribution: 1
+    - _LightContribution: 0
     - _LightFalloffSize: 0
     - _LightmapDirectionPitch: 77
     - _LightmapDirectionYaw: 32
@@ -176,10 +177,10 @@ Material:
     - _RimMax: 1
     - _RimMin: 0.836
     - _RimSmooth: 0.716
-    - _SelfShadingSize: 0.343
+    - _SelfShadingSize: 1
     - _SelfShadingSizeExtra: 0.6
     - _ShadowEdgeSize: 0.5
-    - _ShadowEdgeSizeExtra: 0.181
+    - _ShadowEdgeSizeExtra: 0.229
     - _ShadowRange: 0.509
     - _ShadowSmooth: 0
     - _Smoothness: 0.5
@@ -192,10 +193,10 @@ Material:
     - _TextureBlendingMode: 0
     - _TextureImpact: 1
     - _UVSec: 0
-    - _UnityShadowMode: 1
-    - _UnityShadowOcclusion: 0
-    - _UnityShadowPower: 1
-    - _UnityShadowSharpness: 1
+    - _UnityShadowMode: 0
+    - _UnityShadowOcclusion: 1
+    - _UnityShadowPower: 0.933
+    - _UnityShadowSharpness: 9.45
     - _VertexColorsEnabled: 0
     - _VertexExtrusionSmoothNormals: 0
     - _WorkflowMode: 1
@@ -203,7 +204,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorDim: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorDim: {r: 0, g: 0, b: 0, a: 1}
     - _ColorDimCurve: {r: 1, g: 1, b: 1, a: 1}
     - _ColorDimExtra: {r: 1, g: 1, b: 1, a: 1}
     - _ColorDimSteps: {r: 1, g: 1, b: 1, a: 1}
@@ -219,5 +220,5 @@ Material:
     - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.7}
     - _ShadowColor: {r: 0.7, g: 0.7, b: 0.8, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _UnityShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _UnityShadowColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

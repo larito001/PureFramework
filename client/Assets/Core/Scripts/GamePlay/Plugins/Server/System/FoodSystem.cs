@@ -20,10 +20,7 @@ public class FoodSystem : ServerSystemBase
     }
 
     #region 食物
-
-    /// <summary>
-    /// 游戏抢夺阶段
-    /// </summary>
+    
     public void StartFoodSystem()
     {
         index = 0;
@@ -32,6 +29,7 @@ public class FoodSystem : ServerSystemBase
         ServerDataPlugin.Instance.SetRandomPattern();
         stageQueue.Clear();
         var stages = ServerDataPlugin.Instance.CurrentPattern.stages;
+        
         for (var i = 0; i < stages.Count; i++)
         {
             var start = stages[i].startTime;
@@ -68,10 +66,29 @@ public class FoodSystem : ServerSystemBase
 
        stageQueue.Dequeue();
         List<FoodData> foods = new List<FoodData>();
+        
+        switch ( ServerDataPlugin.Instance.CurrentRule.ruleId)
+        {
+            case 1:
+                //砸金蛋
+                
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+        }
         for (int i = 0; i < stage.dropCount; i++)
         {
             Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
             var food = new FoodData();
+            food.path = stage.name;
             food.foodId = FoodData.idIndex++;
             food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
             food.quality = qualityRandom;

@@ -76,7 +76,7 @@ public class FoodEntity : ObjectBase, PoolItem<FoodData>
     {
         this.data = serverData;
         SetInVision(true);
-        SetPrefabBundlePath("Foods/TestFood");
+        SetPrefabBundlePath("Foods/"+data.path);
     }
 
     private Tweener shakeTween; // 保存抖动动画的引用
