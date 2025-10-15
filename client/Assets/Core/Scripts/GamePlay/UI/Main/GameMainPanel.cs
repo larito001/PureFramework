@@ -19,6 +19,8 @@ public class GameMainPanel : UIPageBase
     private RectTransform findBtnRect;
     public Image satisfactionImg;
 
+    public MainForceCtrl forceCtrl;
+    
     public List<MainPlayerInfoCtrl> playerInfoCtrls = new List<MainPlayerInfoCtrl>();
 
     // private 
@@ -87,6 +89,7 @@ public class GameMainPanel : UIPageBase
     private void OnClickFindBtn()
     {
         PlayerPlugin.Instance.OnFindHostPlayerClick();
+        forceCtrl.StartForce();
     }
 
     private void RefreshPlayerProperty()
