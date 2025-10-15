@@ -13,7 +13,6 @@ public class HandCtrl : MonoBehaviour
     private PlayerEntity playerEntity;
     public Transform leftHand;
     public Transform rightHand;
-    public LineRenderer lineRenderer;
     private Vector3 leftHandOriginalPos;
     private Quaternion leftHandOriginalRot;
     private Vector3 rightHandOriginalPos;
@@ -37,7 +36,6 @@ public class HandCtrl : MonoBehaviour
             rightHandOriginalPos = rightHand.position;
             rightHandOriginalRot = rightHand.rotation;
         }
-        lineRenderer.enabled = false;
     }
 
     /// <summary>
@@ -62,7 +60,6 @@ public class HandCtrl : MonoBehaviour
                 Debug.Log("LeftHand tween complete" + playerEntity.isSelf);
                 if (leftTarget!=null&&leftTarget.ObjTrans!=null)
                 {
-                    lineRenderer.enabled = true;
                     leftTarget.OnCatch();
                     leftTarget.ObjTrans.SetParent(leftHand);   
                 }
@@ -110,7 +107,6 @@ public class HandCtrl : MonoBehaviour
         if (leftTarget != null && leftTarget.ObjTrans != null)
         {
             leftTarget.StopCatch(); 
-            lineRenderer.enabled = false;
         }
 
         //todo：移动leftTarget.ObjTrans 到 playerEntity.mousePos.position位置，然后调用RemoveFood
@@ -133,7 +129,6 @@ public class HandCtrl : MonoBehaviour
                 StagePlugin.Instance.RemoveFood(food.foodId);
             }
             leftTarget = null;
-            lineRenderer.enabled = false;
         });
     }
 

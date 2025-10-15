@@ -48,7 +48,7 @@ public class StateInfo
 
 public class GameServerStateCtrl
 {
-    private const float orgGameTime = 20; //playing总时长
+    private const float orgGameTime = 110; //playing总时长
     private const float orgReadyTimer = 10; //ready倒计时
     private const float orgSelectingTimer = 5; //选择规则时间
     private const float orgvotingTimer = 3; //投票时间

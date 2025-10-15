@@ -23,6 +23,10 @@ namespace YOTO
        GameTimerNotify,
        LootTimerNotify,
        VotEndNotify,
+       
+       //
+       ForceFood,
+       UnForceFood
     }
 
 

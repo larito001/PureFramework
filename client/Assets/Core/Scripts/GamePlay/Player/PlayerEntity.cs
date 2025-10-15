@@ -79,12 +79,22 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (success)
         {
             handCtrl.ExtendLeftHand(food);
+            if (isSelf)
+            {
+                YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.ForceFood,foodId);
+            }
+            
         }
     }
 
     public void EndCatch()
     {
         if (isShow) return;
+        if (isSelf)
+        {
+            YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.UnForceFood);  
+        }
+
         handCtrl.RetractLeftHand();
     }
 
@@ -97,6 +107,7 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (isSelf)
         {
             YOTOFramework.sceneMgr.cameraCtrl.UseSpecialCamera(food.ObjTrans);
+            YOTOFramework.eventMgr.TriggerEvent<int>(YOTOEventType.ForceFood,foodId);
         }
     }
 
@@ -114,10 +125,11 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
             handCtrl.RetractLeftHand();
         }
 
-        // if (isSelf)
-        // {
-        //     YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
-        // }
+        if (isSelf)
+        {
+            YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.UnForceFood);
+            // YOTOFramework.sceneMgr.cameraCtrl.UsePlayerCamera();
+        }
     }
 
     public override void YOTONetUpdate()

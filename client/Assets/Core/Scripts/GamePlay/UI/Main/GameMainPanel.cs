@@ -33,6 +33,8 @@ public class GameMainPanel : UIPageBase
     public override void OnShow()
     {
         YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
+        YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.ForceFood,AddForceFood);
+        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.UnForceFood,RemoveForceFood);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         findBtn.onClick.AddListener(OnClickFindBtn);
 
@@ -64,6 +66,15 @@ public class GameMainPanel : UIPageBase
         RefreshPlayerProperty();
     }
 
+    private void AddForceFood(int foodId)
+    {
+        forceCtrl.AddForceFood(foodId);
+    }
+    private void RemoveForceFood()
+    {
+        forceCtrl.RemoveForce();
+    }
+
     private void OnTimerNotify(int index)
     {
         txt_timer.text = index.ToString();
@@ -89,7 +100,6 @@ public class GameMainPanel : UIPageBase
     private void OnClickFindBtn()
     {
         PlayerPlugin.Instance.OnFindHostPlayerClick();
-        forceCtrl.StartForce();
     }
 
     private void RefreshPlayerProperty()
@@ -118,7 +128,10 @@ public class GameMainPanel : UIPageBase
     public override void OnHide()
     {
         YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
+        YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.ForceFood,AddForceFood);
+        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.UnForceFood,RemoveForceFood);
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
+        
         findBtn.onClick.RemoveAllListeners();
         for (var i = 0; i < playerInfoCtrls.Count; i++)
         {
@@ -134,6 +147,8 @@ public class GameMainPanel : UIPageBase
 
         findBtnRect.anchoredPosition = btnOriginalPosition;
     }
+
+
 
     public override void OnResize()
     {

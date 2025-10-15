@@ -181,6 +181,9 @@ public class PlayerPlugin : LogicPluginBase
     private void OnCatchFoodNotify(CatchFoodNotify obj)
     {
         players[obj.playerId].CatchFood(obj.foodId, obj.isSuccess);
+
+    
+        
     }
 
     private void OnEndCatchFoodNotify(EndCatchFoodNotify obj)
