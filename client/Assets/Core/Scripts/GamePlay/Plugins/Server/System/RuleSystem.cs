@@ -79,68 +79,33 @@ public class RuleSystem : ServerSystemBase
 
 
         var rule = ServerDataPlugin.Instance.CurrentRule;
-        // if (rule != null)
-        // {
-        //     // notify.rule = rule;
-        //     var players = ServerDataPlugin.Instance.GetPlayerList();
-        //     int winId = 0;
-        //     if (rule.ruleId == 1)
-        //     {
-        //         //todo:读取数据，根据规则发放数据
-        //
-        //         int maxNum = 0;
-        //         foreach (var player in players)
-        //         {
-        //             // && player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!ServerDataPlugin.Instance.hosterIsLose)
-        //             {
-        //                 if (player.SatisfactionValue >= maxNum)
-        //                 {
-        //                     winId = player.playerId;
-        //                     maxNum = player.lootNum;
-        //                 }
-        //                 else
-        //                 {
-        //                     if(player.GetState()!= PlayerState.Dead)
-        //                     losePlayers.Add(player.playerId);
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 if(player.GetState()!= PlayerState.Dead)
-        //                 losePlayers.Add(player.playerId);
-        //             }
-        //         }
-        //     }
-        //     else if (rule.ruleId == 2)
-        //     {
-        //         int minNum = 999999;
-        //         foreach (var player in players)
-        //         {
-        //             //&& player.playerId != ServerDataPlugin.Instance.RulePlayerId
-        //             if (!ServerDataPlugin.Instance.hosterIsLose)
-        //             {
-        //                 if (player.SatisfactionValue <= minNum)
-        //                 {
-        //                     winId = player.playerId;
-        //                     minNum = player.lootNum;
-        //                 }
-        //                 else
-        //                 {
-        //                     if(player.GetState()!= PlayerState.Dead)
-        //                     losePlayers.Add(player.playerId);
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 if(player.GetState()!= PlayerState.Dead)
-        //                 losePlayers.Add(player.playerId);
-        //             }
-        //         }
-        //     }
-        //
-        //     Debug.Log("结算时规则：" + rule.roleName);
-        // }
+
+        
+        if (rule != null)
+        {
+            int winId = 0;
+            
+            int maxNum = 0;
+            foreach (var player in players)
+            {
+                
+                if (player.SatisfactionValue >= maxNum)
+                {
+                    winId = player.playerId;
+                    maxNum = player.lootNum;
+                }
+            }
+
+            foreach (var player in players)
+            {
+                if (winId != player.playerId)
+                {
+                    losePlayers.Add(player.playerId);
+                }
+            }
+        
+            Debug.Log("结算时规则：" + rule.roleName);
+        }
 
         return losePlayers;
         // return notify;

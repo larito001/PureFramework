@@ -13,7 +13,7 @@ public class FinishPanel : UIPageBase
 
     public override void OnShow()
     {
-        
+        winName.text = StagePlugin.Instance.winPlayerData[0].playerName;
     }
 
     public override void OnHide()

@@ -62,7 +62,10 @@ public class LoginPlugin : LogicPluginBase
     }
 
     private void OnGameEndNotify(GameEndNotify obj)
-    {   
+    {
+        StagePlugin.Instance.winPlayerData = obj.winPlayersDatas;
+        StagePlugin.Instance.losePlayerData = obj.losePlayersDatas;
+            
         YOTOFramework.uIMgr.Show(UIEnum.FinishPanel);
         YOTOFramework.timeMgr.DelayCall(() =>
         {

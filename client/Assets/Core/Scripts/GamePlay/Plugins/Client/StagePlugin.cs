@@ -13,6 +13,11 @@ public class StagePlugin : LogicPluginBase
     private List<GameRule> rulesTemp ;
     public bool GameStart = false;
     private GameObject foods;
+
+
+    public List<PlayerData> winPlayerData;
+    public List<PlayerData> losePlayerData;
+
     
     #region 单例，事件注册
 

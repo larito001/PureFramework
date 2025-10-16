@@ -73,7 +73,6 @@ public class FoodSystem : ServerSystemBase
         switch ( ServerDataPlugin.Instance.CurrentRule.ruleId)
         {
             case 1:
-                //砸金蛋
                 GenerateEggs(stage);
                 break;
             case 2:
@@ -91,6 +90,7 @@ public class FoodSystem : ServerSystemBase
             case 6:
                 GenerateBet2(stage);
                 break;
+            
         }
      
 
