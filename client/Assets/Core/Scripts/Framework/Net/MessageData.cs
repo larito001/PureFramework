@@ -64,6 +64,12 @@ public enum Quality
     Red
 }
 
+public enum CatchEnum
+{
+    Normal,
+    NumberCul
+}
+
 public class FoodDropStage
 {
     public float startTime;

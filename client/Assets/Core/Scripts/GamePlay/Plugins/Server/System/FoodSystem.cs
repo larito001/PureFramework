@@ -57,6 +57,10 @@ public class FoodSystem : ServerSystemBase
     /// </summary>
     private void GenerateFoods()
     {
+        if ( stageQueue.Count<=0)
+        {
+            return;
+        }
         index++;
        var stage= stageQueue.Peek();
        if (index < stage.randomTime)
@@ -65,25 +69,37 @@ public class FoodSystem : ServerSystemBase
        }
 
        stageQueue.Dequeue();
-        List<FoodData> foods = new List<FoodData>();
-        
+       
         switch ( ServerDataPlugin.Instance.CurrentRule.ruleId)
         {
             case 1:
                 //砸金蛋
-                
+                GenerateEggs(stage);
                 break;
             case 2:
+                GenerateNormal(stage);
                 break;
             case 3:
+                GenerateNumberAdd(stage);
                 break;
             case 4:
+                GenerateNormal(stage);
                 break;
             case 5:
+                GenerateBet(stage);
                 break;
             case 6:
+                GenerateBet2(stage);
                 break;
         }
+     
+
+    }
+
+    private void GenerateEggs(FoodDropStage stage)
+    {
+        List<FoodData> foods = new List<FoodData>();
+        
         for (int i = 0; i < stage.dropCount; i++)
         {
             Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
@@ -91,17 +107,116 @@ public class FoodSystem : ServerSystemBase
             food.path = stage.name;
             food.foodId = FoodData.idIndex++;
             food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
+
+            var random = Random.Range(-0.5f, 0.5f);
+            food.SatisfactionValue = random>0?3:-3;
             food.quality = qualityRandom;
             food.Init();
             ServerDataPlugin.Instance.AddFood(food);
             foods.Add(food);
         }
-
+        
         FoodNotify notify = new FoodNotify();
         notify.foodList = foods;
         ServerMessageManager.Instance.SendNotify(notify);
     }
 
+    
+    private void GenerateNormal(FoodDropStage stage)
+    {
+        List<FoodData> foods = new List<FoodData>();
+        
+        for (int i = 0; i < stage.dropCount; i++)
+        {
+            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
+            var food = new FoodData();
+            food.path = stage.name;
+            food.foodId = FoodData.idIndex++;
+            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
+            food.SatisfactionValue = 2*(int)(qualityRandom+1);
+            food.quality = qualityRandom;
+            food.Init();
+            ServerDataPlugin.Instance.AddFood(food);
+            foods.Add(food);
+        }
+        
+        FoodNotify notify = new FoodNotify();
+        notify.foodList = foods;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+    private void GenerateNumberAdd(FoodDropStage stage)
+    {
+        List<FoodData> foods = new List<FoodData>();
+        
+        for (int i = 0; i < stage.dropCount; i++)
+        {
+            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
+            var food = new FoodData();
+            food.path = stage.name;
+            food.foodId = FoodData.idIndex++;
+            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
+            food.SatisfactionValue = 2*(int)(qualityRandom+1);
+            food.catchEnum = CatchEnum.NumberCul;
+            food.quality = qualityRandom;
+            food.Init();
+            ServerDataPlugin.Instance.AddFood(food);
+            foods.Add(food);
+        }
+        
+        FoodNotify notify = new FoodNotify();
+        notify.foodList = foods;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+    
+    private void GenerateBet(FoodDropStage stage)
+    {
+        List<FoodData> foods = new List<FoodData>();
+        
+        for (int i = 0; i < stage.dropCount; i++)
+        {
+            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
+            var food = new FoodData();
+            food.path = stage.name;
+            food.foodId = FoodData.idIndex++;
+            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
+
+            var random = Random.Range(-1f, 99f);
+            food.SatisfactionValue = random>0?3:-9999;
+            food.quality = qualityRandom;
+            food.Init();
+            ServerDataPlugin.Instance.AddFood(food);
+            foods.Add(food);
+        }
+        
+        FoodNotify notify = new FoodNotify();
+        notify.foodList = foods;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+    private void GenerateBet2(FoodDropStage stage)
+    {
+        List<FoodData> foods = new List<FoodData>();
+        
+        for (int i = 0; i < stage.dropCount; i++)
+        {
+            Quality qualityRandom = ServerDataPlugin.Instance.RandomFood(stage);
+            var food = new FoodData();
+            food.path = stage.name;
+            food.foodId = FoodData.idIndex++;
+            food.position = new Vector3(Random.Range(-0.5f, 0.5f), 0.8f, Random.Range(-0.5f, 0.5f));
+
+            var random = Random.Range(-100f, 2f);
+            food.SatisfactionValue = random>0?9999:1;
+            food.quality = qualityRandom;
+            food.Init();
+            ServerDataPlugin.Instance.AddFood(food);
+            foods.Add(food);
+        }
+        
+        FoodNotify notify = new FoodNotify();
+        notify.foodList = foods;
+        ServerMessageManager.Instance.SendNotify(notify);
+    }
+    
     /// <summary>
     /// 抓取食物的请求
     /// </summary>

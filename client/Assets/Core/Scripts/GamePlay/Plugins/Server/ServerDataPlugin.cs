@@ -242,7 +242,7 @@ public class ServerDataPlugin : LogicPluginBase
         {
             ruleId = 1,
             roleName = "砸金蛋", //纯运气，运气
-            roleDetail = "替换所有食物为鸡蛋，鸡蛋中有臭鸡蛋，吃到正常鸡蛋+1，吃到臭鸡蛋-1"
+            roleDetail = "替换所有食物为鸡蛋，鸡蛋中有臭鸡蛋"
         },
         new GameRule()
         {

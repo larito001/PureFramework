@@ -12,6 +12,7 @@ public class FoodData
     public int SatietyValue = 2; //饱腹值
     public int SatisfactionValue = 3; //满意度
     public Quality quality;
+    public CatchEnum catchEnum = CatchEnum.Normal;
     List<int> playerIds = new List<int>();
     private const float LootOrgTimer = 5;
 
