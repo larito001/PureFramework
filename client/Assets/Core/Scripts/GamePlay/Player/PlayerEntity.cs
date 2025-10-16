@@ -42,6 +42,17 @@ public class PlayerEntity : ObjectBase, PoolItem<PlayerData>
         if (isShow) return;
         drinkRate = rate;
         animCtrl.OnDrink();
+        if (isSelf)
+        {
+            YOTOFramework.timeMgr.DelayCall(() =>
+            {
+                RestEnd end = new RestEnd();
+                end.playerId = LoginPlugin.Instance.PlayerId;
+                ClientMessageManager.Instance.SendRequest(end); 
+            },5);
+  
+        }
+
     }
 
     public void Dead()

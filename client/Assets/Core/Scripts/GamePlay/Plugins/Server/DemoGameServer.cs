@@ -49,7 +49,7 @@ public class DemoGameServer : GameServerBase
                 foodSystem.StartFoodSystem();
                 break;
             case GameState.End:
-                
+                OnGameEndNotify();
                 break;
         }
     }
@@ -93,7 +93,7 @@ public class DemoGameServer : GameServerBase
                 votSystem.VotingEnd();
                 break;
             case GameState.End:
-                OnGameEndNotify();
+              
                 stateCtrl.OnJoinRoom();
                 votSystem.Reset();
                 break;

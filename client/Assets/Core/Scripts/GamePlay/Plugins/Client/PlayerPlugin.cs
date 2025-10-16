@@ -40,7 +40,19 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<VotEndNotify>(OnVotEndNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<PlayerDeadNotify>(OnPlayerDeadNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<PlayerNeedDrinkNotify>(OnPlayerNeedDrinkNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<PlayerWinNotify>(OnPlayerWinNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
+    }
+
+    private void OnPlayerWinNotify(PlayerWinNotify obj)
+    {
+        if (obj.playerId==LoginPlugin.Instance.PlayerId)
+        {
+            RestEnd end = new RestEnd();
+            end.playerId = LoginPlugin.Instance.PlayerId;
+            ClientMessageManager.Instance.SendRequest(end); 
+        }
+ 
     }
 
     private void OnPlayerNeedDrinkNotify(PlayerNeedDrinkNotify obj)
@@ -76,6 +88,7 @@ public class PlayerPlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<VotEndNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerDeadNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerNeedDrinkNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<PlayerWinNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTO.YOTOEventType.Space, OnSpaceClick);
     }
 

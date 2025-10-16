@@ -18,6 +18,16 @@ public class PlayerData
     public int currentAlcohol = 0;
     public bool needPlayParticle = true;
 
+    public void PlayerWin()
+    {
+        if (State != PlayerState.Dead)
+        {
+            PlayerWinNotify winNotify = new PlayerWinNotify();
+            
+            winNotify.playerId = playerId;
+            ServerMessageManager.Instance.SendNotify(winNotify);
+        }
+    }
     public void PlayerLose()
     {
         if (State != PlayerState.Dead)
@@ -147,4 +157,6 @@ public class PlayerData
         currentAlcohol = 0;
         OnRoundEnd();
     }
+
+   
 }

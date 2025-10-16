@@ -41,6 +41,11 @@ public struct PlayerNeedDrinkNotify:IResponse
     public float currentRate;
 }
 
+public struct PlayerWinNotify : IResponse
+{
+    public int playerId;
+}
+
 #endregion
 
 #region 食物
@@ -252,6 +257,10 @@ public struct LoginResponse : IResponse
 
 public struct GotoRestNotify : IResponse
 {
+}
+public struct RestEnd:IRequest
+{
+    public int playerId;
 }
 
 #endregion

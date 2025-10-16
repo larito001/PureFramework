@@ -63,21 +63,6 @@ public class RuleSystem : ServerSystemBase
         // var notify = new GameEndNotify();
         List<int> losePlayers = new List<int>();
         var players = ServerDataPlugin.Instance.GetPlayerList().ToList();
-
-        if (players[0].GetState() != PlayerState.Dead)
-        {
-            losePlayers.Add(players[0].playerId);
-        }
-        else if (players.Count > 1 && players[1].GetState() != PlayerState.Dead)
-        {
-            losePlayers.Add(players[1].playerId);
-        }
-        else if (players.Count > 2 && players[2].GetState() != PlayerState.Dead)
-        {
-            losePlayers.Add(players[2].playerId);
-        }
-
-
         var rule = ServerDataPlugin.Instance.CurrentRule;
 
         
