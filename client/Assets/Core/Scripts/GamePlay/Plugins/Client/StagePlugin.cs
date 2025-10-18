@@ -17,7 +17,9 @@ public class StagePlugin : LogicPluginBase
 
     public List<PlayerData> winPlayerData;
     public List<PlayerData> losePlayerData;
-
+    
+    public GameRule currentRule;
+    public int rulePlayer;
     
     #region 单例，事件注册
 
@@ -45,10 +47,16 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.RegisterResponseHandler<GameTimerNotify>(OnGameTimerNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<FoodLootTimerNotify>(OnFoodLootTimerNotify);
         ClientMessageManager.Instance.RegisterResponseHandler<GotoRestNotify>(OnGotoRestNotify);
+        ClientMessageManager.Instance.RegisterResponseHandler<UseRuleNotify>(OnUseRuleNotify);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 
- 
+    private void OnUseRuleNotify(UseRuleNotify obj)
+    {
+        currentRule = obj.rule;
+        rulePlayer = obj.playerId;
+        YOTOFramework.eventMgr.TriggerEvent(YOTOEventType.RefreshMainRule);
+    }
 
 
     public void OnNetUninstall()
@@ -58,6 +66,7 @@ public class StagePlugin : LogicPluginBase
         ClientMessageManager.Instance.UnRegisterResponseHandler<GameTimerNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<FoodLootTimerNotify>();
         ClientMessageManager.Instance.UnRegisterResponseHandler<GotoRestNotify>();
+        ClientMessageManager.Instance.UnRegisterResponseHandler<UseRuleNotify>();
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshRoleList, OnRefreshRoleList);
     }
 

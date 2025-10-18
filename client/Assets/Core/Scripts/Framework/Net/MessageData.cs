@@ -208,6 +208,11 @@ public struct VotEndNotify : IResponse
     public bool isSuccess;
 }
 
+public struct UseRuleNotify : IResponse
+{
+    public int playerId;
+    public GameRule rule;
+}
 #endregion
 
 #region 登录

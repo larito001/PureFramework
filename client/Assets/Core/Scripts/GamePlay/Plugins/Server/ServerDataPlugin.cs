@@ -280,6 +280,10 @@ public class ServerDataPlugin : LogicPluginBase
     {
         _currentRule = rules.First(x => x.ruleId == id);
         Debug.Log("设置规则" + _currentRule.roleName);
+        UseRuleNotify notify = new UseRuleNotify();
+        notify.rule = _currentRule;
+        notify.playerId = _rulePlayerId;
+        ServerMessageManager.Instance.SendNotify(notify);
     }
 
     public void SetRandomRule()

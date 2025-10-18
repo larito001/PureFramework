@@ -23,6 +23,7 @@ public class GameMainPanel : UIPageBase
     
     public List<MainPlayerInfoCtrl> playerInfoCtrls = new List<MainPlayerInfoCtrl>();
 
+    public TextMeshProUGUI txt_Tips;
     // private 
     public override void OnLoad()
     {
@@ -32,10 +33,12 @@ public class GameMainPanel : UIPageBase
 
     public override void OnShow()
     {
+        txt_Tips.text = "";
         YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
         YOTOFramework.eventMgr.AddEventListener<int>(YOTOEventType.ForceFood,AddForceFood);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.UnForceFood,RemoveForceFood);
         YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
+        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.RefreshMainRule, RefreshMainRule);
         findBtn.onClick.AddListener(OnClickFindBtn);
 
         // 添加鼠标悬停效果
@@ -64,6 +67,11 @@ public class GameMainPanel : UIPageBase
         }
 
         RefreshPlayerProperty();
+    }
+
+    private void RefreshMainRule()
+    {
+        txt_Tips.text = StagePlugin.Instance.currentRule.roleDetail;
     }
 
     private void AddForceFood(int foodId)
@@ -129,7 +137,8 @@ public class GameMainPanel : UIPageBase
     {
         YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.GameTimerNotify, OnTimerNotify);
         YOTOFramework.eventMgr.RemoveEventListener<int>(YOTOEventType.ForceFood,AddForceFood);
-        YOTOFramework.eventMgr.AddEventListener(YOTOEventType.UnForceFood,RemoveForceFood);
+        YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.UnForceFood,RemoveForceFood);
+        YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshMainRule, RefreshMainRule);
         YOTOFramework.eventMgr.RemoveEventListener(YOTOEventType.RefreshPlayerProperty, RefreshPlayerProperty);
         
         findBtn.onClick.RemoveAllListeners();
