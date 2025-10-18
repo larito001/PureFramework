@@ -1,19 +1,22 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LosePanel : MonoBehaviour
+public class LosePanel : UIPageBase
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void OnLoad()
     {
-        
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnShow()
     {
-        
+    }
+
+    public override void OnHide()
+    {
+    }
+
+    public override void OnResize()
+    {
     }
 }

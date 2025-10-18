@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 7784843782027896797}
   - component: {fileID: 2524429203627911719}
   - component: {fileID: 8098469260357245884}
+  - component: {fileID: 8391941334292103032}
+  - component: {fileID: 1992055127178365479}
+  - component: {fileID: 3572544028991524520}
   m_Layer: 5
   m_Name: LosePanel
   m_TagString: Untagged
@@ -75,3 +78,51 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &8391941334292103032
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8852770335620410534}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1992055127178365479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8852770335620410534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d27cae616ce5744bd487f7e7f1405e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useEnterAnim: 1
+  enterDuration: 0.5
+  enterEase: 9
+  useExitAnim: 1
+  exitDuration: 0.5
+  exitEase: 8
+--- !u!114 &3572544028991524520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8852770335620410534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e201d365ca4ff0544ba982eb130cfa76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenList: []
+  uiType: 0
+  TweenEnter: 0
+  TweenExit: 0
+  isEnable: 0
+  canvasGroup: {fileID: 0}

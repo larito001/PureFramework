@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using YOTO;
+using Random = UnityEngine.Random;
 
 public class FoodSystem : ServerSystemBase
 {
@@ -57,41 +59,49 @@ public class FoodSystem : ServerSystemBase
     /// </summary>
     private void GenerateFoods()
     {
-        if ( stageQueue.Count<=0)
+        try
         {
-            return;
-        }
-        index++;
-       var stage= stageQueue.Peek();
-       if (index < stage.randomTime)
-       {
-           return;
-       }
+            if ( stageQueue.Count<=0)
+            {
+                return;
+            }
+            index++;
+            var stage= stageQueue.Peek();
+            if (index < stage.randomTime)
+            {
+                return;
+            }
 
-       stageQueue.Dequeue();
+            stageQueue.Dequeue();
        
-        switch ( ServerDataPlugin.Instance.CurrentRule.ruleId)
-        {
-            case 1:
-                GenerateEggs(stage);
-                break;
-            case 2:
-                GenerateNormal(stage);
-                break;
-            case 3:
-                GenerateNumberAdd(stage);
-                break;
-            case 4:
-                GenerateNormal(stage);
-                break;
-            case 5:
-                GenerateBet(stage);
-                break;
-            case 6:
-                GenerateBet2(stage);
-                break;
+            switch ( ServerDataPlugin.Instance.CurrentRule.ruleId)
+            {
+                case 1:
+                    GenerateEggs(stage);
+                    break;
+                case 2:
+                    GenerateNormal(stage);
+                    break;
+                case 3:
+                    GenerateNumberAdd(stage);
+                    break;
+                case 4:
+                    GenerateNormal(stage);
+                    break;
+                case 5:
+                    GenerateBet(stage);
+                    break;
+                case 6:
+                    GenerateBet2(stage);
+                    break;
             
+            }
         }
+        catch (Exception e)
+        {
+            Debug.LogError("error"+e);
+        }
+     
      
 
     }
