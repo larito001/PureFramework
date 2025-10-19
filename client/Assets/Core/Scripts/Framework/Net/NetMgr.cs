@@ -39,10 +39,20 @@ namespace YOTO
 
         private void OnLobbyEntered(LobbyEnter_t param)
         {
-            Debug.Log("已加入 Lobby: " + param.m_ulSteamIDLobby);
+            Debug.Log("✅ 已加入 Lobby: " + param.m_ulSteamIDLobby);
+
             CSteamID lobbyID = new CSteamID(param.m_ulSteamIDLobby);
-            JoinHost(lobbyID.ToString());
+            string hostAddress = SteamMatchmaking.GetLobbyData(lobbyID, "hostAddress");
+
+            Debug.Log("👉 Host SteamID: " + hostAddress);
+
+            // 只有当你不是房主时才作为客户端连接
+            if (SteamMatchmaking.GetLobbyOwner(lobbyID) != SteamUser.GetSteamID())
+            {
+                JoinHost(hostAddress); // ✅ 使用host的SteamID连接
+            }
         }
+
 
         private void OnLobbyJoinRequested(GameLobbyJoinRequested_t param)
         {
@@ -53,10 +63,25 @@ namespace YOTO
 
         private void OnLobbyCreated(LobbyCreated_t param)
         {
+            if (param.m_eResult != EResult.k_EResultOK)
+                return;
+
             CSteamID lobbyID = new CSteamID(param.m_ulSteamIDLobby);
+            Debug.Log("✅ Lobby 创建成功: " + lobbyID);
+
+            // 1️⃣ 设置房间信息
             SteamMatchmaking.SetLobbyData(lobbyID, "name", "My Game Room");
             SteamMatchmaking.SetLobbyData(lobbyID, "mode", "PVP");
-            server.StartServer();  
+
+            // 2️⃣ 设置主机SteamID
+            string hostSteamID = SteamUser.GetSteamID().m_SteamID.ToString();
+            SteamMatchmaking.SetLobbyData(lobbyID, "hostAddress", hostSteamID);
+
+            // 3️⃣ 启动服务器（Mirror Host）
+            server.StartServer();
+
+            // ✅ 不要在这里 JoinHost！Host 自己已经是服务器+客户端
+            //JoinHost(lobbyID.ToString()); ❌ 删除
         }
 
         private static bool IsPortInUse(int port)
