@@ -1,5 +1,6 @@
 using kcp2k;
 using Mirror;
+using Mirror.FizzySteam;
 using UnityEngine;
 using YOTO;
 
@@ -9,16 +10,16 @@ public abstract class GameServerBase
     private YOTOMirrorNetworkManager mgr;
 
     // === 启动服务器 ===
-    public void StartServer(ushort port)
+    public void StartServer()
     {
         messageMgr = ServerMessageManager.Instance;
         mgr = YOTOFramework.netMgr.mirrorManager;
 
         RegisterServerCallbacks();
 
-        if (mgr.transport is KcpTransport kcp)
+        if (mgr.transport is FizzySteamworks kcp)
         {
-            kcp.Port = port;
+            // kcp.Port = port;
             mgr.StartHost();  // Host = Server + 本地 Client，但我们只关心服务器
         }
         else

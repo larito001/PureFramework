@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using kcp2k;
 using Mirror;
+using Mirror.FizzySteam;
+using Steamworks;
 using UnityEngine;
 using YOTO;
 
@@ -10,20 +12,17 @@ public abstract class GameClientBase
     protected ClientMessageManager messageMgr;
 
     // ==== 启动客户端 ====
-    public void StartClient(string ip, ushort port)
+    public void StartClient(string id)
     {
         messageMgr = ClientMessageManager.Instance;
         var mgr = YOTOFramework.netMgr.mirrorManager;
 
         RegisterClientEvents(mgr);
 
-        var transport = mgr.transport as KcpTransport;
-        if (transport != null)
-        {
-            transport.Port = port;
-        }
-
-        mgr.networkAddress = ip;
+        // var transport = mgr.transport as FizzySteamworks;
+        //
+        //
+        mgr.networkAddress = id;
         mgr.StartClient();
     }
 

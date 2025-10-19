@@ -58,7 +58,6 @@ public class StartPanel : UIPageBase
         joinBtn.onClick.AddListener(() =>
         {
             LoginPlugin.Instance.Name = NameInput.text;
-            YOTOFramework.netMgr.JoinHost(IPInput.text, ushort.Parse(PortInput.text));
             YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
 

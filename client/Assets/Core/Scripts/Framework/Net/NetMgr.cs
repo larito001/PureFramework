@@ -4,11 +4,16 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using UnityEngine;
 using Mirror;
+using Steamworks;
 
 namespace YOTO
 {
     public class NetMgr
     {
+        private Callback<LobbyCreated_t> lobbyCreated;
+        protected Callback<GameLobbyJoinRequested_t> lobbyJoinRequested;
+        protected Callback<LobbyEnter_t> lobbyEntered;
+        private ELobbyType eLobbyType = ELobbyType.k_ELobbyTypePublic;
         private enum NetState
         {
             Idle,           // 空闲状态，未连接
@@ -23,11 +28,37 @@ namespace YOTO
 
         public void Init()
         {
+            lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+            lobbyJoinRequested= Callback<GameLobbyJoinRequested_t>.Create(OnLobbyJoinRequested);
+            lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             server = new DemoGameServer();
             client = new DemoGameClient();
             mirrorManager = YOTOMirrorNetworkManager.singleton as YOTOMirrorNetworkManager;
             mirrorManager.Init();
         }
+
+        private void OnLobbyEntered(LobbyEnter_t param)
+        {
+            Debug.Log("已加入 Lobby: " + param.m_ulSteamIDLobby);
+            CSteamID lobbyID = new CSteamID(param.m_ulSteamIDLobby);
+            JoinHost(lobbyID.ToString());
+        }
+
+        private void OnLobbyJoinRequested(GameLobbyJoinRequested_t param)
+        {
+            Debug.Log("收到好友邀请，加入 Lobby: " + param.m_steamIDLobby);
+            SteamMatchmaking.JoinLobby(param.m_steamIDLobby);
+   
+        }
+
+        private void OnLobbyCreated(LobbyCreated_t param)
+        {
+            CSteamID lobbyID = new CSteamID(param.m_ulSteamIDLobby);
+            SteamMatchmaking.SetLobbyData(lobbyID, "name", "My Game Room");
+            SteamMatchmaking.SetLobbyData(lobbyID, "mode", "PVP");
+            server.StartServer();  
+        }
+
         private static bool IsPortInUse(int port)
         {
             try
@@ -54,21 +85,12 @@ namespace YOTO
         // 创建主机 = 服务器 + 客户端
         public void CreateHost(ushort port)
         {
+
             switch (currentState)
             {
                 case NetState.Idle:
-                    if (!IsPortInUse(port)&&!IsUdpPortInUse(port))
-                    {
-                        currentState = NetState.Hosting;
-                        JoinHost("", 0); // 本地客户端连接
-                        server.StartServer(port);  
-                    }
-                    else
-                    {
-                        Debug.LogError("端口已被使用");
-                        FlyTextMgr.Instance.AddTextAtScreenCenter("端口已被使用", FlyTextType.Normal);
-                    }
-               
+                    currentState = NetState.Hosting;
+                    SteamMatchmaking.CreateLobby(eLobbyType, 4);
                     break;
                 default:
                     Debug.LogWarning("创建房间异常: 当前状态=" + currentState);
@@ -92,12 +114,12 @@ namespace YOTO
         }
 
         // 加入主机 = 客户端
-        public void JoinHost(string ip, ushort port)
+        public void JoinHost(string id)
         {
             switch (currentState)
             {
                 case NetState.Idle:
-                    client.StartClient(ip, port);
+                    client.StartClient(id);
                     currentState = NetState.Client;
                     break;
                 case NetState.Hosting:
