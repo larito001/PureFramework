@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,8 +80,10 @@ public class StartPanel : UIPageBase
 
         createBtn.onClick.AddListener(() =>
         {
+            SteamNetworkingUtils.GetRelayNetworkStatus( out var status);
+            Debug.Log($"[Relay] {status.m_eAvail} - {status.m_debugMsg}");
             LoginPlugin.Instance.Name = NameInput.text;
-            YOTOFramework.netMgr.CreateHost(ushort.Parse(PortInput.text));
+            YOTOFramework.netMgr.CreateHost();
             YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
     }

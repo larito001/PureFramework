@@ -1,7 +1,4 @@
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+
 using UnityEngine;
 using Mirror;
 using Steamworks;
@@ -46,11 +43,7 @@ namespace YOTO
 
             Debug.Log("👉 Host SteamID: " + hostAddress);
 
-            // 只有当你不是房主时才作为客户端连接
-            if (SteamMatchmaking.GetLobbyOwner(lobbyID) != SteamUser.GetSteamID())
-            {
-                JoinHost(hostAddress); // ✅ 使用host的SteamID连接
-            }
+            JoinHost(hostAddress); // ✅ 使用host的SteamID连接
         }
 
 
@@ -76,45 +69,21 @@ namespace YOTO
             // 2️⃣ 设置主机SteamID
             string hostSteamID = SteamUser.GetSteamID().m_SteamID.ToString();
             SteamMatchmaking.SetLobbyData(lobbyID, "hostAddress", hostSteamID);
-
-            // 3️⃣ 启动服务器（Mirror Host）
-            server.StartServer();
-
-            // ✅ 不要在这里 JoinHost！Host 自己已经是服务器+客户端
-            //JoinHost(lobbyID.ToString()); ❌ 删除
+            
         }
-
-        private static bool IsPortInUse(int port)
-        {
-            try
-            {
-                // 尝试绑定到指定端口
-                var listener = new TcpListener(IPAddress.Loopback, port);
-                listener.Start();
-                listener.Stop();
-                return false; // 端口可用
-            }
-            catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
-            {
-                return true; // 端口已被使用
-            }
-        }
-        public static bool IsUdpPortInUse(int port)
-        {
-            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            IPEndPoint[] udpListeners = ipGlobalProperties.GetActiveUdpListeners();
-    
-            return udpListeners.Any(endpoint => endpoint.Port == port);
-        }
+        
 
         // 创建主机 = 服务器 + 客户端
-        public void CreateHost(ushort port)
+        public void CreateHost()
         {
 
             switch (currentState)
             {
                 case NetState.Idle:
                     currentState = NetState.Hosting;
+                    // 3️⃣ 启动服务器（Mirror Host）
+                    JoinHost("");
+                    server.StartServer();
                     SteamMatchmaking.CreateLobby(eLobbyType, 4);
                     break;
                 default:

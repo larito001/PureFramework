@@ -17,8 +17,10 @@ public class GameRoot : SingletonMono<GameRoot>
 #endif
         if (SteamManager.Initialized)
         {
+            SteamNetworkingUtils.InitRelayNetworkAccess();
             string name = SteamFriends.GetPersonaName();
             Debug.LogError("GetPersonaName:" + name);
+           
         }
         // Application.targetFrameRate = 60;
         FlyTextMgr.Instance.Init();
