@@ -52,6 +52,7 @@ public class StartPanel : UIPageBase
         settingBtn.onClick.AddListener(() =>
         {
             YOTOFramework.uIMgr.Show(UIEnum.SettingPanel);
+            YOTOFramework.soundMgr.PlaySFX("Sound/SFX_UI_Click_Designed_Pop_Open_2");
         });
         // 绑定按钮事件
         joinBtn.onClick.AddListener(() =>

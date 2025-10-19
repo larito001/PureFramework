@@ -1,3 +1,4 @@
+using Steamworks;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using YOTO;
@@ -14,6 +15,11 @@ public class GameRoot : SingletonMono<GameRoot>
 #if !UNITY_EDITOR && (UNITY_IOS || UNITY_ANDROID)
         QualitySettings.vSyncCount = 0;
 #endif
+        if (SteamManager.Initialized)
+        {
+            string name = SteamFriends.GetPersonaName();
+            Debug.LogError("GetPersonaName:" + name);
+        }
         // Application.targetFrameRate = 60;
         FlyTextMgr.Instance.Init();
         // TouchSimulation.Enable();

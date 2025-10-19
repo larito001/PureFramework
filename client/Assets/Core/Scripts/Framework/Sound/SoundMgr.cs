@@ -85,15 +85,15 @@ public class SoundMgr
             src.Play();
 
             // 播放完成后自动释放
-            YOTOFramework.Instance.StartCoroutine(ReleaseWhenDone(src, clip));
+            YOTOFramework.Instance.StartCoroutine(ReleaseWhenDone(src, clip,path));
         });
     }
 
-    private System.Collections.IEnumerator ReleaseWhenDone(AudioSource src, AudioClip clip)
+    private System.Collections.IEnumerator ReleaseWhenDone(AudioSource src, AudioClip clip,string path)
     {
         yield return new WaitWhile(() => src.isPlaying);
         src.clip = null;
-        YOTOFramework.resMgr.ReleasePack("Sound/BGM1",clip);
+        YOTOFramework.resMgr.ReleasePack(path,clip);
     }
 
     /// <summary>
